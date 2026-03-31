@@ -1,0 +1,10 @@
+node_modules/
+.next/
+# Cliente Prisma generado (motor local en src; regenerar con npm run prisma:generate)
+src/generated/prisma/
+.env
+.env*.local
+*.log
+tsconfig.tsbuildinfo
+# Claves y certificados locales (no versionar)
+*.pem

@@ -1,0 +1,27 @@
+# Dependencias y builds (monorepo)
+**/node_modules/
+**/.next/
+**/out/
+**/dist/
+**/build/
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Entorno (no subir secretos)
+.env
+.env.*
+!.env.example
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# Prisma (generado localmente si aplica)
+**/generated/prisma/

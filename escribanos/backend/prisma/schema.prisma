@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanType {
+  GRATIS
+  PRO
+  PLUS
+}
+
+model User {
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  password           String
+  nombre             String
+  apellido           String
+  ci                 String    @unique
+  planType           PlanType  @default(GRATIS)
+  calculosRealizados Int       @default(0)
+  resetToken         String?
+  resetTokenExpiry   DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  
+  calculos           Calculo[]
+
+  @@map("users")
+}
+
+model Calculo {
+  id                  String   @id @default(uuid())
+  userId              String
+  alias               String
+  
+  // Datos del cálculo
+  tipoBien            String   // BIEN_INMUEBLE, BIEN_MUEBLE, etc.
+  tipoContrato        String   // COMPRAVENTA, CESION_DERECHOS, etc.
+  
+  // Valores base
+  valorAsignadoPartes Float?
+  moneda              String?  // PESOS, DOLARES, UR, UI
+  valorCatastral      Float?
+  
+  // Resultado
+  honorarioArancel    Float
+  honorarioDefinido   Float?
+  montepioNotarial    Float
+  fondoGremial        Float
+  fonasa              Float?
+  irpf                Float?
+  iva                 Float
+  saldoLiquido        Float
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("calculos")
+  @@index([userId])
+}

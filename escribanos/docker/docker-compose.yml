@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sistema_escribanos_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin_escribanos
+      POSTGRES_PASSWORD: 132cytki!JM?2youEvTIW.?34
+      POSTGRES_DB: sistema_escribanos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Primera carga: crea también la base del módulo estudio (Prisma en escribanos/frontend).
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: sistema_escribanos_backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://admin_escribanos:132cytki%21JM%3F2youEvTIW%2E%3F34@postgres:5432/sistema_escribanos_db?schema=public
+      PORT: 3001
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

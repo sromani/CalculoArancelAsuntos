@@ -1,0 +1,22 @@
+{
+  "name": "sistema-unificado",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo: contabilidad (estudio legal/notarial) + sistema escribanos (Next + Nest).",
+  "workspaces": [
+    "contabilidad",
+    "escribanos/frontend",
+    "escribanos/backend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev:contabilidad": "npm run dev -w estudio-legal-notarial-uy",
+    "dev:escribanos-web": "npm run dev -w escribanos-frontend",
+    "dev:escribanos-api": "npm run start:dev -w escribanos-api",
+    "dev:escribanos": "concurrently -n web,api -c cyan,magenta \"npm run dev -w escribanos-frontend\" \"npm run start:dev -w escribanos-api\"",
+    "dev": "concurrently -n contab,esc-web,esc-api -c blue,cyan,magenta \"npm run dev -w estudio-legal-notarial-uy\" \"npm run dev -w escribanos-frontend\" \"npm run start:dev -w escribanos-api\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
