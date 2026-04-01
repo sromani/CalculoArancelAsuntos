@@ -864,6 +864,11 @@ body {
   gap: 1.5rem;
 }
 
+/* Alinea inputs cuando un label ocupa más líneas que el otro (fecha + moneda, etc.) */
+.form-grid.form-grid--align-end {
+  align-items: end;
+}
+
   /* Nota informativa */
 .form-note {
   padding: 1rem 1.5rem;

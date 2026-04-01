@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "capituloId": "actas-protocolizaciones",
+  "capituloLabel": "Actas y Protocolizaciones",
+  "capituloCsv": "CAPITULO III - ACTAS Y PROTOCOLIZACIONES",
+  "documentos": [
+    {
+      "posDoc": 1,
+      "nombre": "PROTOCOLIZACION DE TODO TIPO DE DOCUMENTO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 2,
+      "nombre": "ACTAS DE PROTESTOS, INTIMACIONES, NOTIFICACIONES, DECLARACIONES Y COMPROBACIONES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    }
+  ],
+  "reglas": {
+    "1": {
+      "articulo": "10",
+      "honorarioParsed": {
+        "tipo": "ur_por_fojas",
+        "urPlana": 6,
+        "fojasIncluidas": 10,
+        "urPorFojaExtra": 0.1,
+        "raw": "6 UR semestral  hasta 10 fojas y 0,10 UR por cada foja subsiguiente"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "testimonio_fojas",
+        "textoOriginal": "Número de fojas"
+      }
+    },
+    "2": {
+      "articulo": "11",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 6,
+        "periodo": "semestral",
+        "maxUr": 200,
+        "raw": "6 UR semestral  hasta un maximo de 200 UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    }
+  }
+}

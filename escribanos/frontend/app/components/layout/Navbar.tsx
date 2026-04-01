@@ -19,7 +19,7 @@ export default function Navbar() {
           Inicio
         </Link>
         <Link href="/simulador" className={pathname === '/simulador' ? 'active' : ''}>
-          Simulador Arancel Notarial
+          Simulador de Arancel Notarial
         </Link>
         <Link href="/planes" className={pathname === '/planes' ? 'active' : ''}>
           Planes
