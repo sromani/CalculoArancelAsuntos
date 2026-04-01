@@ -47,6 +47,8 @@ export async function GET(request: Request) {
         tipoDocumento: true,
         tipoPersona: true,
         documento: true,
+        fechaNacimiento: true,
+        estadoCivil: true,
         contacto: true,
         telefono: true,
         email: true,

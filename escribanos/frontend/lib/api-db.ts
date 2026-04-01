@@ -1,4 +1,4 @@
-import { Prisma } from "@/generated/prisma";
+import { Prisma } from "@prisma/client";
 
 export function obtenerErrorConfiguracionDb(): string | null {
   if (!process.env.DATABASE_URL) {

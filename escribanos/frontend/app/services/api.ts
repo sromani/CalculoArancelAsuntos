@@ -12,9 +12,10 @@ function authUrl(path: string): string {
 async function readErrorMessage(response: Response): Promise<string> {
   const text = await response.text();
   try {
-    const j = JSON.parse(text) as { message?: string | string[] };
+    const j = JSON.parse(text) as { message?: string | string[]; error?: string };
     if (typeof j.message === "string") return j.message;
     if (Array.isArray(j.message)) return j.message.join(". ");
+    if (typeof j.error === "string" && j.error.length > 0) return j.error;
   } catch {
     /* no es JSON */
   }

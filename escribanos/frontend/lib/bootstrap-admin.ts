@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { RolApp } from "@/generated/prisma";
+import { RolApp } from "@prisma/client";
 import { CLAVE_ADMIN_INICIAL } from "@/lib/auth-inicial";
 import { prisma } from "@/lib/prisma";
 

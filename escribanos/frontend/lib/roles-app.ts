@@ -1,4 +1,4 @@
-import type { RolApp } from "@/generated/prisma";
+import type { RolApp } from "@prisma/client";
 import type { RolSesion } from "@/lib/session-token";
 
 const ROLES_SESION: RolSesion[] = [

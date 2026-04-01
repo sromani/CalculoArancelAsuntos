@@ -1,4 +1,4 @@
-import { RolApp } from "@/generated/prisma";
+import { RolApp } from "@prisma/client";
 
 const MAPA: Record<string, RolApp> = {
   ADMIN: RolApp.ADMIN,

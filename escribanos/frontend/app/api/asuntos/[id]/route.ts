@@ -1,4 +1,4 @@
-import { EstadoAsunto } from "@/generated/prisma";
+import { EstadoAsunto } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { requiereApiSesion } from "@/lib/api-auth";
 import { mensajeErrorValidacionEquipoAsunto } from "@/lib/asunto-equipo-validar";
@@ -199,11 +199,11 @@ export async function PATCH(request: Request, context: Params) {
 
       const socioReferenteId =
         body?.socioReferenteId !== undefined
-          ? String(body.socioReferenteId).trim()
+          ? parseOptProfFk(body.socioReferenteId)
           : actual.socioReferenteId;
       const profesionalACargoId =
         body?.profesionalACargoId !== undefined
-          ? String(body.profesionalACargoId).trim()
+          ? parseOptProfFk(body.profesionalACargoId)
           : actual.profesionalACargoId;
       const colaboradorACargoId =
         body?.colaboradorACargoId !== undefined

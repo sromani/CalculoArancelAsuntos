@@ -1,9 +1,13 @@
-import { EstadoAsunto, GrupoProfesional, Prisma, TipoAsunto } from "@/generated/prisma";
+import { EstadoAsunto, Prisma, TipoAsunto } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { requiereApiSesion } from "@/lib/api-auth";
 import { registrarAuditoria } from "@/lib/auditoria";
 import { mensajeErrorValidacionEquipoAsunto } from "@/lib/asunto-equipo-validar";
-import { obtenerErrorConfiguracionDb } from "@/lib/api-db";
+import {
+  esPrismaValidacion,
+  mensajeErrorApiDbAcceso,
+  obtenerErrorConfiguracionDb,
+} from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
 
 const TIPOS: TipoAsunto[] = [TipoAsunto.TODOS, TipoAsunto.NOTARIAL, TipoAsunto.LEGAL];
@@ -42,6 +46,9 @@ export async function GET(request: Request) {
     const finDesdeQ = parseFechaIso(searchParams.get("fechaFinalizacionDesde"));
     const finHastaQ = parseFechaIso(searchParams.get("fechaFinalizacionHasta"));
     const q = (searchParams.get("q") ?? "").trim();
+    const sinColaborador = searchParams.get("sinColaborador") === "1";
+    const sinEquipo = searchParams.get("sinEquipo") === "1";
+    const sinContador = searchParams.get("sinContador") === "1";
 
     const where: Prisma.AsuntoWhereInput = {};
 
@@ -62,6 +69,15 @@ export async function GET(request: Request) {
     }
 
     const andFiltros: Prisma.AsuntoWhereInput[] = [];
+
+    if (sinColaborador || sinEquipo) {
+      andFiltros.push({ colaboradorACargoId: null });
+      andFiltros.push({ colaboradorACargo2Id: null });
+    }
+    if (sinContador) {
+      andFiltros.push({ contadorReferenteId: null });
+    }
+
     if (Number.isInteger(anioInicioQ) && anioInicioQ >= 1900 && anioInicioQ <= 3000) {
       andFiltros.push({
         fechaInicio: {
@@ -119,6 +135,9 @@ export async function GET(request: Request) {
         catalogo: { select: { nombre: true } },
         socioReferente: { select: { nombre: true } },
         profesionalACargo: { select: { nombre: true } },
+        colaboradorACargo: { select: { nombre: true } },
+        colaboradorACargo2: { select: { nombre: true } },
+        contadorReferente: { select: { nombre: true } },
       },
     });
 
@@ -147,13 +166,13 @@ export async function POST(request: Request) {
 
     const tipoRaw = String(body?.tipo ?? "");
     const tipo = TIPOS.includes(tipoRaw as TipoAsunto) ? (tipoRaw as TipoAsunto) : null;
-    const clienteId = String(body?.clienteId ?? "");
+    const clienteId = String(body?.clienteId ?? "").trim();
     const asuntoNombre = String(body?.asuntoNombre ?? "").trim();
-    const profesionalACargoId = String(body?.profesionalACargoId ?? "");
+    const profesionalACargoId = String(body?.profesionalACargoId ?? "").trim() || null;
     const colaboradorACargoId = String(body?.colaboradorACargoId ?? "").trim() || null;
     const colaboradorACargo2Id = String(body?.colaboradorACargo2Id ?? "").trim() || null;
     const contadorReferenteId = String(body?.contadorReferenteId ?? "").trim() || null;
-    const socioReferenteId = String(body?.socioReferenteId ?? "");
+    const socioReferenteId = String(body?.socioReferenteId ?? "").trim() || null;
     const descripcionLibre = String(body?.descripcion ?? "").trim() || null;
     const fechaInicio = parseFechaIso(body?.fechaInicio) ?? new Date();
     const fechaAlerta = parseFechaIso(body?.fechaAlertaVencimiento);
@@ -162,40 +181,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Tipo de asunto invalido (TODOS, LEGAL o NOTARIAL)." }, { status: 400 });
     }
 
-    if (!clienteId || !asuntoNombre || !socioReferenteId) {
-      return NextResponse.json({ error: "Faltan datos obligatorios." }, { status: 400 });
-    }
-
-    if (!profesionalACargoId) {
-      return NextResponse.json({ error: "Debés indicar el equipo a cargo." }, { status: 400 });
+    const faltantes: string[] = [];
+    if (!clienteId) faltantes.push("cliente");
+    if (!asuntoNombre) faltantes.push("asunto de catálogo (nombre)");
+    if (faltantes.length > 0) {
+      return NextResponse.json(
+        {
+          error: `Faltan: ${faltantes.join(", ")}.`,
+          camposFaltantes: faltantes,
+        },
+        { status: 400 },
+      );
     }
 
     if (fechaAlerta && fechaAlerta < fechaInicio) {
       return NextResponse.json(
         { error: "La alerta de vencimiento no puede ser anterior a la fecha de inicio." },
-        { status: 400 },
-      );
-    }
-
-    const [totalSocios, totalLegalACargo] = await Promise.all([
-      prisma.socio.count(),
-      prisma.profesional.count({ where: { grupo: GrupoProfesional.LEGAL_A_CARGO } }),
-    ]);
-    if (totalSocios === 0) {
-      return NextResponse.json(
-        {
-          error:
-            "No hay socios cargados en maestros. Debe existir al menos un socio antes de crear asuntos.",
-        },
-        { status: 400 },
-      );
-    }
-    if (totalLegalACargo === 0) {
-      return NextResponse.json(
-        {
-          error:
-            "No hay profesionales a cargo (escribano o abogado) en maestros. Carga al menos uno en Socios y Equipo antes de crear asuntos.",
-        },
         { status: 400 },
       );
     }
@@ -218,17 +219,18 @@ export async function POST(request: Request) {
         create: { nombre: asuntoNombre },
       });
 
+      /** Relaciones con `connect` para evitar desajuste cliente Prisma / schema (escalares ignorados en algunos entornos). */
       const creado = await tx.asunto.create({
         data: {
           tipo,
           descripcion: descripcionLibre,
-          clienteId,
-          catalogoId: catalogo.id,
-          socioReferenteId,
-          profesionalACargoId,
-          colaboradorACargoId,
-          colaboradorACargo2Id,
-          contadorReferenteId,
+          cliente: { connect: { id: clienteId } },
+          catalogo: { connect: { id: catalogo.id } },
+          ...(socioReferenteId ? { socioReferente: { connect: { id: socioReferenteId } } } : {}),
+          ...(profesionalACargoId ? { profesionalACargo: { connect: { id: profesionalACargoId } } } : {}),
+          ...(colaboradorACargoId ? { colaboradorACargo: { connect: { id: colaboradorACargoId } } } : {}),
+          ...(colaboradorACargo2Id ? { colaboradorACargo2: { connect: { id: colaboradorACargo2Id } } } : {}),
+          ...(contadorReferenteId ? { contadorReferente: { connect: { id: contadorReferenteId } } } : {}),
           estado: EstadoAsunto.EN_TRAMITE,
           fechaInicio,
           fechaAlertaVencimiento: fechaAlerta,
@@ -276,22 +278,29 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(asunto, { status: 201 });
-  } catch (error) {
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      (error as { code?: string }).code === "P2003"
-    ) {
+  } catch (err) {
+    if (esPrismaValidacion(err)) {
+      console.error("[asuntos POST] validacion Prisma", err);
       return NextResponse.json(
-        { error: "Cliente, equipo o socio no existen." },
+        {
+          error: "Datos invalidos para crear el asunto. Revisa que el cliente exista y vuelve a intentar.",
+          detalle: process.env.NODE_ENV === "development" ? err.message : undefined,
+        },
         { status: 400 },
       );
     }
-    console.error("[asuntos POST]", error);
-    return NextResponse.json(
-      { error: "No se pudo crear el asunto. Revisa conexion con PostgreSQL." },
-      { status: 503 },
-    );
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2003") {
+      return NextResponse.json(
+        { error: "Alguna referencia no existe en la base (cliente, catálogo o miembro del equipo)." },
+        { status: 400 },
+      );
+    }
+    console.error("[asuntos POST]", err);
+    const mensaje = mensajeErrorApiDbAcceso(err);
+    const payload: { error: string; detalle?: string } = { error: mensaje };
+    if (process.env.NODE_ENV === "development" && err instanceof Error) {
+      payload.detalle = err.message;
+    }
+    return NextResponse.json(payload, { status: 503 });
   }
 }

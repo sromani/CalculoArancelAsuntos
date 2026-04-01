@@ -41,8 +41,8 @@ type AsuntoFicha = {
   ultimoMovimientoTexto: string | null;
   cliente: { id: string; nombre: string; documento: string; telefono?: string | null; email?: string | null };
   catalogo: { nombre: string };
-  socioReferente: { id: string; nombre: string };
-  profesionalACargo: { id: string; nombre: string; puesto: string; funcion?: string | null };
+  socioReferente: { id: string; nombre: string } | null;
+  profesionalACargo: { id: string; nombre: string; puesto: string; funcion?: string | null } | null;
   colaboradorACargo: { id: string; nombre: string } | null;
   colaboradorACargo2: { id: string; nombre: string } | null;
   contadorReferente: { id: string; nombre: string } | null;
@@ -143,8 +143,8 @@ export function FichaAsunto({ id }: { id: string }) {
       }
       const ficha = dataA as AsuntoFicha;
       setAsunto(ficha);
-      setReaSocioId(ficha.socioReferente.id);
-      setReaProfId(ficha.profesionalACargo.id);
+      setReaSocioId(ficha.socioReferente?.id ?? "");
+      setReaProfId(ficha.profesionalACargo?.id ?? "");
       setReaCol1(ficha.colaboradorACargo?.id ?? "");
       setReaCol2(ficha.colaboradorACargo2?.id ?? "");
       setReaCont(ficha.contadorReferente?.id ?? "");
@@ -294,8 +294,8 @@ export function FichaAsunto({ id }: { id: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           accion: "reasignar",
-          socioReferenteId: reaSocioId,
-          profesionalACargoId: reaProfId,
+          socioReferenteId: reaSocioId.trim() === "" ? null : reaSocioId,
+          profesionalACargoId: reaProfId.trim() === "" ? null : reaProfId,
           colaboradorACargoId: reaCol1.trim() === "" ? null : reaCol1,
           colaboradorACargo2Id: reaCol2.trim() === "" ? null : reaCol2,
           contadorReferenteId: reaCont.trim() === "" ? null : reaCont,
@@ -342,14 +342,25 @@ export function FichaAsunto({ id }: { id: string }) {
   }
 
   if (cargando) {
-    return <p className="text-sm text-[var(--gris-texto)]">Cargando ficha...</p>;
+    return (
+      <div className="flex min-h-[12rem] flex-col items-center justify-center gap-3 rounded-xl border border-black/[0.06] bg-white px-6 py-12 shadow-sm">
+        <span
+          className="inline-block size-9 animate-spin rounded-full border-2 border-neutral-200 border-t-[var(--verde-principal)]"
+          aria-hidden
+        />
+        <p className="text-sm text-neutral-600">Cargando ficha…</p>
+      </div>
+    );
   }
 
   if (!asunto) {
     return (
-      <div className="card-app">
+      <div className="rounded-xl border border-black/[0.06] bg-white p-6 shadow-sm sm:p-8">
         <p className="text-sm text-red-800">{mensaje || "Asunto no encontrado."}</p>
-        <Link href="/estudio/asuntos" className="mt-4 inline-block text-sm font-medium text-[var(--verde-principal)] underline">
+        <Link
+          href="/estudio/asuntos"
+          className="btn-secondary mt-5 inline-flex min-h-[2.75rem] items-center justify-center px-5 text-sm"
+        >
           Volver al listado
         </Link>
       </div>
@@ -358,46 +369,55 @@ export function FichaAsunto({ id }: { id: string }) {
 
   const enTramite = asunto.estado === "EN_TRAMITE";
 
+  const panel =
+    "rounded-xl border border-black/[0.06] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:p-8";
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          <p className="text-sm text-[var(--gris-texto)]">
-            <Link href="/estudio/asuntos" className="font-medium text-[var(--verde-principal)] underline">
-              Asuntos
-            </Link>{" "}
-            / Ordinal {asunto.ordinal}
-          </p>
-          <h1 className="mt-1 break-words text-xl font-bold text-[var(--verde-titulo)] sm:text-2xl md:text-3xl">
+    <div className="max-w-4xl space-y-8 sm:space-y-10">
+      <div className="flex flex-col gap-5 border-b border-neutral-100 pb-6 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-6">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/estudio/asuntos"
+              className="inline-flex min-h-[2.25rem] items-center gap-1.5 rounded-lg border border-black/[0.08] bg-white px-3 py-1.5 text-sm font-medium text-[var(--verde-principal)] shadow-sm transition-colors hover:border-[rgba(0,166,81,0.35)] hover:bg-[var(--fondo-verde-muy-claro)]"
+            >
+              <span aria-hidden className="text-neutral-400">
+                ←
+              </span>
+              Listado
+            </Link>
+            <span className="text-xs tabular-nums text-neutral-400">#{asunto.ordinal}</span>
+          </div>
+          <h1 className="mt-3 break-words text-2xl font-semibold tracking-tight text-[var(--verde-titulo)] sm:text-3xl">
             {asunto.catalogo.nombre}
           </h1>
-          <p className="mt-1 break-words text-sm text-[var(--verde-titulo)]">
+          <p className="mt-2 break-words text-sm text-neutral-600">
             {asunto.cliente.nombre} · {asunto.cliente.documento}
           </p>
         </div>
-        <div className="flex shrink-0 flex-wrap gap-2">
+        <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
           <span
-            className={
+            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
               enTramite
-                ? "rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-800"
-                : "rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700"
-            }
+                ? "bg-[rgba(0,166,81,0.12)] text-[var(--verde-oscuro)] ring-1 ring-[rgba(0,166,81,0.2)]"
+                : "bg-neutral-100 text-neutral-600 ring-1 ring-neutral-200/80"
+            }`}
           >
-            {enTramite ? "EN TRAMITE" : "FINALIZADO"}
+            {enTramite ? "En trámite" : "Finalizado"}
           </span>
-          <span className="rounded-full bg-[rgba(0,166,81,0.12)] px-3 py-1 text-sm font-medium text-[var(--verde-titulo)]">
-            {asunto.tipo}
+          <span className="text-sm text-neutral-500">
+            Tipo: <span className="font-medium text-neutral-700">{asunto.tipo}</span>
           </span>
         </div>
       </div>
 
       {mensaje ? (
-        <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{mensaje}</p>
+        <p className="rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200/50">{mensaje}</p>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="card-app space-y-2 text-sm">
-          <h2 className="text-base font-semibold text-[var(--verde-titulo)]">Datos</h2>
+      <div className="grid gap-8 md:grid-cols-2">
+        <div className={`${panel} space-y-3 text-sm`}>
+          <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Datos</h2>
           <p>
             <span className="text-[var(--gris-texto)]/90">Inicio:</span> {fmtFecha(asunto.fechaInicio)}
           </p>
@@ -411,9 +431,7 @@ export function FichaAsunto({ id }: { id: string }) {
             <span className="text-[var(--gris-texto)]/90">Ultimo movimiento:</span> {fmtFecha(asunto.ultimoMovimientoFecha)}
           </p>
           {asunto.ultimoMovimientoTexto ? (
-            <p className="rounded border border-[rgba(0,166,81,0.2)] bg-[rgba(0,166,81,0.06)] p-2 text-[var(--verde-titulo)]">
-              {asunto.ultimoMovimientoTexto}
-            </p>
+            <p className="rounded-md bg-neutral-50 p-3 text-neutral-800">{asunto.ultimoMovimientoTexto}</p>
           ) : null}
           {asunto.descripcion ? (
             <p>
@@ -422,19 +440,31 @@ export function FichaAsunto({ id }: { id: string }) {
           ) : null}
         </div>
 
-        <div className="card-app space-y-2 text-sm">
-          <h2 className="text-base font-semibold text-[var(--verde-titulo)]">Equipo</h2>
+        <div className={`${panel} space-y-3 text-sm`}>
+          <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Equipo</h2>
           <p>
-            <span className="text-[var(--gris-texto)]/90">Socio referente:</span> {asunto.socioReferente.nombre}
+            <span className="text-[var(--gris-texto)]/90">Socio referente:</span>{" "}
+            {asunto.socioReferente ? (
+              asunto.socioReferente.nombre
+            ) : (
+              <span className="text-neutral-500">Sin asignar</span>
+            )}
           </p>
           <p>
-            <span className="text-[var(--gris-texto)]/90">Equipo a cargo:</span> {asunto.profesionalACargo.nombre}
-            <span className="text-[var(--gris-texto)]">
-              {" "}
-              ({ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
-                asunto.profesionalACargo.puesto}
-              {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
-            </span>
+            <span className="text-[var(--gris-texto)]/90">Equipo a cargo:</span>{" "}
+            {asunto.profesionalACargo ? (
+              <>
+                {asunto.profesionalACargo.nombre}
+                <span className="text-[var(--gris-texto)]">
+                  {" "}
+                  ({ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
+                    asunto.profesionalACargo.puesto}
+                  {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
+                </span>
+              </>
+            ) : (
+              <span className="text-neutral-500">Sin asignar</span>
+            )}
           </p>
           {asunto.colaboradorACargo ? (
             <p>
@@ -452,7 +482,7 @@ export function FichaAsunto({ id }: { id: string }) {
             </p>
           ) : null}
           {enTramite && puedeReasignarEquipo(rol) && !accionReasignarAbierta ? (
-            <div className="mt-4 border-t border-[rgba(0,166,81,0.12)] pt-3">
+            <div className="mt-4 border-t border-black/[0.07] pt-3">
               <button
                 type="button"
                 className="text-sm font-medium text-[var(--gris-texto)]/90 underline decoration-[rgba(0,166,81,0.35)] underline-offset-2 transition-colors hover:text-[var(--verde-titulo)] hover:decoration-[var(--verde-principal)]"
@@ -472,12 +502,10 @@ export function FichaAsunto({ id }: { id: string }) {
       {enTramite &&
       puedeReasignarEquipo(rol) &&
       accionReasignarAbierta &&
-      !cargandoReaCat &&
-      sociosCat.length > 0 &&
-      legalACargo.length > 0 ? (
-        <form className="card-app space-y-4" onSubmit={(ev) => void reasignarEquipo(ev)}>
+      !cargandoReaCat ? (
+        <form className={`${panel} space-y-4`} onSubmit={(ev) => void reasignarEquipo(ev)}>
           <div className="flex flex-wrap items-start justify-between gap-2">
-            <h2 className="text-base font-semibold text-[var(--verde-titulo)]">Reasignar equipo del asunto</h2>
+            <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Reasignar equipo</h2>
             <button
               type="button"
               className="shrink-0 text-sm font-medium text-[var(--gris-texto)] underline decoration-[rgba(0,166,81,0.35)] underline-offset-2 hover:text-[var(--verde-titulo)]"
@@ -492,12 +520,13 @@ export function FichaAsunto({ id }: { id: string }) {
           </p>
           <div className="grid gap-3 md:grid-cols-2">
             <label className="space-y-1">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Socio referente</span>
+              <span className="text-sm font-medium text-[var(--verde-titulo)]">Socio referente (opcional)</span>
               <select
                 className="input-app"
                 value={reaSocioId}
                 onChange={(e) => setReaSocioId(e.target.value)}
               >
+                <option value="">— Sin asignar</option>
                 {sociosCat.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.nombre}
@@ -506,12 +535,13 @@ export function FichaAsunto({ id }: { id: string }) {
               </select>
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Equipo a cargo (legal / notarial)</span>
+              <span className="text-sm font-medium text-[var(--verde-titulo)]">Equipo a cargo (legal / notarial, opcional)</span>
               <select
                 className="input-app"
                 value={reaProfId}
                 onChange={(e) => setReaProfId(e.target.value)}
               >
+                <option value="">— Sin asignar</option>
                 {legalACargo.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.nombre} ({ETIQUETA_PUESTO[p.puesto as PuestoCatalogo] ?? p.puesto})
@@ -570,33 +600,19 @@ export function FichaAsunto({ id }: { id: string }) {
               />
             </label>
           </div>
-          <button className="btn-secondary" type="submit" disabled={guardandoRea}>
-            {guardandoRea ? "Guardando..." : "Guardar reasignacion"}
+          <button
+            className="btn-secondary min-h-[2.75rem] px-5 disabled:cursor-not-allowed disabled:opacity-55"
+            type="submit"
+            disabled={guardandoRea}
+          >
+            {guardandoRea ? "Guardando…" : "Guardar reasignación"}
           </button>
         </form>
-      ) : enTramite &&
-        puedeReasignarEquipo(rol) &&
-        accionReasignarAbierta &&
-        !cargandoReaCat &&
-        (sociosCat.length === 0 || legalACargo.length === 0) ? (
-        <div className="card-app flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-amber-950">
-            No se pudieron cargar los catalogos o faltan socios o personal legal a cargo en Maestros. Revisá la
-            configuración e intentá de nuevo.
-          </p>
-          <button
-            type="button"
-            className="btn-secondary shrink-0 text-sm"
-            onClick={() => setAccionReasignarAbierta(false)}
-          >
-            Cerrar
-          </button>
-        </div>
       ) : null}
 
       {enTramite && puedeMovimiento(rol) ? (
-        <form className="card-app space-y-3" onSubmit={registrarMovimiento}>
-          <h2 className="text-base font-semibold text-[var(--verde-titulo)]">Nuevo movimiento</h2>
+        <form className={`${panel} space-y-4`} onSubmit={registrarMovimiento}>
+          <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Nuevo movimiento</h2>
           <textarea
             className="input-app min-h-24 resize-y"
             placeholder="Descripcion del movimiento"
@@ -612,8 +628,12 @@ export function FichaAsunto({ id }: { id: string }) {
               onChange={(e) => setMovFecha(e.target.value)}
             />
           </label>
-          <button className="btn-primary" type="submit" disabled={guardandoMov}>
-            {guardandoMov ? "Guardando..." : "Registrar movimiento"}
+          <button
+            className="btn-primary min-h-[2.75rem] px-6 disabled:cursor-not-allowed disabled:opacity-55"
+            type="submit"
+            disabled={guardandoMov}
+          >
+            {guardandoMov ? "Guardando…" : "Registrar movimiento"}
           </button>
         </form>
       ) : enTramite && !puedeMovimiento(rol) ? (
@@ -621,37 +641,43 @@ export function FichaAsunto({ id }: { id: string }) {
       ) : null}
 
       {enTramite && puedeFinalizar(rol) ? (
-        <div className="card-app flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className={`${panel} flex flex-col gap-4 sm:flex-row sm:items-end`}>
           <label className="space-y-1">
             <span className="text-sm font-medium text-[var(--verde-titulo)]">Finalizar — fecha</span>
             <input className="input-app" type="date" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} />
           </label>
           <button
             type="button"
-            className="btn-secondary"
+            className="btn-secondary min-h-[2.75rem] px-5 disabled:cursor-not-allowed disabled:opacity-55"
             disabled={accionando}
             onClick={() => void finalizar()}
           >
-            {accionando ? "..." : "Finalizar asunto"}
+            {accionando ? "…" : "Finalizar asunto"}
           </button>
         </div>
       ) : null}
 
       {!enTramite && puedeReabrir(rol) ? (
-        <div className="card-app">
-          <button type="button" className="btn-secondary" disabled={accionando} onClick={() => void reabrir()}>
-            {accionando ? "..." : "Reabrir asunto (solo admin)"}
+        <div className={panel}>
+          <button
+            type="button"
+            className="btn-secondary min-h-[2.75rem] px-5 disabled:cursor-not-allowed disabled:opacity-55"
+            disabled={accionando}
+            onClick={() => void reabrir()}
+          >
+            {accionando ? "…" : "Reabrir asunto (solo admin)"}
           </button>
         </div>
       ) : null}
 
-      <div className="card-app">
-        <h2 className="mb-3 text-base font-semibold text-[var(--verde-titulo)]">Historial de movimientos</h2>
-        <ul className="space-y-3">
+      <div className={panel}>
+        <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Historial</h2>
+        <ul className="mt-6 space-y-6 border-l border-neutral-200 pl-5">
           {asunto.seguimientos.map((s) => (
-            <li key={s.id} className="rounded-lg border border-[rgba(0,166,81,0.2)] bg-white/80 p-3 text-sm">
-              <p className="text-xs text-[var(--verde-principal)]">{fmtFecha(s.fecha)}</p>
-              <p className="mt-1 whitespace-pre-wrap text-[var(--verde-titulo)]">{s.descripcion}</p>
+            <li key={s.id} className="relative text-sm">
+              <span className="absolute -left-[21px] top-1.5 size-2 rounded-full bg-[var(--verde-principal)]/80" aria-hidden />
+              <p className="text-xs text-neutral-500">{fmtFecha(s.fecha)}</p>
+              <p className="mt-1 whitespace-pre-wrap text-neutral-800">{s.descripcion}</p>
             </li>
           ))}
         </ul>

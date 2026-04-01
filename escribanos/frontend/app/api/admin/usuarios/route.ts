@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { RolApp } from "@/generated/prisma";
+import { RolApp } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { parseRolApp } from "@/lib/rol-app-util";
 import { obtenerSesionServidor } from "@/lib/session-server";

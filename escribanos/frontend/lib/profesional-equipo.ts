@@ -1,4 +1,4 @@
-import { GrupoProfesional, PuestoProfesional } from "@/generated/prisma";
+import { GrupoProfesional, PuestoProfesional } from "@prisma/client";
 
 export { ETIQUETA_GRUPO, ETIQUETA_PUESTO } from "./profesional-equipo-catalogo";
 import { grupoDesdePuesto, type PuestoCatalogo } from "./profesional-equipo-catalogo";

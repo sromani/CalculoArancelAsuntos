@@ -1,6 +1,15 @@
+import { existsSync } from 'fs';
+import { resolve } from 'path';
+import { config as loadEnv } from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+
+/** Prioridad sobre DATABASE_URL del sistema (p. ej. la del frontend / estudio). */
+const envPath = resolve(__dirname, '../.env');
+if (existsSync(envPath)) {
+  loadEnv({ path: envPath, override: true });
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

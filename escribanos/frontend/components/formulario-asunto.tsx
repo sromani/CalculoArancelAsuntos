@@ -119,10 +119,8 @@ export function FormularioAsunto() {
         setProfesionales(profesionalesData);
         setSocios(sociosData);
         setAsuntoSeleccionado(asuntosData[0]?.nombre ?? "");
-        setSocioReferente(sociosData[0]?.id ?? "");
-        setProfesionalACargoId(
-          profesionalesData.find((p) => p.grupo === "LEGAL_A_CARGO")?.id ?? "",
-        );
+        setSocioReferente("");
+        setProfesionalACargoId("");
         setContadorReferenteId(profesionalesData.find((p) => p.grupo === "CONTADOR")?.id ?? "");
       } catch {
         setMensaje("Error al cargar catalogos.");
@@ -208,16 +206,6 @@ export function FormularioAsunto() {
       return;
     }
 
-    if (!profesionalACargoId) {
-      setMensaje("Debés indicar el equipo a cargo.");
-      return;
-    }
-
-    if (!socioReferente) {
-      setMensaje("Debes definir un socio referente.");
-      return;
-    }
-
     if (
       colaboradorACargoId &&
       colaboradorACargo2Id &&
@@ -236,11 +224,11 @@ export function FormularioAsunto() {
           tipo,
           clienteId: clienteElegido.id,
           asuntoNombre: asuntoSeleccionado.trim(),
-          profesionalACargoId,
+          profesionalACargoId: profesionalACargoId.trim() || null,
           colaboradorACargoId: colaboradorACargoId || null,
           colaboradorACargo2Id: colaboradorACargo2Id || null,
           contadorReferenteId: contadorReferenteId || null,
-          socioReferenteId: socioReferente,
+          socioReferenteId: socioReferente.trim() || null,
           descripcion: descripcion.trim() || null,
           fechaInicio: fechaInicio || undefined,
           fechaAlertaVencimiento: fechaAlerta || null,
@@ -248,7 +236,10 @@ export function FormularioAsunto() {
       });
       const data = await response.json();
       if (!response.ok) {
-        setMensaje(data?.error ?? "No se pudo crear el asunto.");
+        const base = (data?.error as string) ?? "No se pudo crear el asunto.";
+        const detalle =
+          typeof data?.detalle === "string" && data.detalle.trim() !== "" ? `\n\n${data.detalle}` : "";
+        setMensaje(`${base}${detalle}`);
         return;
       }
 
@@ -262,33 +253,35 @@ export function FormularioAsunto() {
 
   if (cargando) {
     return (
-      <p className="rounded-xl border border-[rgba(0,166,81,0.2)] bg-white/90 p-4 text-sm text-[var(--verde-titulo)] shadow-[0_4px_20px_rgba(0,166,81,0.12)]">
-        Cargando catalogos...
+      <p className="flex items-center gap-3 text-sm text-neutral-500">
+        <span
+          className="inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-neutral-200 border-t-[var(--verde-principal)]"
+          aria-hidden
+        />
+        Cargando catálogos…
       </p>
     );
   }
 
   return (
-    <form className="card-app space-y-6" onSubmit={onSubmit}>
-      <div className="border-b border-[rgba(0,166,81,0.12)] pb-4">
-        <h2 className="text-xl font-semibold text-[var(--verde-titulo)]">Nuevo Asunto</h2>
-        <p className="mt-1 text-sm text-[var(--gris-texto)]">
-          Tipo, cliente, catalogo, equipo a cargo obligatorio y fechas.
-        </p>
+    <form className="space-y-8 rounded-lg border border-black/[0.06] bg-white p-6 sm:p-8" onSubmit={onSubmit}>
+      <div>
+        <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Nuevo asunto</h2>
+        <p className="mt-2 text-sm text-neutral-600">Cliente, catálogo y fechas. Socio referente y equipo a cargo opcionales.</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Cliente</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Cliente</span>
           {clienteElegido ? (
-            <div className="flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50/80 px-3 py-2 text-sm text-emerald-950">
+            <div className="flex flex-wrap items-center gap-2 rounded-md bg-[rgba(0,166,81,0.06)] px-3 py-2 text-sm text-neutral-800">
               <span className="min-w-0 flex-1 font-medium">
                 {clienteElegido.nombre}{" "}
-                <span className="font-normal text-emerald-900/80">— {clienteElegido.documento}</span>
+                <span className="font-normal text-neutral-600">— {clienteElegido.documento}</span>
               </span>
               <button
                 type="button"
-                className="shrink-0 rounded-md border border-emerald-300/80 bg-white px-2.5 py-1 text-xs font-medium text-emerald-900 hover:bg-emerald-100/80"
+                className="shrink-0 rounded-md bg-white px-2.5 py-1 text-xs font-medium text-emerald-900 shadow-sm ring-1 ring-emerald-200/60 hover:bg-emerald-100/80"
                 onClick={() => {
                   setClienteElegido(null);
                   setBusquedaCliente("");
@@ -320,7 +313,7 @@ export function FormularioAsunto() {
                 <ul
                   id="lista-busqueda-clientes"
                   role="listbox"
-                  className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-lg border border-[rgba(0,166,81,0.2)] bg-white py-1 text-sm shadow-lg shadow-[rgba(0,166,81,0.08)]"
+                  className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-lg bg-white py-1 text-sm shadow-lg shadow-black/10 ring-1 ring-black/[0.08]"
                 >
                   {buscandoClientes ? (
                     <li className="px-3 py-2 text-[var(--gris-texto)]">Buscando...</li>
@@ -339,7 +332,7 @@ export function FormularioAsunto() {
                             setListaClienteAbierta(false);
                           }}
                         >
-                          <span className="font-medium text-[var(--verde-titulo)]">{c.nombre}</span>
+                          <span className="font-medium text-neutral-900">{c.nombre}</span>
                           <span className="text-xs text-[var(--gris-texto)]/90">{c.documento}</span>
                         </button>
                       </li>
@@ -355,7 +348,7 @@ export function FormularioAsunto() {
         </div>
 
         <label className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Tipo de asunto</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Tipo de asunto</span>
           <select
             className="input-app"
             value={tipo}
@@ -368,9 +361,9 @@ export function FormularioAsunto() {
         </label>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 border-t border-neutral-100 pt-8">
         <label className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Asunto (catalogo)</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Asunto (catálogo)</span>
           <select
             className="input-app"
             value={asuntoSeleccionado}
@@ -403,7 +396,7 @@ export function FormularioAsunto() {
       </div>
 
       <label className="space-y-1.5">
-        <span className="text-sm font-medium text-[var(--verde-titulo)]">Descripcion libre (opcional)</span>
+        <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Descripción (opcional)</span>
         <textarea
           className="input-app min-h-20 resize-y"
           value={descripcion}
@@ -411,9 +404,9 @@ export function FormularioAsunto() {
         />
       </label>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <label className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Fecha de inicio</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Fecha de inicio</span>
           <input
             className="input-app"
             type="date"
@@ -422,7 +415,7 @@ export function FormularioAsunto() {
           />
         </label>
         <label className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Alerta vencimiento (opcional)</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Alerta vencimiento (opcional)</span>
           <input
             className="input-app"
             type="date"
@@ -432,17 +425,15 @@ export function FormularioAsunto() {
         </label>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-5 border-t border-neutral-100 pt-8 md:grid-cols-2">
         <label className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Equipo a cargo *</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Equipo a cargo (opcional)</span>
           <select
             className="input-app"
             value={profesionalACargoId}
             onChange={(e) => setProfesionalACargoId(e.target.value)}
           >
-            {profesionalesLegalACargo.length === 0 ? (
-              <option value="">Sin profesionales a cargo en maestros</option>
-            ) : null}
+            <option value="">— Sin asignar</option>
             {profesionalesLegalACargo.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.nombre} — {etiquetaPuesto(p.puesto)}
@@ -453,7 +444,7 @@ export function FormularioAsunto() {
         </label>
 
         <label className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Colaborador 1 (opcional)</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Colaborador 1 (opcional)</span>
           <select
             className="input-app"
             value={colaboradorACargoId}
@@ -470,7 +461,7 @@ export function FormularioAsunto() {
         </label>
 
         <label className="space-y-1.5">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Colaborador 2 (opcional)</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Colaborador 2 (opcional)</span>
           <select
             className="input-app"
             value={colaboradorACargo2Id}
@@ -487,7 +478,7 @@ export function FormularioAsunto() {
         </label>
 
         <label className="space-y-1.5 md:col-span-2">
-          <span className="text-sm font-medium text-[var(--verde-titulo)]">Contador referente (opcional)</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Contador referente (opcional)</span>
           <select
             className="input-app"
             value={contadorReferenteId}
@@ -508,13 +499,13 @@ export function FormularioAsunto() {
       </div>
 
       <label className="space-y-1.5">
-        <span className="text-sm font-medium text-[var(--verde-titulo)]">Socio referente</span>
+        <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Socio referente (opcional)</span>
         <select
           className="input-app"
           value={socioReferente}
           onChange={(e) => setSocioReferente(e.target.value)}
         >
-          {socios.length === 0 ? <option value="">Sin socios</option> : null}
+          <option value="">— Sin asignar</option>
           {socios.map((socio) => (
             <option key={socio.id} value={socio.id}>
               {socio.nombre}
@@ -523,14 +514,18 @@ export function FormularioAsunto() {
         </select>
       </label>
 
-      <button className="btn-primary w-full sm:w-auto" disabled={guardando} type="submit">
-        {guardando ? "Guardando..." : "Crear asunto"}
-      </button>
+      <div className="border-t border-neutral-100 pt-8">
+        <button
+          className="btn-primary w-full min-h-[3rem] rounded-[10px] border-2 border-transparent px-8 py-3 text-base font-semibold shadow-md shadow-[rgba(0,166,81,0.15)] transition hover:shadow-lg hover:shadow-[rgba(0,166,81,0.2)] disabled:opacity-50 sm:w-auto"
+          disabled={guardando}
+          type="submit"
+        >
+          {guardando ? "Guardando..." : "Crear asunto"}
+        </button>
+      </div>
 
       {mensaje ? (
-        <p className="rounded-lg border border-[rgba(0,166,81,0.2)] bg-[var(--fondo-verde-muy-claro)] px-4 py-3 text-sm text-[var(--verde-titulo)]">
-          {mensaje}
-        </p>
+        <p className="rounded-md bg-neutral-50 px-4 py-3 text-sm text-neutral-800 ring-1 ring-black/[0.06]">{mensaje}</p>
       ) : null}
     </form>
   );

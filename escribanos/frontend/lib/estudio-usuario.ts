@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import type { Usuario } from "@/generated/prisma";
+import type { Usuario } from "@prisma/client";
 
 /**
  * Asegura un registro `Usuario` (módulo estudio) alineado al email del login Nest.

@@ -1,9 +1,19 @@
-import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
+
+const MSG_DB_API =
+  'La base del API (tabla users) no está creada o la conexión falló. En escribanos/backend, con DATABASE_URL apuntando a sistema_escribanos_db, ejecutá: npx prisma db push';
 
 @Injectable()
 export class AuthService {
@@ -12,15 +22,34 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  /** Convierte fallos de Prisma en 503 con mensaje claro (evita "Internal server error" opaco). */
+  private rethrowPrismaDb(e: unknown): never {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (['P2021', 'P2022', 'P2010', 'P1003'].includes(e.code)) {
+        throw new ServiceUnavailableException(MSG_DB_API);
+      }
+    }
+    if (e instanceof Prisma.PrismaClientInitializationError) {
+      throw new ServiceUnavailableException(
+        'No se pudo conectar a PostgreSQL. Revisá DATABASE_URL en escribanos/backend/.env y que el servidor esté en marcha.',
+      );
+    }
+    throw e;
+  }
+
   async register(registerDto: RegisterDto) {
     const { email, password, nombre, apellido, ci } = registerDto;
 
-    // Verificar si el usuario ya existe
-    const existingUser = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ email }, { ci }],
-      },
-    });
+    let existingUser;
+    try {
+      existingUser = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ email }, { ci }],
+        },
+      });
+    } catch (e) {
+      this.rethrowPrismaDb(e);
+    }
 
     if (existingUser) {
       throw new ConflictException('El email o CI ya están registrados');
@@ -30,15 +59,20 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Crear usuario
-    const user = await this.prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        nombre,
-        apellido,
-        ci,
-      },
-    });
+    let user;
+    try {
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          nombre,
+          apellido,
+          ci,
+        },
+      });
+    } catch (e) {
+      this.rethrowPrismaDb(e);
+    }
 
     // Generar token
     const token = this.generateToken(user.id, user.email);
@@ -59,10 +93,14 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    // Buscar usuario
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    let user;
+    try {
+      user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+    } catch (e) {
+      this.rethrowPrismaDb(e);
+    }
 
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');

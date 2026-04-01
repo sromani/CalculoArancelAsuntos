@@ -1,14 +1,16 @@
-import { EstadoAsunto, TipoPersona, type TipoDocumento } from "@/generated/prisma";
+import { EstadoAsunto, Prisma, TipoPersona, type TipoDocumento } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { requiereApiSesion } from "@/lib/api-auth";
 import { registrarAuditoria } from "@/lib/auditoria";
 import { obtenerErrorConfiguracionDb } from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
 import {
+  esEstadoCivilCliente,
   esTipoDocumentoCliente,
   mensajeValidacionDocumentoCliente,
   normalizarNombrePersona,
   normalizarDocumentoCliente,
+  parseFechaNacimientoCliente,
 } from "@/lib/validaciones";
 
 type Params = { params: Promise<{ id: string }> };
@@ -45,6 +47,9 @@ export async function PATCH(request: Request, context: Params) {
     const email = body?.email !== undefined ? String(body.email).trim() || null : undefined;
     const domicilio = body?.domicilio !== undefined ? String(body.domicilio).trim() || null : undefined;
 
+    const fechaNacimientoInput = body?.fechaNacimiento;
+    const estadoCivilInput = body?.estadoCivil;
+
     const existente = await prisma.cliente.findUnique({ where: { id } });
     if (!existente) {
       return NextResponse.json({ error: "Cliente no encontrado." }, { status: 404 });
@@ -71,7 +76,34 @@ export async function PATCH(request: Request, context: Params) {
       return NextResponse.json({ error: errDoc }, { status: 400 });
     }
 
-    const actualizado = await prisma.cliente.update({
+    const tipoFinal = tipoPersona !== undefined ? (tipoPersona as TipoPersona) : existente.tipoPersona;
+
+    let fechaNacimiento: Date | null | undefined;
+    if (fechaNacimientoInput !== undefined) {
+      if (fechaNacimientoInput === null || fechaNacimientoInput === "") {
+        fechaNacimiento = null;
+      } else {
+        const fn = parseFechaNacimientoCliente(fechaNacimientoInput);
+        if (fn === null) {
+          return NextResponse.json({ error: "Fecha de nacimiento invalida (use AAAA-MM-DD)." }, { status: 400 });
+        }
+        fechaNacimiento = fn;
+      }
+    }
+
+    let estadoCivil: string | null | undefined;
+    if (estadoCivilInput !== undefined) {
+      const raw =
+        estadoCivilInput === null || estadoCivilInput === ""
+          ? null
+          : String(estadoCivilInput).toUpperCase();
+      if (raw !== null && !esEstadoCivilCliente(raw)) {
+        return NextResponse.json({ error: "Estado civil invalido." }, { status: 400 });
+      }
+      estadoCivil = raw;
+    }
+
+    await prisma.cliente.update({
       where: { id },
       data: {
         ...(nombre !== undefined ? { nombre } : {}),
@@ -84,6 +116,43 @@ export async function PATCH(request: Request, context: Params) {
         ...(domicilio !== undefined ? { domicilio } : {}),
       },
     });
+
+    const debeActualizarFechaEstado =
+      fechaNacimientoInput !== undefined ||
+      estadoCivilInput !== undefined ||
+      (tipoPersona !== undefined && tipoFinal !== existente.tipoPersona);
+
+    if (debeActualizarFechaEstado) {
+      let fechaVal: Date | null;
+      if (tipoFinal === TipoPersona.JURIDICA) {
+        fechaVal = null;
+      } else if (fechaNacimientoInput !== undefined) {
+        fechaVal = fechaNacimiento ?? null;
+      } else {
+        fechaVal = existente.fechaNacimiento;
+      }
+
+      let estadoVal: string | null;
+      if (tipoFinal === TipoPersona.JURIDICA) {
+        estadoVal = null;
+      } else if (estadoCivilInput !== undefined) {
+        estadoVal = estadoCivil ?? null;
+      } else {
+        estadoVal = existente.estadoCivil;
+      }
+
+      await prisma.$executeRaw(
+        Prisma.sql`
+          UPDATE "Cliente"
+          SET
+            "fechaNacimiento" = ${fechaVal},
+            "estadoCivil" = ${estadoVal}
+          WHERE "id" = ${id}
+        `,
+      );
+    }
+
+    const actualizado = await prisma.cliente.findUniqueOrThrow({ where: { id } });
 
     await registrarAuditoria({
       usuarioId: auth.sesion.sub,

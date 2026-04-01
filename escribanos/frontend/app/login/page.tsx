@@ -205,13 +205,6 @@ function LoginForm() {
           >
             {loading ? 'Cargando...' : (isLogin ? 'Ingresar' : 'Crear cuenta')}
           </button>
-
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
-          
         </form>
 
         <div className="login-toggle">

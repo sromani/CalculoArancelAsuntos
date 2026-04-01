@@ -1,9 +1,9 @@
-import { GrupoProfesional } from "@/generated/prisma";
-import type { PrismaClient } from "@/generated/prisma";
+import { GrupoProfesional } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 
 export type EquipoAsuntoIds = {
-  socioReferenteId: string;
-  profesionalACargoId: string;
+  socioReferenteId: string | null;
+  profesionalACargoId: string | null;
   colaboradorACargoId: string | null;
   colaboradorACargo2Id: string | null;
   contadorReferenteId: string | null;
@@ -26,12 +26,14 @@ export async function mensajeErrorValidacionEquipoAsunto(
     return "No puede repetirse la misma persona en equipo a cargo, colaboradores o contador referente.";
   }
 
-  const socioReferenteRow = await prisma.socio.findUnique({
-    where: { id: p.socioReferenteId },
-    select: { id: true },
-  });
-  if (!socioReferenteRow) {
-    return "El socio referente no existe o fue eliminado. Elegi uno valido en maestros.";
+  if (p.socioReferenteId) {
+    const socioReferenteRow = await prisma.socio.findUnique({
+      where: { id: p.socioReferenteId },
+      select: { id: true },
+    });
+    if (!socioReferenteRow) {
+      return "El socio referente no existe o fue eliminado. Elegi uno valido en maestros.";
+    }
   }
 
   const idsCarga = [p.profesionalACargoId, p.colaboradorACargoId, p.colaboradorACargo2Id].filter(
@@ -44,9 +46,11 @@ export async function mensajeErrorValidacionEquipoAsunto(
   if (filasEquipo.length !== idsCarga.length) {
     return "Alguno de los profesionales indicados no existe.";
   }
-  const principal = filasEquipo.find((r) => r.id === p.profesionalACargoId);
-  if (!principal || principal.grupo !== GrupoProfesional.LEGAL_A_CARGO) {
-    return "El equipo a cargo debe ser un profesional legal a cargo (escribano o abogado) en maestros.";
+  if (p.profesionalACargoId) {
+    const principal = filasEquipo.find((r) => r.id === p.profesionalACargoId);
+    if (!principal || principal.grupo !== GrupoProfesional.LEGAL_A_CARGO) {
+      return "El equipo a cargo debe ser un profesional legal a cargo (escribano o abogado) en maestros.";
+    }
   }
   for (const cid of [p.colaboradorACargoId, p.colaboradorACargo2Id]) {
     if (!cid) continue;

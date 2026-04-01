@@ -8,7 +8,7 @@ export function VistaClientes() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   return (
-    <div className="min-w-0 space-y-6">
+    <div className="min-w-0 space-y-16">
       <FormularioCliente onClienteCreado={() => setRefreshKey((k) => k + 1)} />
       <ListaClientes refreshKey={refreshKey} />
     </div>

@@ -1,4 +1,4 @@
-import { EstadoAsunto } from "@/generated/prisma";
+import { EstadoAsunto } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { requiereApiSesion } from "@/lib/api-auth";
 import { registrarAuditoria } from "@/lib/auditoria";

@@ -9,7 +9,7 @@ const {
   PrismaClient,
   GrupoProfesional,
   PuestoProfesional,
-} = require(path.join(__dirname, "../src/generated/prisma"));
+} = require("@prisma/client");
 
 const prisma = new PrismaClient();
 

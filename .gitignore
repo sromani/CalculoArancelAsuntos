@@ -23,5 +23,5 @@ Thumbs.db
 *.swp
 *.swo
 
-# Prisma (generado localmente si aplica)
-**/generated/prisma/
+# Prisma: cliente por defecto en node_modules/.prisma (no commitear node_modules)
+escribanos/frontend/generated/

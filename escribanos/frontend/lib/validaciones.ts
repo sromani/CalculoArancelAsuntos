@@ -138,3 +138,64 @@ export function normalizarNombrePersona(valor: string): string {
     .toLocaleLowerCase("es-UY")
     .replace(/\b\p{L}/gu, (c) => c.toLocaleUpperCase("es-UY"));
 }
+
+/** Valores almacenados en `Cliente.estadoCivil` (persona fisica). */
+export const CODIGOS_ESTADO_CIVIL = [
+  "SOLTERO",
+  "CASADO",
+  "DIVORCIADO",
+  "VIUDO",
+  "UNION_LIBRE",
+  "SEPARADO",
+  "OTRO",
+] as const;
+export type CodigoEstadoCivil = (typeof CODIGOS_ESTADO_CIVIL)[number];
+
+export const ETIQUETA_ESTADO_CIVIL: Record<CodigoEstadoCivil, string> = {
+  SOLTERO: "Soltero/a",
+  CASADO: "Casado/a",
+  DIVORCIADO: "Divorciado/a",
+  VIUDO: "Viudo/a",
+  UNION_LIBRE: "Union libre",
+  SEPARADO: "Separado/a",
+  OTRO: "Otro",
+};
+
+export function esEstadoCivilCliente(v: string): v is CodigoEstadoCivil {
+  return (CODIGOS_ESTADO_CIVIL as readonly string[]).includes(v);
+}
+
+export function etiquetaEstadoCivil(codigo: string | null | undefined): string {
+  if (!codigo) return "—";
+  if (esEstadoCivilCliente(codigo)) {
+    return ETIQUETA_ESTADO_CIVIL[codigo];
+  }
+  return codigo;
+}
+
+/** Convierte input date (YYYY-MM-DD) a Date UTC medianoche; invalido devuelve null. */
+export function parseFechaNacimientoCliente(v: unknown): Date | null {
+  if (v === null || v === undefined || v === "") return null;
+  const s = String(v).trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  const [y, m, d] = s.split("-").map(Number);
+  if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  if (Number.isNaN(dt.getTime())) return null;
+  return dt;
+}
+
+/** Para <input type="date" /> desde respuesta API (ISO). */
+export function fechaIsoADateInput(iso: string | Date | null | undefined): string {
+  if (!iso) return "";
+  try {
+    const d = typeof iso === "string" ? new Date(iso) : iso;
+    if (Number.isNaN(d.getTime())) return "";
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(d.getUTCDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  } catch {
+    return "";
+  }
+}

@@ -1,4 +1,4 @@
-import { EstadoAsunto, GrupoProfesional } from "@/generated/prisma";
+import { EstadoAsunto, GrupoProfesional } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { requiereApiSesion } from "@/lib/api-auth";
 import { registrarAuditoria } from "@/lib/auditoria";
@@ -17,7 +17,7 @@ const CAMPOS_REASIGNACION = [
 type CampoReasignacion = (typeof CAMPOS_REASIGNACION)[number];
 
 function idsEquipoEnAsunto(row: {
-  profesionalACargoId: string;
+  profesionalACargoId: string | null;
   colaboradorACargoId: string | null;
   colaboradorACargo2Id: string | null;
   contadorReferenteId: string | null;
@@ -32,7 +32,7 @@ function idsEquipoEnAsunto(row: {
 
 function hayDuplicadosEquipo(
   row: {
-    profesionalACargoId: string;
+    profesionalACargoId: string | null;
     colaboradorACargoId: string | null;
     colaboradorACargo2Id: string | null;
     contadorReferenteId: string | null;

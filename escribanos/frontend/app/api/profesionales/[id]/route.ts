@@ -7,7 +7,7 @@ import {
   obtenerErrorConfiguracionDb,
 } from "@/lib/api-db";
 import { registrarAuditoria } from "@/lib/auditoria";
-import { GrupoProfesional } from "@/generated/prisma";
+import { GrupoProfesional } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requiereFuncionEnEstudio, resolverGrupoPuestoDesdeBody } from "@/lib/profesional-equipo";
 

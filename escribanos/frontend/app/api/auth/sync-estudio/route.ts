@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Prisma } from "@/generated/prisma";
+import { Prisma } from "@prisma/client";
 import { COOKIE_NEST_ACCESS, COOKIE_SESSION, sessionCookieSecureForRequest } from "@/lib/auth-constants";
 import { ensureUsuarioEstudioPorEmail } from "@/lib/estudio-usuario";
 import { fetchNestMeProfile } from "@/lib/nest-internal-profile";
@@ -40,12 +40,23 @@ export async function POST(request: Request) {
       if (msg.includes("P1001") || msg.includes("Can't reach database server")) {
         error =
           "No se conecta a PostgreSQL. Revisá DATABASE_URL y que el contenedor Postgres esté en marcha.";
+      } else if (
+        msg.includes("relation") ||
+        msg.includes("Unknown table") ||
+        /table.*does not exist/i.test(msg)
+      ) {
+        error =
+          "La base conectada no es la del estudio (tablas distintas). Revisá que en .env.local DATABASE_URL apunte a sistema_escribanos_estudio, no a la base del API.";
       } else if (msg.includes("P1003") || msg.includes("does not exist")) {
         error =
           'La base del estudio no existe. Ejecutá en escribanos/frontend: npm run db:estudio:setup (o npm run db:estudio:create y npm run db:estudio:push).';
       }
     }
-    return NextResponse.json({ error, code: "DB" }, { status: 500 });
+    const body: { error: string; code: string; detalle?: string } = { error, code: "DB" };
+    if (process.env.NODE_ENV === "development") {
+      body.detalle = e instanceof Error ? e.message : String(e);
+    }
+    return NextResponse.json(body, { status: 500 });
   }
 
   let token: string;
