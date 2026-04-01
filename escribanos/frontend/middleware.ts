@@ -58,6 +58,9 @@ export function middleware(request: NextRequest) {
     if (pathname.startsWith("/api/health")) {
       return NextResponse.next();
     }
+    if (pathname.startsWith("/api/cotizaciones-bcu")) {
+      return NextResponse.next();
+    }
     if (pathname.startsWith("/api/auth/logout")) {
       return NextResponse.next();
     }

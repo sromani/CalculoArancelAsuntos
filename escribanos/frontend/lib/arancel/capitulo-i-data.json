@@ -1,0 +1,3492 @@
+{
+  "version": 1,
+  "capituloId": "actos-contratos",
+  "capituloLabel": "Actos y Contratos",
+  "capituloCsv": "CAPITULO I - ACTOS Y CONTRATOS",
+  "documentos": [
+    {
+      "posDoc": 1,
+      "nombre": "COMPRAVENTA",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 2,
+      "nombre": "PROMESA DE ENAJENACION",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 3,
+      "nombre": "CESION DE PROMESA DE ENAJENACION",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 4,
+      "nombre": "DACION EN PAGO",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 5,
+      "nombre": "DONACION",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 6,
+      "nombre": "PERMUTA",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 7,
+      "nombre": "RENTA VITALICIA",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 8,
+      "nombre": "HIPOTECA (ADEUDO, PRESTAMO O CREDITO)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 9,
+      "nombre": "NOVACION DE OBLIGACIONES",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 10,
+      "nombre": "FIDEICOMISO (CONSTITUCION)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 11,
+      "nombre": "FIDEICOMISO  (ADEUDO, PRESTAMO O CREDITO)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 12,
+      "nombre": "CESION DE DERECHOS",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 13,
+      "nombre": "CENSO",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 14,
+      "nombre": "DECLARATORIA ATRIBUYA DOMINIO A TERCEROS",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 15,
+      "nombre": "GRAVAMEN O AFECTACION",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 16,
+      "nombre": "REFUERZO DE GARANTIA",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 17,
+      "nombre": "SUSTITUCION  DE GARANTIA",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 18,
+      "nombre": "TITULO HABIL PARA ADQUIRIR",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 19,
+      "nombre": "TRANSACCION",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 20,
+      "nombre": "USO (DERECHO REAL)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 21,
+      "nombre": "USUFRUCTO (DERECHO REAL)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 22,
+      "nombre": "SERVIDUMBRE (DERECHO REAL)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        }
+      ]
+    },
+    {
+      "posDoc": 23,
+      "nombre": "ANTICRESIS  (ADEUDO, PRESTAMO O CREDITO)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        },
+        {
+          "posBien": 3,
+          "etiqueta": "Establecimiento Comercial E Industrial",
+          "bienRaw": "ESTABLECIMIENTO COMERCIAL E INDUSTRIAL"
+        },
+        {
+          "posBien": 4,
+          "etiqueta": "Aeronave",
+          "bienRaw": "AERONAVE"
+        },
+        {
+          "posBien": 5,
+          "etiqueta": "Buque",
+          "bienRaw": "BUQUE"
+        }
+      ]
+    },
+    {
+      "posDoc": 24,
+      "nombre": "SOCIEDAD CONSTITUCION excepto art. 7 literales A, B y E",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 25,
+      "nombre": "SOCIEDAD ESCISION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 26,
+      "nombre": "SOCIEDAD FUSION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 27,
+      "nombre": "SOCIEDAD MODIFICACION AUMENTO DE CAPITAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 28,
+      "nombre": "SOCIEDAD MODIFICACION QUE NO IMPLIQUE AUMENTO DE CAPITAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 29,
+      "nombre": "SOCIEDAD REGULARIZACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 30,
+      "nombre": "SOCIEDAD TRANSFORMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 31,
+      "nombre": "SOCIEDAD TRANSMISION PARTES, CUOTAS, ACCIONES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 32,
+      "nombre": "SOCIEDAD DISOLUCION Y CAMBIO DE REGIMEN",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 33,
+      "nombre": "FIANZA  (ADEUDO, PRESTAMO O CREDITO)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        }
+      ]
+    },
+    {
+      "posDoc": 34,
+      "nombre": "FIANZA (SIN MONTO)",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 35,
+      "nombre": "FIANZA SUSTITUCION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 36,
+      "nombre": "MANDATOS EXCLUSIVAMENTE MOTOS Y CICLOMOTORES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 37,
+      "nombre": "MANDATOS EXCLUSIVAMENTE VEHICULOS AUTOMOTORES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 38,
+      "nombre": "MANDATOS GENERALES Y ESPECIALES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 39,
+      "nombre": "MANDATOS GENERALES Y ESPECIALES (EXTINCION)",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 40,
+      "nombre": "MANDATOS GENERALES Y ESPECIALES (MODIFICACION)",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 41,
+      "nombre": "MANDATOS GENERALES Y ESPECIALES (SUSTITUTICION)",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 42,
+      "nombre": "ACEPTACIÓN DE DONACIÓN",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 43,
+      "nombre": "ACEPTACIÓN DE HERENCIA",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 44,
+      "nombre": "ACTAS DE CONSTITUCIÓN DE FUNDACIONES QUE SE OTORGUEN EN ESCRITURA PÚBLICA INDEPENDIENTE DE LOS ESTATUTOS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 45,
+      "nombre": "ADOPCIÓN",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 46,
+      "nombre": "ARRENDAMIENTO DE INMUEBLES",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        }
+      ]
+    },
+    {
+      "posDoc": 47,
+      "nombre": "COMODATO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 48,
+      "nombre": "COMPROMISO ARBITRAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 49,
+      "nombre": "CONSENTIMIENTO PARA CONTRAER MATRIMONIO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 50,
+      "nombre": "CONSENTIMIENTO PARA OTORGAR CONVENCIÓN MATRIMONIAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 51,
+      "nombre": "CONSTITUCIÓN DE BIEN DE FAMILIA",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 52,
+      "nombre": "CONTRATO DE COMISIÓN",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 53,
+      "nombre": "CONVENCIÓN MATRIMONIAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 54,
+      "nombre": "CONVENIO ENTRE CÓNYUGES RESPECTO DE LA ADMINISTRACIÓN DE LOS BIENES DE SUS HIJOS Y NOTIFICACIÓN",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 55,
+      "nombre": "DECLARATORIAS EN GENERAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 56,
+      "nombre": "DECLARATORIAS Y RATIFICACIÓN DE SALIDA DEFINITIVA DEL DOMINIO MUNICIPAL ART. 1.º)",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 57,
+      "nombre": "DEPOSITO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 58,
+      "nombre": "DISTRACTO, RESCISION Y RESOLUCION DE NEGOCIOS JURIDICOS EN GENERAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 59,
+      "nombre": "DIVISION DE GRAVAMEN",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 60,
+      "nombre": "ENAJENACION DE SOBRAS MUNICIPALES",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 1,
+          "etiqueta": "Bien Inmueble",
+          "bienRaw": "BIEN INMUEBLE"
+        }
+      ]
+    },
+    {
+      "posDoc": 61,
+      "nombre": "ENTREGA DE LEGADO DE ESPECIE CIERTA Y DETERMINADA",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 62,
+      "nombre": "ENTREGA DE LEGADO DE GENERO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 63,
+      "nombre": "EXTINCION DE OBLIGACIONES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 64,
+      "nombre": "FACTORING",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 65,
+      "nombre": "FORMACION DE TITULO POR SEPARADO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 66,
+      "nombre": "HABITACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 67,
+      "nombre": "IGUALA",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 68,
+      "nombre": "LEASING",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 69,
+      "nombre": "LEGITIMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 70,
+      "nombre": "LIBERACION DE GRAVAMEN",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 71,
+      "nombre": "MODIFICACION CON AUMENTO DE PRECIO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 72,
+      "nombre": "MODIFICACION QUE NO IMPLIQUE AUMENTO DE CAPITAL O DE PRECIO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 73,
+      "nombre": "NEGOCIO DE FIJACION POR EXTRAVIO, PERDIDA, ETC",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 74,
+      "nombre": "NEGOCIO DE FIJACION POR EXTRAVIO, PERDIDA, ETC. VEHICULOS AUTOMOTORES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 75,
+      "nombre": "NEGOCIO PRELIMINAR",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 76,
+      "nombre": "PENSION ALIMENTICIA",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 77,
+      "nombre": "PRENDA (ADEUDO, PRESTAMO O CREDITO)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        }
+      ]
+    },
+    {
+      "posDoc": 78,
+      "nombre": "RATIFICACION (SE EXCEPTUAN LAS DECLARATORIAS POR LAS QUE SE ATRIBUYA EL DOMINIO A TERCEROS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 79,
+      "nombre": "RECONOCIMIENTO DE HIJO NATURAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 80,
+      "nombre": "RENUNCIA DE DERECHOS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 81,
+      "nombre": "RENUNCIA DE PRIORIDAD DE INSCRIPCIONES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 82,
+      "nombre": "RENUNCIA DE USUFRUCTO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 83,
+      "nombre": "RE-OTORGAMIENTO POR EXTRAVIO, PERDIDA, ETC",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 84,
+      "nombre": "RE-OTORGAMIENTO POR EXTRAVIO, PERDIDA, ETC. VEHICULOS AUTOMOTORES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 85,
+      "nombre": "REPUDIACION DE HERENCIA Y/O LEGADO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 86,
+      "nombre": "SINDICACION DE ACCIONES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 87,
+      "nombre": "SUBROGACIONES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 88,
+      "nombre": "TESTAMENTO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 89,
+      "nombre": "TRANSACCION CUANDO NO SEA SUSCEPTIBLE DE ESTIMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 90,
+      "nombre": "USUARIOS DE ZONA FRANCA",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 91,
+      "nombre": "WARRANT (ADEUDO, PRESTAMO O CREDITO)",
+      "tieneSeleccionBien": true,
+      "opcionesBien": [
+        {
+          "posBien": 2,
+          "etiqueta": "Bien Mueble",
+          "bienRaw": "BIEN MUEBLE"
+        }
+      ]
+    }
+  ],
+  "reglas": {
+    "24": {
+      "articulo": "1) I) e)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Capital Social",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital Social"
+      }
+    },
+    "25": {
+      "articulo": "1) I) e)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Capital Social",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital Social"
+      }
+    },
+    "26": {
+      "articulo": "1) I) e)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Capital Social",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital Social"
+      }
+    },
+    "27": {
+      "articulo": "1) I) j)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Aumento de capital",
+      "detalleSpec": {
+        "kind": "aumento_capital",
+        "textoOriginal": "Aumento de capital"
+      }
+    },
+    "28": {
+      "articulo": "2) j)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "29": {
+      "articulo": "1) I) e)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Capital Social",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital Social"
+      }
+    },
+    "30": {
+      "articulo": "1) I) e)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Capital Social",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital Social"
+      }
+    },
+    "31": {
+      "articulo": "1) I) f)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "32": {
+      "articulo": "2) i)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "34": {
+      "articulo": "2) k)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "35": {
+      "articulo": "2) k)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "36": {
+      "articulo": "2) f)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 3,
+        "periodo": "semestral",
+        "raw": "3 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "37": {
+      "articulo": "2) f)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 4,
+        "periodo": "semestral",
+        "raw": "4 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "38": {
+      "articulo": "2) f)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "39": {
+      "articulo": "2) f)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "40": {
+      "articulo": "2) f)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "41": {
+      "articulo": "2) f)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "42": {
+      "articulo": "2) d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "43": {
+      "articulo": "2) d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "44": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "45": {
+      "articulo": "2) a)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "47": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "48": {
+      "articulo": "2) d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "49": {
+      "articulo": "2) a)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "50": {
+      "articulo": "2) a)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "51": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "52": {
+      "articulo": "2) m)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "53": {
+      "articulo": "2) b)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "54": {
+      "articulo": "2) a)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "55": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "56": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "57": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "58": {
+      "articulo": "2) l)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "59": {
+      "articulo": "2) e)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "61": {
+      "articulo": "2) b)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "62": {
+      "articulo": "1) I) g)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "63": {
+      "articulo": "2) g)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "64": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "65": {
+      "articulo": "2) e)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "66": {
+      "articulo": "2) d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "67": {
+      "articulo": "2) d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "68": {
+      "articulo": "1) II) f)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Importe total de pagos periodico durante el plazo convenido, no menor a un año",
+      "detalleSpec": {
+        "kind": "importe_pagos_periodicos",
+        "conTopeUr500": false,
+        "textoOriginal": "Importe total de pagos periodico durante el plazo convenido, no menor a un año"
+      }
+    },
+    "69": {
+      "articulo": "2) a)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "70": {
+      "articulo": "2) h)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "71": {
+      "articulo": "1) I) j)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Aumento de precio",
+      "detalleSpec": {
+        "kind": "aumento_precio",
+        "textoOriginal": "Aumento de precio"
+      }
+    },
+    "72": {
+      "articulo": "2) j)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "73": {
+      "articulo": "2) n)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "74": {
+      "articulo": "2) n)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 4,
+        "periodo": "semestral",
+        "raw": "4 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "75": {
+      "articulo": "2) ñ)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "76": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "78": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "79": {
+      "articulo": "2) a)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "80": {
+      "articulo": "2) d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "81": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "82": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "83": {
+      "articulo": "2) n)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "84": {
+      "articulo": "2) n)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 4,
+        "periodo": "semestral",
+        "raw": "4 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "85": {
+      "articulo": "2) d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "86": {
+      "articulo": "2) c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "87": {
+      "articulo": "1) I) h)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "88": {
+      "articulo": "3)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "89": {
+      "articulo": "2) b)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "90": {
+      "articulo": "1) II) f)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Importe total de pagos periodico durante el plazo convenido, no menor a un año, con tope UR 500",
+      "detalleSpec": {
+        "kind": "importe_pagos_periodicos",
+        "conTopeUr500": true,
+        "textoOriginal": "Importe total de pagos periodico durante el plazo convenido, no menor a un año, con tope UR 500"
+      }
+    },
+    "1-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "1-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "1-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "1-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "1-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "2-1": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "2-2": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1,
+        "raw": "1.0%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "2-3": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "2-4": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "2-5": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "3-1": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "3-2": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1,
+        "raw": "1.0%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "3-3": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "3-4": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "3-5": {
+      "articulo": "1) III)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 1.5,
+        "raw": "1.5%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "4-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "4-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "4-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "4-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "4-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "5-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "5-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "5-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "5-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "5-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "6-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "6-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "6-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "6-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "6-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "7-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "7-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "7-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "7-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "7-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "8-1": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "8-3": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "8-4": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "8-5": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "9-1": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "9-2": {
+      "articulo": "1) II) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "9-3": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "9-4": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "9-5": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "10-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "10-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "10-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "10-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "10-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "11-1": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "11-2": {
+      "articulo": "1) II) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "11-3": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "11-4": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "11-5": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "12-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "12-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "12-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "12-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "12-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "13-1": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "13-3": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "13-4": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "13-5": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "14-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "14-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "14-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "14-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "14-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "15-1": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "15-2": {
+      "articulo": "1) II) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "15-3": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "15-4": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "15-5": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "16-1": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "16-2": {
+      "articulo": "1) II) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "16-3": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "16-4": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "16-5": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "17-1": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "17-2": {
+      "articulo": "1) II) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "17-3": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "17-4": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "17-5": {
+      "articulo": "1) I) c)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "18-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "18-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "18-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "18-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "18-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "19-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "19-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "19-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "19-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "19-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "20-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      },
+      "tablaUsufructo": "uso"
+    },
+    "20-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "20-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "20-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "20-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "21-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      },
+      "tablaUsufructo": "usufructo"
+    },
+    "21-2": {
+      "articulo": "1) II) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "21-3": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "21-4": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "21-5": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "22-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "23-1": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "23-3": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "23-4": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "23-5": {
+      "articulo": "1) I) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "33-2": {
+      "articulo": "1) II) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "46-1": {
+      "articulo": "1) II) d)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Importe total de pagos periodico durante el plazo convenido, no menor a un año, con tope UR 500",
+      "detalleSpec": {
+        "kind": "importe_pagos_periodicos",
+        "conTopeUr500": true,
+        "textoOriginal": "Importe total de pagos periodico durante el plazo convenido, no menor a un año, con tope UR 500"
+      }
+    },
+    "60-1": {
+      "articulo": "1) I) a)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 3,
+        "raw": "3%"
+      },
+      "detalleValorBase": "Valor asignado por las partes o valor catastral, el mayor",
+      "detalleSpec": {
+        "kind": "max_partes_catastral",
+        "textoOriginal": "Valor asignado por las partes o valor catastral, el mayor"
+      }
+    },
+    "77-2": {
+      "articulo": "1) II) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    },
+    "91-2": {
+      "articulo": "1) II) b)",
+      "honorarioParsed": {
+        "tipo": "porcentaje",
+        "valor": 2,
+        "raw": "2%"
+      },
+      "detalleValorBase": "Valor asignado por las partes",
+      "detalleSpec": {
+        "kind": "solo_partes",
+        "textoOriginal": "Valor asignado por las partes"
+      }
+    }
+  }
+}

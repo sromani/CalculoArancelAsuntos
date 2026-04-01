@@ -1,12 +1,13 @@
 interface InputProps {
   label: string;
   name: string;
-  type?: 'text' | 'number' | 'email' | 'password';
+  type?: 'text' | 'number' | 'email' | 'password' | 'date';
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
 }
 
 export default function Input({ 
@@ -17,7 +18,8 @@ export default function Input({
   onChange, 
   placeholder,
   required = false,
-  disabled = false
+  disabled = false,
+  inputMode,
 }: InputProps) {
   return (
     <div className="form-field">
@@ -33,6 +35,7 @@ export default function Input({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
+        inputMode={inputMode}
       />
     </div>
   );
