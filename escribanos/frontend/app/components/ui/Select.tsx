@@ -13,6 +13,8 @@ interface SelectProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  /** Clases extra en el contenedor `.form-field` (p. ej. compacto en simulador). */
+  className?: string;
 }
 
 export default function Select({ 
@@ -23,10 +25,11 @@ export default function Select({
   options,
   placeholder = "Seleccione una opción",
   required = false,
-  disabled = false
+  disabled = false,
+  className,
 }: SelectProps) {
   return (
-    <div className="form-field">
+    <div className={className ? `form-field ${className}` : 'form-field'}>
       <label htmlFor={name}>
         {label} {required && <span className="required">*</span>}
       </label>

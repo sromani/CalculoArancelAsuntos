@@ -1,5 +1,11 @@
 import type { MonedaEntrada, TasasLineas } from "./conversion";
-import { ETIQUETA_MONEDA, montoPrincipalAPesos, pesosAMontoPrincipal } from "./conversion";
+import {
+  ETIQUETA_MONEDA,
+  formatoHonorarioEntero,
+  honorarioPesosDesdePrincipalEntero,
+  honorarioPrincipalRedondeadoDesdePesosBrutos,
+  montoPrincipalAPesos,
+} from "./conversion";
 import type { DetalleSpec, HonorarioParsed, Regla } from "./types";
 import usufructoData from "./usufructo-coefs.json";
 
@@ -61,11 +67,15 @@ function formatMoney(n: number): string {
   }).format(n);
 }
 
-function formatPrincipal(n: number): string {
+function formatHonorarioPesosMostrar(n: number): string {
   return new Intl.NumberFormat("es-UY", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 6,
-  }).format(n);
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(Math.round(n));
+}
+
+function formatCoeficiente(n: number): string {
+  return new Intl.NumberFormat("es-UY", { maximumFractionDigits: 6 }).format(n);
 }
 
 export function resolverClaveRegla(
@@ -145,7 +155,7 @@ export function calcularValorBase(
       vt
     )} (partes $ ${formatMoney(vpPesos ?? 0)}, catastral/real $ ${formatMoney(
       vcPesos ?? 0
-    )}). Plazo ${pl.anios} años, coef. nuda ${formatPrincipal(K)}: nuda $ ${formatMoney(
+    )}). Plazo ${pl.anios} años, coef. nuda ${formatCoeficiente(K)}: nuda $ ${formatMoney(
       valorNuda
     )}, usufructo $ ${formatMoney(
       valorUsufructo
@@ -250,18 +260,23 @@ export function calcularValorBase(
 
 function honorarioMontoSimple(
   articulo: string,
-  honorarioPesos: number,
+  honorarioPesosBruto: number,
   monedaPrincipal: MonedaEntrada,
   tasas: TasasLineas,
   formulaDescripcion: string
 ): ResultadoCalculo {
-  const enPrincipal = pesosAMontoPrincipal(honorarioPesos, monedaPrincipal, tasas);
+  const principalRd = honorarioPrincipalRedondeadoDesdePesosBrutos(
+    honorarioPesosBruto,
+    monedaPrincipal,
+    tasas
+  );
+  const honorarioPesos = honorarioPesosDesdePrincipalEntero(principalRd, monedaPrincipal, tasas);
   return {
     tipo: "monto_simple",
     articulo,
     honorarioPesos,
-    honorarioPesosFormateado: formatMoney(honorarioPesos),
-    honorarioPrincipalFormateado: `${formatPrincipal(enPrincipal)} ${ETIQUETA_MONEDA[monedaPrincipal]}`,
+    honorarioPesosFormateado: formatHonorarioPesosMostrar(honorarioPesos),
+    honorarioPrincipalFormateado: `${formatoHonorarioEntero(principalRd)} ${ETIQUETA_MONEDA[monedaPrincipal]}`,
     monedaPrincipal,
     formulaDescripcion,
   };
@@ -282,8 +297,13 @@ export function calcularHonorario(
 
   if (hp.tipo === "ur_fijo") {
     const urEfectivo = hp.maxUr != null ? Math.min(hp.ur, hp.maxUr) : hp.ur;
-    const honorarioPesos = urEfectivo * tasas.urSemestralPesos;
-    const enPrincipal = pesosAMontoPrincipal(honorarioPesos, monedaPrincipal, tasas);
+    const honorarioPesosBruto = urEfectivo * tasas.urSemestralPesos;
+    const principalRd = honorarioPrincipalRedondeadoDesdePesosBrutos(
+      honorarioPesosBruto,
+      monedaPrincipal,
+      tasas
+    );
+    const honorarioPesos = honorarioPesosDesdePrincipalEntero(principalRd, monedaPrincipal, tasas);
     return {
       tipo: "ur_fijo",
       ur: urEfectivo,
@@ -291,8 +311,8 @@ export function calcularHonorario(
       textoHonorario: hp.raw,
       articulo: regla.articulo,
       honorarioPesos,
-      honorarioPesosFormateado: formatMoney(honorarioPesos),
-      honorarioPrincipalFormateado: `${formatPrincipal(enPrincipal)} ${ETIQUETA_MONEDA[monedaPrincipal]}`,
+      honorarioPesosFormateado: formatHonorarioPesosMostrar(honorarioPesos),
+      honorarioPrincipalFormateado: `${formatoHonorarioEntero(principalRd)} ${ETIQUETA_MONEDA[monedaPrincipal]}`,
       monedaPrincipal,
     };
   }
@@ -339,8 +359,13 @@ export function calcularHonorario(
     if (!baseR.ok) {
       return { error: baseR.mensaje };
     }
-    const montoPesos = baseR.basePesos * pct;
-    const montoPrincipal = pesosAMontoPrincipal(montoPesos, monedaPrincipal, tasas);
+    const montoPesosBruto = baseR.basePesos * pct;
+    const principalRd = honorarioPrincipalRedondeadoDesdePesosBrutos(
+      montoPesosBruto,
+      monedaPrincipal,
+      tasas
+    );
+    const montoPesos = honorarioPesosDesdePrincipalEntero(principalRd, monedaPrincipal, tasas);
     return {
       tipo: "porcentaje",
       porcentaje: hp.valor,
@@ -348,8 +373,8 @@ export function calcularHonorario(
       basePesos: baseR.basePesos,
       baseDescripcion: baseR.descripcion,
       montoPesos,
-      montoPesosFormateado: formatMoney(montoPesos),
-      montoPrincipalFormateado: `${formatPrincipal(montoPrincipal)} ${ETIQUETA_MONEDA[monedaPrincipal]}`,
+      montoPesosFormateado: formatHonorarioPesosMostrar(montoPesos),
+      montoPrincipalFormateado: `${formatoHonorarioEntero(principalRd)} ${ETIQUETA_MONEDA[monedaPrincipal]}`,
       monedaPrincipal,
       articulo: regla.articulo,
     };

@@ -41,6 +41,34 @@ export function pesosAMontoPrincipal(pesos: number, moneda: MonedaEntrada, tasas
   }
 }
 
+/** Honorario en moneda de visualización: redondeo hacia arriba a la unidad entera ($, USD, UI o UR). */
+export function honorarioPrincipalHaciaArriba(principal: number): number {
+  if (!Number.isFinite(principal) || principal <= 0) return 0;
+  return Math.ceil(principal - 1e-9);
+}
+
+export function honorarioPrincipalRedondeadoDesdePesosBrutos(
+  honorarioPesosBruto: number,
+  moneda: MonedaEntrada,
+  tasas: TasasLineas
+): number {
+  return honorarioPrincipalHaciaArriba(pesosAMontoPrincipal(honorarioPesosBruto, moneda, tasas));
+}
+
+export function honorarioPesosDesdePrincipalEntero(
+  principalEntero: number,
+  moneda: MonedaEntrada,
+  tasas: TasasLineas
+): number {
+  return montoPrincipalAPesos(principalEntero, moneda, tasas);
+}
+
+export function formatoHonorarioEntero(n: number): string {
+  return new Intl.NumberFormat('es-UY', { maximumFractionDigits: 0, minimumFractionDigits: 0 }).format(
+    Math.round(n)
+  );
+}
+
 export const ETIQUETA_MONEDA: Record<MonedaEntrada, string> = {
   USD: 'USD',
   UYU: '$',

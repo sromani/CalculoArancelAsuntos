@@ -1,6 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type ReactNode,
+} from 'react';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
@@ -15,9 +23,26 @@ import {
 import type { DetalleSpec, Regla } from '@/lib/arancel/types';
 import type { CotizacionesSimulador } from '@/lib/bcu-cotizaciones';
 import { formatDateLocal } from '@/lib/bcu-cotizaciones';
-import type { MonedaEntrada } from '@/lib/arancel/conversion';
-import { OPCIONES_MONEDA_FORM } from '@/lib/arancel/conversion';
+import {
+  formatoHonorarioEntero,
+  OPCIONES_MONEDA_FORM,
+  type MonedaEntrada,
+  type TasasLineas,
+} from '@/lib/arancel/conversion';
 import type { CapituloIData } from '@/lib/arancel/types';
+import {
+  FRL_OPCION_DEFAULT_ID,
+  OPCIONES_FRL_FORM_SELECT,
+  pesosFrlPorOpcionId,
+} from '@/lib/arancel/frl-tabla';
+import {
+  calcularDesgloseLiquido,
+  calcularDesgloseLiquidoConAportesArancel,
+  formatearMontoEnMoneda,
+  honorarioEnPrincipal,
+  parseHonorarioACobrarInput,
+  type LineasDesgloseLiquido,
+} from '@/lib/arancel/liquido-escribano';
 
 const CAPITULOS = [
   { id: 'actos-contratos', label: 'Actos y Contratos', disponible: true },
@@ -30,6 +55,20 @@ const OPCIONES_PLAZO_USUFRUCTO = [
   { value: 'contractual', label: 'Plazo contractual (hasta 70 años)' },
   { value: 'vitalicio', label: 'Vitalicio (según edad del menor usufructuario)' },
 ];
+
+const OPCIONES_FONASA_SIM = [
+  { value: '4.5', label: '4,5 %' },
+  { value: '6', label: '6 %' },
+  { value: '8', label: '8 %' },
+];
+
+const OPCIONES_IRPF_SIM = [0, 10, 15, 24, 25, 27, 31, 36].map((n) => ({
+  value: String(n),
+  label: `${n} %`,
+}));
+
+const TEXTO_LEYENDA_IRPF =
+  'El IRPF es un impuesto personal que se calcula sobre la renta de cada mes y admite deducciones y datos particulares que este simulador no puede conocer; los anticipos se liquidan en forma bimestral. El porcentaje que elijas se aplica aquí sobre una base convencional solo como referencia: elegí la opción que mejor se aproxime a tu situación.';
 
 function etiquetaCampoPrincipal(m: MonedaEntrada): string {
   switch (m) {
@@ -225,6 +264,101 @@ function CamposValorBase({
   }
 }
 
+function bloqueFacturaDesglose(
+  lineas: LineasDesgloseLiquido,
+  moneda: MonedaEntrada,
+  etiquetaHonorario: string = 'Honorarios arancel'
+) {
+  const fmt = (n: number) => formatearMontoEnMoneda(n, moneda);
+  return (
+    <div className="simulador-desglose-bloque-interno">
+      <p className="simulador-desglose-sub">Factura</p>
+      <div className="simulador-desglose-row">
+        <span>{etiquetaHonorario}</span>
+        <strong>{fmt(lineas.honorario)}</strong>
+      </div>
+      <div className="simulador-desglose-row">
+        <span>IVA (22 %)</span>
+        <strong>{fmt(lineas.iva)}</strong>
+      </div>
+      <div className="simulador-desglose-row simulador-desglose-total">
+        <span>Total</span>
+        <strong>{fmt(lineas.totalFactura)}</strong>
+      </div>
+    </div>
+  );
+}
+
+function bloqueAportesDesglose(
+  lineas: LineasDesgloseLiquido,
+  moneda: MonedaEntrada,
+  frlSelect: ReactNode
+) {
+  const fmt = (n: number) => formatearMontoEnMoneda(n, moneda);
+  return (
+    <div className="simulador-desglose-bloque-interno">
+      <p className="simulador-desglose-sub">Aportes a Caja Notarial</p>
+      <div className="simulador-desglose-row">
+        <span>Montepío notarial (19 %)</span>
+        <strong>{fmt(lineas.montepio)}</strong>
+      </div>
+      <div className="simulador-desglose-row">
+        <span>Fondo gremial</span>
+        <strong>{fmt(lineas.fondoGremial)}</strong>
+      </div>
+      <div className="simulador-desglose-row">
+        <span>Fondo de Reconversión Laboral</span>
+        <strong>{fmt(lineas.fondoReconversionLaboral)}</strong>
+      </div>
+      {frlSelect}
+      <div className="simulador-desglose-row simulador-desglose-total">
+        <span>Total</span>
+        <strong>{fmt(lineas.totalAportes)}</strong>
+      </div>
+    </div>
+  );
+}
+
+/** IRPF y Fonasa arriba; total abajo (después de los desplegables en el padre). */
+function bloqueValoresGastosDesglose(lineas: LineasDesgloseLiquido, moneda: MonedaEntrada) {
+  const fmt = (n: number) => formatearMontoEnMoneda(n, moneda);
+  return (
+    <>
+      <div className="simulador-desglose-row">
+        <span>IRPF (estimado)</span>
+        <strong>{fmt(lineas.irpf)}</strong>
+      </div>
+      <div className="simulador-desglose-row">
+        <span>Fonasa</span>
+        <strong>{fmt(lineas.fonasa)}</strong>
+      </div>
+    </>
+  );
+}
+
+function bloqueTotalGastosDesglose(lineas: LineasDesgloseLiquido, moneda: MonedaEntrada) {
+  const fmt = (n: number) => formatearMontoEnMoneda(n, moneda);
+  return (
+    <div className="simulador-desglose-row simulador-desglose-total">
+      <span>Total</span>
+      <strong>{fmt(lineas.totalGastos)}</strong>
+    </div>
+  );
+}
+
+function bloqueLiquidoDesglose(lineas: LineasDesgloseLiquido, moneda: MonedaEntrada) {
+  const fmt = (n: number) => formatearMontoEnMoneda(n, moneda);
+  return (
+    <div className="simulador-desglose-bloque-interno">
+      <p className="simulador-desglose-sub">Líquido</p>
+      <div className="simulador-desglose-row simulador-desglose-total">
+        <span>Líquido final</span>
+        <strong>{fmt(lineas.liquido)}</strong>
+      </div>
+    </div>
+  );
+}
+
 export default function SimuladorPage() {
   const [capituloId, setCapituloId] = useState<string>('');
   const [posDocStr, setPosDocStr] = useState('');
@@ -238,6 +372,11 @@ export default function SimuladorPage() {
   const [cotizaciones, setCotizaciones] = useState<CotizacionesSimulador | null>(null);
   const [cotizacionesError, setCotizacionesError] = useState<string | null>(null);
   const [cotizacionesCargando, setCotizacionesCargando] = useState(false);
+
+  const [fonasaPctStr, setFonasaPctStr] = useState('4.5');
+  const [irpfPctStr, setIrpfPctStr] = useState('0');
+  const [frlOpcionId, setFrlOpcionId] = useState(FRL_OPCION_DEFAULT_ID);
+  const [honorarioAlternativoStr, setHonorarioAlternativoStr] = useState('');
 
   const data: CapituloIData | null = useMemo(() => {
     if (capituloId === 'actos-contratos') return datosPorCapitulo['actos-contratos'];
@@ -274,6 +413,77 @@ export default function SimuladorPage() {
     if (!fechaFirma) return;
     void cargarCotizaciones(fechaFirma);
   }, [fechaFirma, cargarCotizaciones]);
+
+  const tasasCalculo: TasasLineas | null = useMemo(() => {
+    if (!cotizaciones) return null;
+    return {
+      dolarComprador: cotizaciones.dolarComprador,
+      uiPesos: cotizaciones.uiPesos,
+      urSemestralPesos: cotizaciones.urSemestralPesos,
+    };
+  }, [cotizaciones]);
+
+  useEffect(() => {
+    if (!resultado || !tasasCalculo) return;
+    const hp = honorarioEnPrincipal(resultado, tasasCalculo);
+    setHonorarioAlternativoStr(formatoHonorarioEntero(hp));
+  }, [resultado, tasasCalculo]);
+
+  const fonasaPctNum = Number(fonasaPctStr);
+  const irpfPctNum = Number(irpfPctStr);
+  const pctOk =
+    ['4.5', '6', '8'].includes(fonasaPctStr) &&
+    [0, 10, 15, 24, 25, 27, 31, 36].includes(irpfPctNum);
+
+  const frlPesosTabla = pesosFrlPorOpcionId(frlOpcionId);
+
+  const lineasArancelColumna = useMemo(() => {
+    if (!resultado || !tasasCalculo || !pctOk) return null;
+    const h = honorarioEnPrincipal(resultado, tasasCalculo);
+    return calcularDesgloseLiquido(
+      h,
+      resultado.monedaPrincipal,
+      tasasCalculo,
+      fonasaPctNum,
+      irpfPctNum,
+      frlPesosTabla
+    );
+  }, [resultado, tasasCalculo, pctOk, fonasaPctNum, irpfPctNum, frlPesosTabla]);
+
+  const honorarioAltValor = parseHonorarioACobrarInput(honorarioAlternativoStr);
+
+  const lineasAltColumna = useMemo(() => {
+    if (
+      !resultado ||
+      !tasasCalculo ||
+      !pctOk ||
+      honorarioAltValor === null ||
+      !lineasArancelColumna
+    ) {
+      return null;
+    }
+    return calcularDesgloseLiquidoConAportesArancel(
+      honorarioAltValor,
+      {
+        montepio: lineasArancelColumna.montepio,
+        fondoGremial: lineasArancelColumna.fondoGremial,
+        fondoReconversionLaboral: lineasArancelColumna.fondoReconversionLaboral,
+        totalAportes: lineasArancelColumna.totalAportes,
+      },
+      resultado.monedaPrincipal,
+      tasasCalculo,
+      fonasaPctNum,
+      irpfPctNum
+    );
+  }, [
+    resultado,
+    tasasCalculo,
+    pctOk,
+    honorarioAltValor,
+    lineasArancelColumna,
+    fonasaPctNum,
+    irpfPctNum,
+  ]);
 
   const documentoSel = useMemo(() => {
     if (!data) return undefined;
@@ -683,7 +893,205 @@ export default function SimuladorPage() {
             </div>
           )}
 
-          {seleccionCompleta && (
+          {resultado && tasasCalculo && (
+            <div className="simulador-desglose-wrap">
+              <h3>Facturación, aportes y líquido estimado</h3>
+              <div className="simulador-desglose-grid simulador-desglose-grid--aligned">
+                <div className="form-note simulador-desglose-column">
+                  <div className="simulador-desglose-sync-row">
+                    <h4>Honorario según arancel</h4>
+                  </div>
+                  <div className="simulador-desglose-sync-row" aria-hidden />
+                  <div className="simulador-desglose-sync-row simulador-desglose-sync-row--factura-y-aportes">
+                    <div className="simulador-desglose-stack">
+                      <div className="simulador-desglose-seccion">
+                        {lineasArancelColumna ? (
+                          bloqueFacturaDesglose(lineasArancelColumna, resultado.monedaPrincipal)
+                        ) : (
+                          <p className="form-hint" style={{ color: '#991b1b' }}>
+                            Elegí porcentajes válidos de Fonasa e IRPF para ver el desglose.
+                          </p>
+                        )}
+                      </div>
+                      <div className="simulador-desglose-seccion">
+                        {lineasArancelColumna ? (
+                          bloqueAportesDesglose(
+                            lineasArancelColumna,
+                            resultado.monedaPrincipal,
+                            <Select
+                              label="Categoría FRL (años de ejercicio)"
+                              name="simFrlArancel"
+                              value={frlOpcionId}
+                              onChange={(e) => setFrlOpcionId(e.target.value)}
+                              options={[...OPCIONES_FRL_FORM_SELECT]}
+                              placeholder="Elegí la categoría"
+                              className="simulador-desglose-select-field"
+                            />
+                          )
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="simulador-desglose-sync-row simulador-desglose-sync-row--desde-gastos">
+                    <div className="simulador-desglose-stack">
+                      <div className="simulador-desglose-seccion">
+                        <p className="simulador-desglose-sub">Gastos</p>
+                        {lineasArancelColumna ? (
+                          <div className="simulador-desglose-bloque-interno">
+                            {bloqueValoresGastosDesglose(
+                              lineasArancelColumna,
+                              resultado.monedaPrincipal
+                            )}
+                          </div>
+                        ) : null}
+                        <Select
+                          label="IRPF — alícuota estimada"
+                          name="simIrpfArancel"
+                          value={irpfPctStr}
+                          onChange={(e) => setIrpfPctStr(e.target.value)}
+                          options={OPCIONES_IRPF_SIM}
+                          placeholder="Elegí el porcentaje"
+                          className="simulador-desglose-select-field"
+                        />
+                        <Select
+                          label="Fonasa (sobre el 70 % del honorario)"
+                          name="simFonasaArancel"
+                          value={fonasaPctStr}
+                          onChange={(e) => setFonasaPctStr(e.target.value)}
+                          options={OPCIONES_FONASA_SIM}
+                          placeholder="Elegí el porcentaje"
+                          className="simulador-desglose-select-field"
+                        />
+                        <p className="simulador-desglose-irpf-leyenda">{TEXTO_LEYENDA_IRPF}</p>
+                        {lineasArancelColumna ? (
+                          <div className="simulador-desglose-bloque-interno">
+                            {bloqueTotalGastosDesglose(
+                              lineasArancelColumna,
+                              resultado.monedaPrincipal
+                            )}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="simulador-desglose-seccion simulador-desglose-seccion--liquido">
+                        {lineasArancelColumna
+                          ? bloqueLiquidoDesglose(lineasArancelColumna, resultado.monedaPrincipal)
+                          : null}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-note simulador-desglose-column">
+                  <div className="simulador-desglose-sync-row">
+                    <h4>Honorario a cobrar</h4>
+                  </div>
+                  <div className="simulador-desglose-sync-row">
+                    <Input
+                      label={`Honorarios a cobrar (${etiquetaCampoPrincipal(resultado.monedaPrincipal)})`}
+                      name="honorarioAlternativoSim"
+                      type="text"
+                      value={honorarioAlternativoStr}
+                      onChange={(e) => setHonorarioAlternativoStr(e.target.value)}
+                      placeholder="0"
+                    />
+                    {honorarioAltValor === null && honorarioAlternativoStr.trim() !== '' ? (
+                      <p className="form-hint" style={{ color: '#991b1b' }}>
+                        Ingresá un importe válido (coma decimal; punto para miles, ej. 3.000).
+                      </p>
+                    ) : null}
+                    {honorarioAltValor === null && honorarioAlternativoStr.trim() === '' ? (
+                      <p className="form-hint" style={{ color: '#991b1b' }}>
+                        Ingresá el honorario a cobrar para ver el desglose.
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="simulador-desglose-sync-row simulador-desglose-sync-row--factura-y-aportes">
+                    <div className="simulador-desglose-stack">
+                      <div className="simulador-desglose-seccion">
+                        {lineasAltColumna ? (
+                          bloqueFacturaDesglose(
+                            lineasAltColumna,
+                            resultado.monedaPrincipal,
+                            'Honorarios a cobrar'
+                          )
+                        ) : honorarioAltValor !== null && !pctOk ? (
+                          <p className="form-hint" style={{ color: '#991b1b' }}>
+                            Elegí porcentajes válidos de Fonasa e IRPF para ver el desglose.
+                          </p>
+                        ) : null}
+                      </div>
+                      <div className="simulador-desglose-seccion">
+                        {lineasAltColumna && lineasArancelColumna ? (
+                          bloqueAportesDesglose(
+                            lineasArancelColumna,
+                            resultado.monedaPrincipal,
+                            <Select
+                              label="Categoría FRL (años de ejercicio)"
+                              name="simFrlAlt"
+                              value={frlOpcionId}
+                              onChange={(e) => setFrlOpcionId(e.target.value)}
+                              options={[...OPCIONES_FRL_FORM_SELECT]}
+                              placeholder="Elegí la categoría"
+                              className="simulador-desglose-select-field"
+                            />
+                          )
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="simulador-desglose-sync-row simulador-desglose-sync-row--desde-gastos">
+                    <div className="simulador-desglose-stack">
+                      <div className="simulador-desglose-seccion">
+                        <p className="simulador-desglose-sub">Gastos</p>
+                        {lineasAltColumna ? (
+                          <div className="simulador-desglose-bloque-interno">
+                            {bloqueValoresGastosDesglose(
+                              lineasAltColumna,
+                              resultado.monedaPrincipal
+                            )}
+                          </div>
+                        ) : null}
+                        <Select
+                          label="IRPF — alícuota estimada"
+                          name="simIrpfAlt"
+                          value={irpfPctStr}
+                          onChange={(e) => setIrpfPctStr(e.target.value)}
+                          options={OPCIONES_IRPF_SIM}
+                          placeholder="Elegí el porcentaje"
+                          className="simulador-desglose-select-field"
+                        />
+                        <Select
+                          label="Fonasa (sobre el 70 % del honorario)"
+                          name="simFonasaAlt"
+                          value={fonasaPctStr}
+                          onChange={(e) => setFonasaPctStr(e.target.value)}
+                          options={OPCIONES_FONASA_SIM}
+                          placeholder="Elegí el porcentaje"
+                          className="simulador-desglose-select-field"
+                        />
+                        <p className="simulador-desglose-irpf-leyenda">{TEXTO_LEYENDA_IRPF}</p>
+                        {lineasAltColumna ? (
+                          <div className="simulador-desglose-bloque-interno">
+                            {bloqueTotalGastosDesglose(
+                              lineasAltColumna,
+                              resultado.monedaPrincipal
+                            )}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="simulador-desglose-seccion simulador-desglose-seccion--liquido">
+                        {lineasAltColumna
+                          ? bloqueLiquidoDesglose(lineasAltColumna, resultado.monedaPrincipal)
+                          : null}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {seleccionCompleta && !resultado && (
             <div className="form-actions">
               <Button type="submit" variant="primary" disabled={cotizacionesCargando || !cotizaciones}>
                 {textoBoton}
