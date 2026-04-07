@@ -145,9 +145,7 @@ export const CODIGOS_ESTADO_CIVIL = [
   "CASADO",
   "DIVORCIADO",
   "VIUDO",
-  "UNION_LIBRE",
-  "SEPARADO",
-  "OTRO",
+  "UNION_CONCUBINARIA",
 ] as const;
 export type CodigoEstadoCivil = (typeof CODIGOS_ESTADO_CIVIL)[number];
 
@@ -156,9 +154,7 @@ export const ETIQUETA_ESTADO_CIVIL: Record<CodigoEstadoCivil, string> = {
   CASADO: "Casado/a",
   DIVORCIADO: "Divorciado/a",
   VIUDO: "Viudo/a",
-  UNION_LIBRE: "Union libre",
-  SEPARADO: "Separado/a",
-  OTRO: "Otro",
+  UNION_CONCUBINARIA: "Union concubinaria",
 };
 
 export function esEstadoCivilCliente(v: string): v is CodigoEstadoCivil {
@@ -167,10 +163,59 @@ export function esEstadoCivilCliente(v: string): v is CodigoEstadoCivil {
 
 export function etiquetaEstadoCivil(codigo: string | null | undefined): string {
   if (!codigo) return "—";
+  const detallado = parseEstadoCivilDetallado(codigo);
+  if (detallado) {
+    const base = ETIQUETA_ESTADO_CIVIL[detallado.codigo];
+    const partes = [base];
+    if (detallado.nupcias != null) {
+      partes.push(`${detallado.nupcias}ª nupcias`);
+    }
+    if (detallado.conyuge) {
+      partes.push(`con ${detallado.conyuge}`);
+    }
+    return partes.join(" · ");
+  }
+  // Compatibilidad con valores historicos
+  if (codigo === "UNION_LIBRE") return "Union concubinaria";
+  if (codigo === "SEPARADO" || codigo === "OTRO") return "—";
   if (esEstadoCivilCliente(codigo)) {
     return ETIQUETA_ESTADO_CIVIL[codigo];
   }
   return codigo;
+}
+
+export type EstadoCivilDetallado = {
+  codigo: CodigoEstadoCivil;
+  nupcias: number | null;
+  conyuge: string | null;
+};
+
+export function parseEstadoCivilDetallado(valor: string): EstadoCivilDetallado | null {
+  const raw = String(valor ?? "").trim();
+  if (!raw) return null;
+  if (esEstadoCivilCliente(raw)) {
+    return { codigo: raw, nupcias: null, conyuge: null };
+  }
+  const [codigoRaw, nupciasRaw, conyugeRaw] = raw.split("|");
+  if (!esEstadoCivilCliente(codigoRaw)) return null;
+  const n = nupciasRaw ? Number(nupciasRaw) : NaN;
+  const nupcias = Number.isInteger(n) && n > 0 ? n : null;
+  const conyuge = conyugeRaw?.trim() ? conyugeRaw.trim() : null;
+  return { codigo: codigoRaw, nupcias, conyuge };
+}
+
+export function construirEstadoCivilPersistido(
+  codigo: string | null,
+  nupcias: number | null,
+  conyuge: string | null,
+): string | null {
+  if (!codigo) return null;
+  if (!esEstadoCivilCliente(codigo)) return null;
+  const necesitaDetalle = codigo === "CASADO" || codigo === "DIVORCIADO" || codigo === "VIUDO";
+  if (!necesitaDetalle) return codigo;
+  const n = nupcias != null && Number.isInteger(nupcias) && nupcias > 0 ? nupcias : 1;
+  const c = (conyuge ?? "").trim();
+  return `${codigo}|${n}|${c}`;
 }
 
 /** Convierte input date (YYYY-MM-DD) a Date UTC medianoche; invalido devuelve null. */

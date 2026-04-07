@@ -6,7 +6,10 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma } from '@prisma/client';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientInitializationError,
+} from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -24,12 +27,12 @@ export class AuthService {
 
   /** Convierte fallos de Prisma en 503 con mensaje claro (evita "Internal server error" opaco). */
   private rethrowPrismaDb(e: unknown): never {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    if (e instanceof PrismaClientKnownRequestError) {
       if (['P2021', 'P2022', 'P2010', 'P1003'].includes(e.code)) {
         throw new ServiceUnavailableException(MSG_DB_API);
       }
     }
-    if (e instanceof Prisma.PrismaClientInitializationError) {
+    if (e instanceof PrismaClientInitializationError) {
       throw new ServiceUnavailableException(
         'No se pudo conectar a PostgreSQL. Revisá DATABASE_URL en escribanos/backend/.env y que el servidor esté en marcha.',
       );

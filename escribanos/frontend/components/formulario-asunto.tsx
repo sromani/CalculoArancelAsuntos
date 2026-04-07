@@ -2,10 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  type PuestoCatalogo,
-  ETIQUETA_PUESTO,
-} from "@/lib/profesional-equipo-catalogo";
+import { datosPorCapitulo } from "@/lib/arancel/data";
 
 type TipoAsunto = "TODOS" | "NOTARIAL" | "LEGAL";
 
@@ -20,24 +17,10 @@ type AsuntoItem = {
   nombre: string;
 };
 
-type GrupoProfCatalogo = "DIRECCION" | "LEGAL_A_CARGO" | "LEGAL_COLABORADOR" | "CONTADOR";
-
 type ProfesionalItem = {
   id: string;
   nombre: string;
-  profesion: string;
-  funcion: string;
-  grupo: GrupoProfCatalogo;
-  puesto: string;
-};
-
-function etiquetaPuesto(puesto: string): string {
-  return ETIQUETA_PUESTO[puesto as PuestoCatalogo] ?? puesto;
-}
-
-type SocioItem = {
-  id: string;
-  nombre: string;
+  grupo: string;
 };
 
 function hoyIsoDate(): string {
@@ -53,7 +36,6 @@ export function FormularioAsunto() {
   const [tipo, setTipo] = useState<TipoAsunto>("NOTARIAL");
   const [asuntos, setAsuntos] = useState<AsuntoItem[]>([]);
   const [profesionales, setProfesionales] = useState<ProfesionalItem[]>([]);
-  const [socios, setSocios] = useState<SocioItem[]>([]);
   const [clienteElegido, setClienteElegido] = useState<ClienteItem | null>(null);
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [resultadosCliente, setResultadosCliente] = useState<ClienteItem[]>([]);
@@ -63,11 +45,7 @@ export function FormularioAsunto() {
 
   const [asuntoSeleccionado, setAsuntoSeleccionado] = useState("");
   const [nuevoAsunto, setNuevoAsunto] = useState("");
-  const [profesionalACargoId, setProfesionalACargoId] = useState("");
-  const [colaboradorACargoId, setColaboradorACargoId] = useState("");
-  const [colaboradorACargo2Id, setColaboradorACargo2Id] = useState("");
-  const [contadorReferenteId, setContadorReferenteId] = useState("");
-  const [socioReferente, setSocioReferente] = useState("");
+  const [profesionalACargoTexto, setProfesionalACargoTexto] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fechaInicio, setFechaInicio] = useState(hoyIsoDate);
   const [fechaAlerta, setFechaAlerta] = useState("");
@@ -75,31 +53,23 @@ export function FormularioAsunto() {
   const [guardando, setGuardando] = useState(false);
   const [cargando, setCargando] = useState(true);
 
-  const profesionalesLegalACargo = profesionales.filter((p) => p.grupo === "LEGAL_A_CARGO");
-  const colaboradoresLegal = profesionales.filter((p) => p.grupo === "LEGAL_COLABORADOR");
-  const contadores = profesionales.filter((p) => p.grupo === "CONTADOR");
-
-  const elegiblesColaboracion = useMemo(
-    () => colaboradoresLegal.filter((p) => p.id !== profesionalACargoId),
-    [colaboradoresLegal, profesionalACargoId],
+  const profesionalesLegalACargo = useMemo(
+    () => profesionales.filter((p) => p.grupo === "LEGAL_A_CARGO"),
+    [profesionales],
   );
 
-  const elegiblesColaborador2 = useMemo(
-    () =>
-      elegiblesColaboracion.filter(
-        (p) => !colaboradorACargoId || p.id !== colaboradorACargoId,
-      ),
-    [elegiblesColaboracion, colaboradorACargoId],
-  );
+  const asuntosDesdeSimulador = useMemo(() => {
+    const base = Object.values(datosPorCapitulo)
+      .flatMap((cap) => cap.documentos.map((doc) => doc.nombre.trim()))
+      .filter(Boolean);
+    return Array.from(new Set(base)).sort((a, b) => a.localeCompare(b, "es"));
+  }, []);
 
-  useEffect(() => {
-    setColaboradorACargoId((c) => (c === profesionalACargoId ? "" : c));
-    setColaboradorACargo2Id((c2) => (c2 === profesionalACargoId ? "" : c2));
-  }, [profesionalACargoId]);
-
-  useEffect(() => {
-    setColaboradorACargo2Id((c2) => (c2 && c2 === colaboradorACargoId ? "" : c2));
-  }, [colaboradorACargoId]);
+  const opcionesCatalogo = useMemo(() => {
+    const actuales = asuntos.map((a) => a.nombre.trim()).filter(Boolean);
+    const mezclados = Array.from(new Set([...asuntosDesdeSimulador, ...actuales]));
+    return mezclados.sort((a, b) => a.localeCompare(b, "es"));
+  }, [asuntos, asuntosDesdeSimulador]);
 
   useEffect(() => {
     async function cargarCatalogos() {
@@ -113,15 +83,9 @@ export function FormularioAsunto() {
 
         const asuntosData = (data?.asuntos ?? []) as AsuntoItem[];
         const profesionalesData = (data?.profesionales ?? []) as ProfesionalItem[];
-        const sociosData = (data?.socios ?? []) as SocioItem[];
-
         setAsuntos(asuntosData);
         setProfesionales(profesionalesData);
-        setSocios(sociosData);
         setAsuntoSeleccionado(asuntosData[0]?.nombre ?? "");
-        setSocioReferente("");
-        setProfesionalACargoId("");
-        setContadorReferenteId(profesionalesData.find((p) => p.grupo === "CONTADOR")?.id ?? "");
       } catch {
         setMensaje("Error al cargar catalogos.");
       } finally {
@@ -176,23 +140,6 @@ export function FormularioAsunto() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, []);
 
-  function agregarNuevoAsunto() {
-    const limpio = nuevoAsunto.trim();
-    if (!limpio) {
-      setMensaje("Escribi un nombre para el nuevo asunto.");
-      return;
-    }
-    if (asuntos.some((asunto) => asunto.nombre.toLowerCase() === limpio.toLowerCase())) {
-      setMensaje("Ese asunto ya existe en la lista.");
-      return;
-    }
-    const actualizados = [...asuntos, { id: `tmp-${Date.now()}`, nombre: limpio }];
-    setAsuntos(actualizados);
-    setAsuntoSeleccionado(limpio);
-    setNuevoAsunto("");
-    setMensaje(`Asunto "${limpio}" agregado (se creara en catalogo al guardar).`);
-  }
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -202,18 +149,28 @@ export function FormularioAsunto() {
     }
 
     if (!asuntoSeleccionado.trim()) {
-      setMensaje("Debes seleccionar o crear un asunto de catalogo.");
+      setMensaje("Debes seleccionar un asunto del catálogo o escribir uno nuevo.");
       return;
     }
 
-    if (
-      colaboradorACargoId &&
-      colaboradorACargo2Id &&
-      colaboradorACargoId === colaboradorACargo2Id
-    ) {
-      setMensaje("Los dos colaboradores deben ser personas distintas.");
+    const asuntoFinal = asuntoSeleccionado === "__OTRO__" ? nuevoAsunto.trim() : asuntoSeleccionado.trim();
+    if (!asuntoFinal) {
+      setMensaje("Si elegís 'Otro', escribí el nombre del asunto.");
       return;
     }
+
+    const profesionalTexto = profesionalACargoTexto.trim();
+    const profesionalMatch = profesionalesLegalACargo.find(
+      (p) => p.nombre.trim().toLocaleLowerCase("es-UY") === profesionalTexto.toLocaleLowerCase("es-UY"),
+    );
+    const profesionalACargoId = profesionalMatch?.id ?? null;
+    const profesionalLibre = profesionalTexto && !profesionalMatch ? profesionalTexto : null;
+    const descripcionFinal = [
+      profesionalLibre ? `[PROFESIONAL_A_CARGO_LIBRE]: ${profesionalLibre}` : "",
+      descripcion.trim(),
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     setGuardando(true);
     try {
@@ -223,13 +180,13 @@ export function FormularioAsunto() {
         body: JSON.stringify({
           tipo,
           clienteId: clienteElegido.id,
-          asuntoNombre: asuntoSeleccionado.trim(),
-          profesionalACargoId: profesionalACargoId.trim() || null,
-          colaboradorACargoId: colaboradorACargoId || null,
-          colaboradorACargo2Id: colaboradorACargo2Id || null,
-          contadorReferenteId: contadorReferenteId || null,
-          socioReferenteId: socioReferente.trim() || null,
-          descripcion: descripcion.trim() || null,
+          asuntoNombre: asuntoFinal,
+          profesionalACargoId,
+          colaboradorACargoId: null,
+          colaboradorACargo2Id: null,
+          contadorReferenteId: null,
+          socioReferenteId: null,
+          descripcion: descripcionFinal || null,
           fechaInicio: fechaInicio || undefined,
           fechaAlertaVencimiento: fechaAlerta || null,
         }),
@@ -264,12 +221,7 @@ export function FormularioAsunto() {
   }
 
   return (
-    <form className="space-y-8 rounded-lg border border-black/[0.06] bg-white p-6 sm:p-8" onSubmit={onSubmit}>
-      <div>
-        <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Nuevo asunto</h2>
-        <p className="mt-2 text-sm text-neutral-600">Cliente, catálogo y fechas. Socio referente y equipo a cargo opcionales.</p>
-      </div>
-
+    <form className="space-y-8 rounded-lg bg-white p-6 sm:p-8" onSubmit={onSubmit}>
       <div className="grid gap-5 md:grid-cols-2">
         <div className="space-y-1.5">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Cliente</span>
@@ -367,33 +319,48 @@ export function FormularioAsunto() {
           <select
             className="input-app"
             value={asuntoSeleccionado}
-            onChange={(e) => setAsuntoSeleccionado(e.target.value)}
+            onChange={(e) => {
+              setAsuntoSeleccionado(e.target.value);
+              setMensaje("");
+            }}
           >
-            {asuntos.length === 0 ? <option value="">Sin asuntos en catalogo</option> : null}
-            {asuntos.map((asunto) => (
-              <option key={asunto.id} value={asunto.nombre}>
-                {asunto.nombre}
+            <option value="">Seleccionar…</option>
+            {opcionesCatalogo.map((nombre) => (
+              <option key={nombre} value={nombre}>
+                {nombre}
               </option>
             ))}
+            <option value="__OTRO__">OTRO (escribir manualmente)</option>
           </select>
         </label>
 
-        <div className="flex flex-col gap-2 sm:flex-row">
+        {asuntoSeleccionado === "__OTRO__" ? (
           <input
-            className="input-app flex-1"
-            placeholder="Agregar nuevo asunto al catalogo"
+            className="input-app"
+            placeholder="Escribir otro asunto"
             value={nuevoAsunto}
             onChange={(e) => setNuevoAsunto(e.target.value)}
           />
-          <button
-            className="btn-secondary shrink-0 px-4 py-2 text-sm"
-            onClick={agregarNuevoAsunto}
-            type="button"
-          >
-            Agregar
-          </button>
-        </div>
+        ) : null}
       </div>
+
+      <label className="space-y-1.5">
+        <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+          Profesional a cargo (opcional)
+        </span>
+        <input
+          className="input-app"
+          list="profesionales-a-cargo"
+          value={profesionalACargoTexto}
+          onChange={(e) => setProfesionalACargoTexto(e.target.value)}
+          placeholder="Escribí el nombre del profesional"
+        />
+        <datalist id="profesionales-a-cargo">
+          {profesionalesLegalACargo.map((p) => (
+            <option key={p.id} value={p.nombre} />
+          ))}
+        </datalist>
+      </label>
 
       <label className="space-y-1.5">
         <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Descripción (opcional)</span>
@@ -424,95 +391,6 @@ export function FormularioAsunto() {
           />
         </label>
       </div>
-
-      <div className="grid gap-5 border-t border-neutral-100 pt-8 md:grid-cols-2">
-        <label className="space-y-1.5">
-          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Equipo a cargo (opcional)</span>
-          <select
-            className="input-app"
-            value={profesionalACargoId}
-            onChange={(e) => setProfesionalACargoId(e.target.value)}
-          >
-            <option value="">— Sin asignar</option>
-            {profesionalesLegalACargo.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.nombre} — {etiquetaPuesto(p.puesto)}
-                {p.funcion ? ` (${p.funcion})` : ""}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="space-y-1.5">
-          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Colaborador 1 (opcional)</span>
-          <select
-            className="input-app"
-            value={colaboradorACargoId}
-            onChange={(e) => setColaboradorACargoId(e.target.value)}
-          >
-            <option value="">—</option>
-            {elegiblesColaboracion.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.nombre} — {etiquetaPuesto(p.puesto)}
-                {p.funcion ? ` (${p.funcion})` : ""}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="space-y-1.5">
-          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Colaborador 2 (opcional)</span>
-          <select
-            className="input-app"
-            value={colaboradorACargo2Id}
-            onChange={(e) => setColaboradorACargo2Id(e.target.value)}
-          >
-            <option value="">—</option>
-            {elegiblesColaborador2.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.nombre} — {etiquetaPuesto(p.puesto)}
-                {p.funcion ? ` (${p.funcion})` : ""}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="space-y-1.5 md:col-span-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Contador referente (opcional)</span>
-          <select
-            className="input-app"
-            value={contadorReferenteId}
-            onChange={(e) => setContadorReferenteId(e.target.value)}
-          >
-            <option value="">—</option>
-            {contadores.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.nombre}
-                {p.funcion ? ` — ${p.funcion}` : ""}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-[var(--gris-texto)]/80">
-            Los contadores se cargan en Maestros, sección Contador.
-          </p>
-        </label>
-      </div>
-
-      <label className="space-y-1.5">
-        <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Socio referente (opcional)</span>
-        <select
-          className="input-app"
-          value={socioReferente}
-          onChange={(e) => setSocioReferente(e.target.value)}
-        >
-          <option value="">— Sin asignar</option>
-          {socios.map((socio) => (
-            <option key={socio.id} value={socio.id}>
-              {socio.nombre}
-            </option>
-          ))}
-        </select>
-      </label>
 
       <div className="border-t border-neutral-100 pt-8">
         <button

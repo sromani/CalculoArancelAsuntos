@@ -93,6 +93,20 @@ function fmtFecha(s: string | null | undefined): string {
   }
 }
 
+function profesionalLibreDesdeDescripcion(descripcion: string | null | undefined): string | null {
+  const s = String(descripcion ?? "");
+  const m = s.match(/\[PROFESIONAL_A_CARGO_LIBRE\]:\s*(.+)/i);
+  return m?.[1]?.trim() || null;
+}
+
+function descripcionSinMarcador(descripcion: string | null | undefined): string | null {
+  const s = String(descripcion ?? "");
+  const limpio = s
+    .replace(/\[PROFESIONAL_A_CARGO_LIBRE\]:\s*.+(?:\r?\n)?/i, "")
+    .trim();
+  return limpio.length > 0 ? limpio : null;
+}
+
 /** Valor inicial para inputs type="date" (zona local). */
 function hoyIsoDate(): string {
   const d = new Date();
@@ -435,7 +449,8 @@ export function FichaAsunto({ id }: { id: string }) {
           ) : null}
           {asunto.descripcion ? (
             <p>
-              <span className="text-[var(--gris-texto)]/90">Descripcion:</span> {asunto.descripcion}
+              <span className="text-[var(--gris-texto)]/90">Descripcion:</span>{" "}
+              {descripcionSinMarcador(asunto.descripcion)}
             </p>
           ) : null}
         </div>
@@ -463,7 +478,9 @@ export function FichaAsunto({ id }: { id: string }) {
                 </span>
               </>
             ) : (
-              <span className="text-neutral-500">Sin asignar</span>
+              <span className="text-neutral-500">
+                {profesionalLibreDesdeDescripcion(asunto.descripcion) ?? "Sin asignar"}
+              </span>
             )}
           </p>
           {asunto.colaboradorACargo ? (

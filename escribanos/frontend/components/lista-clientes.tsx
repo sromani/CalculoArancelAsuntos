@@ -69,29 +69,11 @@ export function ListaClientes({ refreshKey = 0 }: { refreshKey?: number }) {
     void cargar().catch(() => setCargando(false));
   }, [cargar, refreshKey]);
 
-  async function eliminar(id: string, nombre: string) {
-    if (!window.confirm(`Eliminar cliente "${nombre}"? Solo si no tiene asuntos asociados.`)) {
-      return;
-    }
-    setMensaje("");
-    try {
-      const response = await fetch(`/api/clientes/${id}`, { method: "DELETE" });
-      const data = await response.json();
-      if (!response.ok) {
-        setMensaje(data?.error ?? "No se pudo eliminar.");
-        return;
-      }
-      await cargar();
-    } catch {
-      setMensaje("Error de conexion.");
-    }
-  }
-
   return (
-    <div className="min-w-0 space-y-8">
+    <div className="min-w-0 space-y-10">
       <div>
         <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Directorio</h2>
-        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <label className="min-w-0 flex-1 sm:max-w-md">
             <span className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-500">Buscar</span>
             <input
@@ -123,12 +105,12 @@ export function ListaClientes({ refreshKey = 0 }: { refreshKey?: number }) {
           Cargando…
         </p>
       ) : lista.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-neutral-200 bg-neutral-50/50 px-6 py-10 text-center text-sm text-neutral-600">
+        <p className="rounded-lg bg-neutral-50/50 px-6 py-10 text-center text-sm text-neutral-600">
           Sin resultados.
         </p>
       ) : (
         <>
-          <div className="hidden min-w-0 overflow-hidden rounded-lg border border-black/[0.06] bg-white md:block">
+          <div className="hidden min-w-0 overflow-hidden rounded-lg bg-white md:block">
             <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
               <table className="w-full min-w-[920px] text-left text-sm text-neutral-800">
                 <thead>
@@ -148,7 +130,6 @@ export function ListaClientes({ refreshKey = 0 }: { refreshKey?: number }) {
                     <th className="max-w-[200px] px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                       Contacto
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-neutral-500" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-100">
@@ -171,15 +152,6 @@ export function ListaClientes({ refreshKey = 0 }: { refreshKey?: number }) {
                       <td className="px-4 py-3 text-neutral-600">{etiquetaTipoPersonaCliente(c.tipoPersona)}</td>
                       <td className="max-w-[240px] px-4 py-3 text-neutral-600">
                         {[c.telefono, c.email, c.contacto].filter(Boolean).join(" · ") || "—"}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <button
-                          type="button"
-                          className="inline-flex min-h-[2.5rem] min-w-[5.5rem] items-center justify-center rounded-[10px] border-2 border-red-200 bg-red-50 px-3 text-sm font-semibold text-red-800 transition-colors hover:bg-red-100"
-                          onClick={() => void eliminar(c.id, c.nombre)}
-                        >
-                          Eliminar
-                        </button>
                       </td>
                     </tr>
                   ))}
@@ -205,13 +177,6 @@ export function ListaClientes({ refreshKey = 0 }: { refreshKey?: number }) {
                 <p className="mt-1 text-sm text-neutral-500">
                   {[c.telefono, c.email, c.contacto].filter(Boolean).join(" · ") || "—"}
                 </p>
-                <button
-                  type="button"
-                  className="mt-4 inline-flex min-h-[3rem] w-full items-center justify-center rounded-[10px] border-2 border-red-200 bg-red-50 px-4 text-base font-semibold text-red-800 transition-colors hover:bg-red-100"
-                  onClick={() => void eliminar(c.id, c.nombre)}
-                >
-                  Eliminar
-                </button>
               </li>
             ))}
           </ul>

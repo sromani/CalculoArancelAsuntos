@@ -42,9 +42,14 @@ export default function SobreNosotros() {
 
       <section className="sobre-cta">
         <h2>¿Listo para optimizar tu trabajo?</h2>
-        <a href="/simulador" className="cta-button">
-          Comenzar ahora →
-        </a>
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <a href="/simulador" className="cta-button">
+            Comenzar ahora →
+          </a>
+          <a href="/planes" className="cta-button">
+            Ver planes
+          </a>
+        </div>
       </section>
     </main>
   )

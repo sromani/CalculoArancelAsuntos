@@ -18,15 +18,6 @@ export default function Navbar() {
         <Link href="/" className={pathname === '/' ? 'active' : ''}>
           Inicio
         </Link>
-        <Link href="/simulador" className={pathname === '/simulador' ? 'active' : ''}>
-          Simulador de Arancel Notarial
-        </Link>
-        <Link href="/planes" className={pathname === '/planes' ? 'active' : ''}>
-          Planes
-        </Link>
-        <Link href="/sobre-nosotros" className={pathname === '/sobre-nosotros' ? 'active' : ''}>
-          Sobre Nosotros
-        </Link>
         {isAuthenticated && !loading ? (
           <Link
             href="/estudio"
@@ -35,6 +26,12 @@ export default function Navbar() {
             Gestión estudio
           </Link>
         ) : null}
+        <Link href="/simulador" className={pathname === '/simulador' ? 'active' : ''}>
+          Simulador de Arancel Notarial
+        </Link>
+        <Link href="/sobre-nosotros" className={pathname === '/sobre-nosotros' ? 'active' : ''}>
+          Sobre Nosotros
+        </Link>
       </div>
 
       <div className="navbar-auth">

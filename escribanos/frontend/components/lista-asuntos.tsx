@@ -27,11 +27,6 @@ type ProfesionalFiltro = {
   nombre: string;
 };
 
-type SocioFiltro = {
-  id: string;
-  nombre: string;
-};
-
 type RolMe =
   | "ADMIN"
   | "USUARIO"
@@ -41,8 +36,7 @@ type RolMe =
   | "CONTADOR"
   | "SOLO_LECTURA";
 
-const panel =
-  "rounded-lg border border-black/[0.06] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:p-8";
+const panel = "rounded-lg bg-white p-6 sm:p-8";
 
 const labelMin = "mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-500";
 
@@ -74,27 +68,28 @@ function fmtFechaCorta(iso: string | null | undefined): string {
   }
 }
 
-function textoColaboradores(a: AsuntoRow): string {
-  const parts = [a.colaboradorACargo?.nombre, a.colaboradorACargo2?.nombre].filter(Boolean) as string[];
-  return parts.length ? parts.join(" · ") : "—";
+function profesionalDesdeDescripcion(descripcion: string | null | undefined): string | null {
+  const s = String(descripcion ?? "");
+  const m = s.match(/\[PROFESIONAL_A_CARGO_LIBRE\]:\s*(.+)/i);
+  return m?.[1]?.trim() || null;
+}
+
+function nombreProfesionalMostrado(a: AsuntoRow): string {
+  return a.profesionalACargo?.nombre ?? profesionalDesdeDescripcion(a.descripcion) ?? "—";
 }
 
 export function ListaAsuntos() {
   const [estado, setEstado] = useState<string>("");
   const [tipo, setTipo] = useState<string>("");
   const [profesionalACargoId, setProfesionalACargoId] = useState<string>("");
-  const [socioReferenteId, setSocioReferenteId] = useState<string>("");
   const [anioInicio, setAnioInicio] = useState<string>("");
   const [fechaInicioDesde, setFechaInicioDesde] = useState<string>("");
   const [fechaInicioHasta, setFechaInicioHasta] = useState<string>("");
   const [fechaFinalizacionDesde, setFechaFinalizacionDesde] = useState<string>("");
   const [fechaFinalizacionHasta, setFechaFinalizacionHasta] = useState<string>("");
   const [profesionales, setProfesionales] = useState<ProfesionalFiltro[]>([]);
-  const [socios, setSocios] = useState<SocioFiltro[]>([]);
   const [q, setQ] = useState("");
   const [debounced, setDebounced] = useState("");
-  const [sinEquipo, setSinEquipo] = useState(false);
-  const [sinContador, setSinContador] = useState(false);
   const [lista, setLista] = useState<AsuntoRow[]>([]);
   const [cargando, setCargando] = useState(true);
   const [mensaje, setMensaje] = useState("");
@@ -106,29 +101,23 @@ export function ListaAsuntos() {
         estado ||
           tipo ||
           profesionalACargoId ||
-          socioReferenteId ||
           anioInicio ||
           fechaInicioDesde ||
           fechaInicioHasta ||
           fechaFinalizacionDesde ||
           fechaFinalizacionHasta ||
-          debounced ||
-          sinEquipo ||
-          sinContador,
+          debounced,
       ),
     [
       estado,
       tipo,
       profesionalACargoId,
-      socioReferenteId,
       anioInicio,
       fechaInicioDesde,
       fechaInicioHasta,
       fechaFinalizacionDesde,
       fechaFinalizacionHasta,
       debounced,
-      sinEquipo,
-      sinContador,
     ],
   );
 
@@ -136,14 +125,11 @@ export function ListaAsuntos() {
     setEstado("");
     setTipo("");
     setProfesionalACargoId("");
-    setSocioReferenteId("");
     setAnioInicio("");
     setFechaInicioDesde("");
     setFechaInicioHasta("");
     setFechaFinalizacionDesde("");
     setFechaFinalizacionHasta("");
-    setSinEquipo(false);
-    setSinContador(false);
     setQ("");
   }
 
@@ -164,7 +150,6 @@ export function ListaAsuntos() {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         const p = (d?.profesionales ?? []) as { id?: string; nombre?: string; grupo?: string }[];
-        const s = (d?.socios ?? []) as { id?: string; nombre?: string }[];
         setProfesionales(
           p
             .filter(
@@ -175,15 +160,9 @@ export function ListaAsuntos() {
             )
             .map((x) => ({ id: x.id as string, nombre: x.nombre as string })),
         );
-        setSocios(
-          s
-            .filter((x) => typeof x.id === "string" && typeof x.nombre === "string")
-            .map((x) => ({ id: x.id as string, nombre: x.nombre as string })),
-        );
       })
       .catch(() => {
         setProfesionales([]);
-        setSocios([]);
       });
   }, []);
 
@@ -195,15 +174,12 @@ export function ListaAsuntos() {
       if (estado) params.set("estado", estado);
       if (tipo) params.set("tipo", tipo);
       if (profesionalACargoId) params.set("profesionalACargoId", profesionalACargoId);
-      if (socioReferenteId) params.set("socioReferenteId", socioReferenteId);
       if (anioInicio) params.set("anioInicio", anioInicio);
       if (fechaInicioDesde) params.set("fechaInicioDesde", fechaInicioDesde);
       if (fechaInicioHasta) params.set("fechaInicioHasta", fechaInicioHasta);
       if (fechaFinalizacionDesde) params.set("fechaFinalizacionDesde", fechaFinalizacionDesde);
       if (fechaFinalizacionHasta) params.set("fechaFinalizacionHasta", fechaFinalizacionHasta);
       if (debounced) params.set("q", debounced);
-      if (sinEquipo) params.set("sinEquipo", "1");
-      if (sinContador) params.set("sinContador", "1");
       const qs = params.toString();
       const response = await fetch(qs ? `/api/asuntos?${qs}` : "/api/asuntos");
       const data = await response.json();
@@ -222,14 +198,11 @@ export function ListaAsuntos() {
     estado,
     tipo,
     profesionalACargoId,
-    socioReferenteId,
     anioInicio,
     fechaInicioDesde,
     fechaInicioHasta,
     fechaFinalizacionDesde,
     fechaFinalizacionHasta,
-    sinEquipo,
-    sinContador,
   ]);
 
   useEffect(() => {
@@ -313,47 +286,6 @@ export function ListaAsuntos() {
                   ))}
                 </select>
               </label>
-              <label>
-                <span className={labelMin}>Socio referente</span>
-                <select
-                  className="input-app"
-                  value={socioReferenteId}
-                  onChange={(e) => setSocioReferenteId(e.target.value)}
-                >
-                  <option value="">Todos</option>
-                  {socios.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.nombre}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          </div>
-
-          <div className={seccionFiltro}>
-            <p className="mb-3 text-sm text-neutral-600">
-              Pendientes opcionales: sin colaboradores o sin contador. Socio referente y profesional a cargo pueden quedar sin asignar.
-            </p>
-            <div className="flex flex-wrap gap-6">
-              <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-neutral-800">
-                <input
-                  type="checkbox"
-                  className="size-4 rounded border-neutral-300 text-[var(--verde-principal)] focus:ring-[var(--verde-principal)]"
-                  checked={sinEquipo}
-                  onChange={(e) => setSinEquipo(e.target.checked)}
-                />
-                Sin equipo
-              </label>
-              <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-neutral-800">
-                <input
-                  type="checkbox"
-                  className="size-4 rounded border-neutral-300 text-[var(--verde-principal)] focus:ring-[var(--verde-principal)]"
-                  checked={sinContador}
-                  onChange={(e) => setSinContador(e.target.checked)}
-                />
-                Sin contador
-              </label>
             </div>
           </div>
 
@@ -416,7 +348,7 @@ export function ListaAsuntos() {
           Cargando…
         </p>
       ) : lista.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-neutral-200 bg-neutral-50/50 px-6 py-12 text-center">
+        <div className="rounded-lg bg-neutral-50/50 px-6 py-12 text-center">
           <p className="text-sm font-medium text-[var(--verde-titulo)]">Sin resultados</p>
           <p className="mx-auto mt-2 max-w-sm text-sm text-neutral-600">
             {hayFiltrosActivos ? "Probá otros filtros o limpiá la búsqueda." : "Creá un asunto desde el botón superior."}
@@ -433,7 +365,7 @@ export function ListaAsuntos() {
         </div>
       ) : (
         <>
-          <div className="hidden min-w-0 overflow-hidden rounded-lg border border-black/[0.06] bg-white md:block">
+          <div className="hidden min-w-0 overflow-hidden rounded-lg bg-white md:block">
             <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
               <table className="w-full min-w-[960px] text-left text-sm text-neutral-800">
                 <thead>
@@ -445,10 +377,7 @@ export function ListaAsuntos() {
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Tipo</th>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Cliente</th>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Asunto</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Socio</th>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Prof.</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Colab.</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Cont.</th>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">Inicio</th>
                     <th className="sticky right-0 z-30 min-w-[7.5rem] border-l border-neutral-200 bg-neutral-50 px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-neutral-500 shadow-[-6px_0_12px_-4px_rgba(0,0,0,0.06)]">
                       Acción
@@ -485,24 +414,9 @@ export function ListaAsuntos() {
                       </td>
                       <td
                         className="max-w-[120px] truncate px-4 py-3 text-neutral-600"
-                        title={a.socioReferente?.nombre}
+                        title={nombreProfesionalMostrado(a) !== "—" ? nombreProfesionalMostrado(a) : undefined}
                       >
-                        {a.socioReferente?.nombre ?? "—"}
-                      </td>
-                      <td
-                        className="max-w-[120px] truncate px-4 py-3 text-neutral-600"
-                        title={a.profesionalACargo?.nombre}
-                      >
-                        {a.profesionalACargo?.nombre ?? "—"}
-                      </td>
-                      <td
-                        className="max-w-[140px] truncate px-4 py-3 text-neutral-600"
-                        title={textoColaboradores(a) === "—" ? undefined : textoColaboradores(a)}
-                      >
-                        {textoColaboradores(a)}
-                      </td>
-                      <td className="max-w-[100px] truncate px-4 py-3 text-neutral-600" title={a.contadorReferente?.nombre}>
-                        {a.contadorReferente?.nombre ?? "—"}
+                        {nombreProfesionalMostrado(a)}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 tabular-nums text-neutral-600">{fmtFechaCorta(a.fechaInicio)}</td>
                       <td className="sticky right-0 z-10 min-w-[7.5rem] border-l border-neutral-100 bg-white px-3 py-3 text-right shadow-[-8px_0_14px_-6px_rgba(0,0,0,0.07)] group-hover:bg-[rgba(0,166,81,0.04)]">
@@ -522,10 +436,7 @@ export function ListaAsuntos() {
 
           <ul className="space-y-4 md:hidden">
             {lista.map((a) => (
-              <li
-                key={a.id}
-                className="rounded-xl border border-black/[0.06] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
-              >
+              <li key={a.id} className="rounded-xl bg-white p-4">
                 <div className="flex items-start gap-3">
                   <div className="min-w-0 flex-1">
                     <p className="text-xs text-neutral-400">#{a.ordinal}</p>
@@ -557,20 +468,8 @@ export function ListaAsuntos() {
                     <dd>{etiquetaTipo(a.tipo)}</dd>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Socio</dt>
-                    <dd className="min-w-0 truncate text-right">{a.socioReferente?.nombre ?? "—"}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
                     <dt className="text-neutral-400">Prof.</dt>
-                    <dd className="min-w-0 truncate text-right">{a.profesionalACargo?.nombre ?? "—"}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Colab.</dt>
-                    <dd className="min-w-0 truncate text-right">{textoColaboradores(a)}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Cont.</dt>
-                    <dd className="min-w-0 truncate text-right">{a.contadorReferente?.nombre ?? "—"}</dd>
+                    <dd className="min-w-0 truncate text-right">{nombreProfesionalMostrado(a)}</dd>
                   </div>
                   <div className="flex justify-between gap-2">
                     <dt className="text-neutral-400">Inicio</dt>

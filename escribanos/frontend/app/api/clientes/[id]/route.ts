@@ -5,6 +5,7 @@ import { registrarAuditoria } from "@/lib/auditoria";
 import { obtenerErrorConfiguracionDb } from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
 import {
+  construirEstadoCivilPersistido,
   esEstadoCivilCliente,
   esTipoDocumentoCliente,
   mensajeValidacionDocumentoCliente,
@@ -49,6 +50,15 @@ export async function PATCH(request: Request, context: Params) {
 
     const fechaNacimientoInput = body?.fechaNacimiento;
     const estadoCivilInput = body?.estadoCivil;
+    const nupciasInput = body?.nupcias;
+    const conyugeInput = body?.conyuge;
+    if (nombre !== undefined && nombre !== "" && !nombre.includes(",")) {
+      return NextResponse.json(
+        { error: "Nombre invalido. Debe incluir apellidos y nombres." },
+        { status: 400 },
+      );
+    }
+
 
     const existente = await prisma.cliente.findUnique({ where: { id } });
     if (!existente) {
@@ -136,7 +146,13 @@ export async function PATCH(request: Request, context: Params) {
       if (tipoFinal === TipoPersona.JURIDICA) {
         estadoVal = null;
       } else if (estadoCivilInput !== undefined) {
-        estadoVal = estadoCivil ?? null;
+        const nupciasRaw =
+          nupciasInput !== undefined && nupciasInput !== null && String(nupciasInput).trim() !== ""
+            ? Number(nupciasInput)
+            : null;
+        const conyugeRaw =
+          conyugeInput !== undefined && conyugeInput !== null ? String(conyugeInput).trim() || null : null;
+        estadoVal = construirEstadoCivilPersistido(estadoCivil ?? null, nupciasRaw, conyugeRaw);
       } else {
         estadoVal = existente.estadoCivil;
       }

@@ -11,6 +11,7 @@ import {
 } from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
 import {
+  construirEstadoCivilPersistido,
   esEstadoCivilCliente,
   esTipoDocumentoCliente,
   mensajeValidacionDocumentoCliente,
@@ -91,6 +92,9 @@ export async function POST(request: Request) {
     if (estadoCivilRaw !== null && !esEstadoCivilCliente(estadoCivilRaw)) {
       return NextResponse.json({ error: "Estado civil invalido." }, { status: 400 });
     }
+    const nupciasRaw =
+      body?.nupcias != null && String(body.nupcias).trim() !== "" ? Number(body.nupcias) : null;
+    const conyugeRaw = body?.conyuge != null ? String(body.conyuge).trim() || null : null;
 
     let fechaNacimiento: Date | null = null;
     if (tipoPersona === TipoPersona.FISICA) {
@@ -116,8 +120,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Tipo de persona invalido." }, { status: 400 });
     }
 
-    if (!nombre) {
-      return NextResponse.json({ error: "El nombre es obligatorio." }, { status: 400 });
+    if (!nombre || !nombre.includes(",")) {
+      return NextResponse.json({ error: "Apellidos y nombres son obligatorios." }, { status: 400 });
     }
 
     /** Alta en dos pasos: el `create` solo con campos “base” evita fallos si el Prisma Client
@@ -140,12 +144,17 @@ export async function POST(request: Request) {
       tipoPersona === TipoPersona.FISICA &&
       (fechaNacimiento !== null || estadoCivilRaw !== null)
     ) {
+      const estadoCivilPersistido = construirEstadoCivilPersistido(
+        estadoCivilRaw,
+        nupciasRaw,
+        conyugeRaw,
+      );
       await prisma.$executeRaw(
         Prisma.sql`
           UPDATE "Cliente"
           SET
             "fechaNacimiento" = ${fechaNacimiento},
-            "estadoCivil" = ${estadoCivilRaw}
+            "estadoCivil" = ${estadoCivilPersistido}
           WHERE "id" = ${cliente.id}
         `,
       );

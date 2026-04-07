@@ -13,12 +13,20 @@ export default function AsuntosPage() {
             Expedientes del estudio. Filtrá, abrí la ficha o creá uno nuevo.
           </p>
         </div>
-        <Link
-          href="/estudio/asuntos/nuevo"
-          className="btn-primary inline-flex min-h-[3rem] w-full shrink-0 items-center justify-center rounded-[10px] border-2 border-transparent px-8 py-3 text-base font-semibold shadow-md shadow-[rgba(0,166,81,0.15)] transition hover:shadow-lg hover:shadow-[rgba(0,166,81,0.2)] sm:w-auto sm:min-w-[12rem]"
-        >
-          Nuevo asunto
-        </Link>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-stretch">
+          <Link
+            href="/estudio/asuntos/nuevo"
+            className="btn-primary inline-flex min-h-[3rem] w-full shrink-0 items-center justify-center rounded-[10px] border-2 border-transparent px-8 py-3 text-base font-semibold shadow-md shadow-[rgba(0,166,81,0.15)] transition hover:shadow-lg hover:shadow-[rgba(0,166,81,0.2)] sm:w-auto sm:min-w-[12rem]"
+          >
+            NUEVO ASUNTO
+          </Link>
+          <Link
+            href="/estudio/asuntos"
+            className="btn-secondary inline-flex min-h-[3rem] w-full shrink-0 items-center justify-center rounded-[10px] border-2 px-8 py-3 text-base font-semibold sm:w-auto sm:min-w-[12rem]"
+          >
+            LISTADO DE ASUNTOS
+          </Link>
+        </div>
       </header>
       <ListaAsuntos />
     </section>
