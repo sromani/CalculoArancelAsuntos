@@ -10,6 +10,7 @@ import {
   grupoDesdePuesto,
   puestoRequiereFuncionEnEstudio,
 } from "@/lib/profesional-equipo-catalogo";
+import { estudioTw } from "@/lib/estudio-tw";
 
 type SocioRow = { id: string; nombre: string; profesion: string; funcion: string };
 type ProfesionalRow = {
@@ -73,13 +74,9 @@ function nombreCoincideBusqueda(nombre: string, consulta: string): boolean {
   return norm(nombre).includes(norm(q));
 }
 
-const btnSec =
-  "rounded-md border border-[rgba(0,166,81,0.22)] bg-white px-2.5 py-1 text-xs font-medium text-[var(--gris-texto)] transition-colors hover:bg-[rgba(0,166,81,0.08)]";
-const btnPeligro =
-  "rounded-md border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-800 transition-colors hover:bg-red-100";
-
-const inputClass =
-  "w-full rounded-lg border border-[rgba(0,166,81,0.22)] px-3 py-2 text-sm text-[var(--verde-titulo)] outline-none ring-[rgba(0,166,81,0.35)] focus:ring-2";
+const btnSec = `${estudioTw.btnSecondarySm} rounded-lg px-2.5 py-1 text-xs`;
+const btnPeligro = estudioTw.btnDangerSm;
+const inputClass = estudioTw.inputSm;
 
 export function PanelMaestros() {
   const [socios, setSocios] = useState<SocioRow[]>([]);
@@ -532,7 +529,7 @@ export function PanelMaestros() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="w-full space-y-6 text-left sm:space-y-8">
       {errorLista ? (
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
           {errorLista}
@@ -949,7 +946,7 @@ export function PanelMaestros() {
         <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
           <div className="min-w-0 flex-1">
             <h2 className="text-lg font-semibold text-[var(--verde-titulo)]">Listado unificado</h2>
-            <p className="mt-1 text-sm text-[var(--gris-texto)]">
+            <p className="mt-1 text-xs leading-relaxed text-[var(--gris-texto)]">
               Socios y Equipo en un solo listado. Para nuevos asuntos hace falta al menos un socio y un
               profesional a cargo (escribano o abogado).
             </p>
@@ -988,9 +985,9 @@ export function PanelMaestros() {
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] border-collapse text-left text-sm text-[var(--verde-titulo)]">
+            <table className="w-full min-w-[640px] border-collapse text-left text-[var(--verde-titulo)]">
               <thead>
-                <tr className="border-b border-[rgba(0,166,81,0.22)] text-xs font-semibold uppercase tracking-wide text-[var(--gris-texto)]/90">
+                <tr className="border-b border-[rgba(0,166,81,0.22)] text-sm font-semibold uppercase tracking-wide text-[var(--gris-texto)]/90">
                   <th className="py-2 pr-3">Tipo</th>
                   <th className="py-2 pr-3">Nombre</th>
                   <th className="py-2 pr-3">Rol</th>
@@ -1000,7 +997,7 @@ export function PanelMaestros() {
                   <th className="py-2 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-xs leading-snug text-[var(--gris-texto)]">
                 {filasListaFiltradas.map((row) => (
                   <tr key={row.key} className="border-b border-[rgba(0,166,81,0.14)]">
                     <td className="py-2.5 pr-3">

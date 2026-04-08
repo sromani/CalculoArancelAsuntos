@@ -6,15 +6,40 @@ import { obtenerErrorConfiguracionDb } from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
 import {
   construirEstadoCivilPersistido,
-  esEstadoCivilCliente,
   esTipoDocumentoCliente,
+  esTipoSocialCliente,
   mensajeValidacionDocumentoCliente,
   normalizarNombrePersona,
   normalizarDocumentoCliente,
+  parseEstadoCivilDetallado,
   parseFechaNacimientoCliente,
 } from "@/lib/validaciones";
 
 type Params = { params: Promise<{ id: string }> };
+
+export async function GET(_request: Request, context: Params) {
+  const auth = await requiereApiSesion();
+  if (!auth.ok) {
+    return auth.response;
+  }
+
+  const errorConfiguracion = obtenerErrorConfiguracionDb();
+  if (errorConfiguracion) {
+    return NextResponse.json({ error: errorConfiguracion }, { status: 503 });
+  }
+
+  const { id } = await context.params;
+  try {
+    const cliente = await prisma.cliente.findUnique({ where: { id } });
+    if (!cliente) {
+      return NextResponse.json({ error: "Cliente no encontrado." }, { status: 404 });
+    }
+    return NextResponse.json(cliente);
+  } catch {
+    return NextResponse.json({ error: "No se pudo cargar el cliente." }, { status: 503 });
+  }
+}
+
 export async function PATCH(request: Request, context: Params) {
   const auth = await requiereApiSesion();
   if (!auth.ok) {
@@ -52,13 +77,7 @@ export async function PATCH(request: Request, context: Params) {
     const estadoCivilInput = body?.estadoCivil;
     const nupciasInput = body?.nupcias;
     const conyugeInput = body?.conyuge;
-    if (nombre !== undefined && nombre !== "" && !nombre.includes(",")) {
-      return NextResponse.json(
-        { error: "Nombre invalido. Debe incluir apellidos y nombres." },
-        { status: 400 },
-      );
-    }
-
+    const tipoSocialInput = body?.tipoSocial;
 
     const existente = await prisma.cliente.findUnique({ where: { id } });
     if (!existente) {
@@ -88,6 +107,37 @@ export async function PATCH(request: Request, context: Params) {
 
     const tipoFinal = tipoPersona !== undefined ? (tipoPersona as TipoPersona) : existente.tipoPersona;
 
+    if (nombre !== undefined && nombre !== "") {
+      if (tipoFinal === TipoPersona.JURIDICA) {
+        if (nombre.length < 2) {
+          return NextResponse.json(
+            { error: "Nombre invalido. La razon social es obligatoria." },
+            { status: 400 },
+          );
+        }
+      } else if (!nombre.includes(",")) {
+        return NextResponse.json(
+          { error: "Nombre invalido. Debe incluir apellidos y nombres." },
+          { status: 400 },
+        );
+      }
+    }
+
+    let tipoSocialActualizado: string | null | undefined;
+    if (tipoSocialInput !== undefined) {
+      if (tipoFinal !== TipoPersona.JURIDICA) {
+        tipoSocialActualizado = null;
+      } else if (tipoSocialInput === null || tipoSocialInput === "") {
+        tipoSocialActualizado = null;
+      } else {
+        const ts = String(tipoSocialInput).trim().toUpperCase();
+        if (!esTipoSocialCliente(ts)) {
+          return NextResponse.json({ error: "Tipo social invalido." }, { status: 400 });
+        }
+        tipoSocialActualizado = ts;
+      }
+    }
+
     let fechaNacimiento: Date | null | undefined;
     if (fechaNacimientoInput !== undefined) {
       if (fechaNacimientoInput === null || fechaNacimientoInput === "") {
@@ -101,18 +151,6 @@ export async function PATCH(request: Request, context: Params) {
       }
     }
 
-    let estadoCivil: string | null | undefined;
-    if (estadoCivilInput !== undefined) {
-      const raw =
-        estadoCivilInput === null || estadoCivilInput === ""
-          ? null
-          : String(estadoCivilInput).toUpperCase();
-      if (raw !== null && !esEstadoCivilCliente(raw)) {
-        return NextResponse.json({ error: "Estado civil invalido." }, { status: 400 });
-      }
-      estadoCivil = raw;
-    }
-
     await prisma.cliente.update({
       where: { id },
       data: {
@@ -124,6 +162,10 @@ export async function PATCH(request: Request, context: Params) {
         ...(telefono !== undefined ? { telefono } : {}),
         ...(email !== undefined ? { email } : {}),
         ...(domicilio !== undefined ? { domicilio } : {}),
+        ...(tipoPersona !== undefined && tipoFinal === TipoPersona.FISICA ? { tipoSocial: null } : {}),
+        ...(tipoFinal === TipoPersona.JURIDICA && tipoSocialActualizado !== undefined
+          ? { tipoSocial: tipoSocialActualizado }
+          : {}),
       },
     });
 
@@ -146,13 +188,24 @@ export async function PATCH(request: Request, context: Params) {
       if (tipoFinal === TipoPersona.JURIDICA) {
         estadoVal = null;
       } else if (estadoCivilInput !== undefined) {
-        const nupciasRaw =
-          nupciasInput !== undefined && nupciasInput !== null && String(nupciasInput).trim() !== ""
-            ? Number(nupciasInput)
-            : null;
-        const conyugeRaw =
-          conyugeInput !== undefined && conyugeInput !== null ? String(conyugeInput).trim() || null : null;
-        estadoVal = construirEstadoCivilPersistido(estadoCivil ?? null, nupciasRaw, conyugeRaw);
+        if (estadoCivilInput === null || estadoCivilInput === "") {
+          estadoVal = null;
+        } else {
+          const s = String(estadoCivilInput).trim();
+          const det = parseEstadoCivilDetallado(s);
+          if (!det) {
+            return NextResponse.json({ error: "Estado civil invalido." }, { status: 400 });
+          }
+          const nupciasMerge =
+            nupciasInput !== undefined && nupciasInput !== null && String(nupciasInput).trim() !== ""
+              ? Number(nupciasInput)
+              : det.nupcias;
+          const conyugeMerge =
+            conyugeInput !== undefined && conyugeInput !== null
+              ? String(conyugeInput).trim() || null
+              : det.conyuge;
+          estadoVal = construirEstadoCivilPersistido(det.codigo, nupciasMerge, conyugeMerge);
+        }
       } else {
         estadoVal = existente.estadoCivil;
       }

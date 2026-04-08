@@ -3,6 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { datosPorCapitulo } from "@/lib/arancel/data";
+import {
+  estudioAlertInfo,
+  estudioBtnPrimario,
+  estudioFormShell,
+  estudioSectionRule,
+  estudioSectionTitle,
+  estudioSpinner,
+} from "@/lib/estudio-estilos";
 
 type TipoAsunto = "TODOS" | "NOTARIAL" | "LEGAL";
 
@@ -210,23 +218,24 @@ export function FormularioAsunto() {
 
   if (cargando) {
     return (
-      <p className="flex items-center gap-3 text-sm text-neutral-500">
-        <span
-          className="inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-neutral-200 border-t-[var(--verde-principal)]"
-          aria-hidden
-        />
+      <p className="flex items-center gap-3 text-xs text-neutral-500">
+        <span className={estudioSpinner} aria-hidden />
         Cargando catálogos…
       </p>
     );
   }
 
   return (
-    <form className="space-y-8 rounded-lg bg-white p-6 sm:p-8" onSubmit={onSubmit}>
-      <div className="grid gap-5 md:grid-cols-2">
+    <form className={`${estudioFormShell} space-y-10 text-left`} onSubmit={onSubmit}>
+      <div>
+        <h2 className={estudioSectionTitle}>Cliente y tipo</h2>
+        <p className="mt-2 text-xs text-neutral-600">Buscá al cliente y definí si el expediente es notarial o legal.</p>
+      </div>
+      <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-1.5">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Cliente</span>
           {clienteElegido ? (
-            <div className="flex flex-wrap items-center gap-2 rounded-md bg-[rgba(0,166,81,0.06)] px-3 py-2 text-sm text-neutral-800">
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[rgba(0,166,81,0.2)] bg-[rgba(0,166,81,0.06)] px-3 py-2 text-xs text-neutral-800">
               <span className="min-w-0 flex-1 font-medium">
                 {clienteElegido.nombre}{" "}
                 <span className="font-normal text-neutral-600">— {clienteElegido.documento}</span>
@@ -265,7 +274,7 @@ export function FormularioAsunto() {
                 <ul
                   id="lista-busqueda-clientes"
                   role="listbox"
-                  className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-lg bg-white py-1 text-sm shadow-lg shadow-black/10 ring-1 ring-black/[0.08]"
+                  className="absolute z-20 mt-1.5 max-h-56 w-full overflow-auto rounded-xl border border-neutral-200/80 bg-white py-1 text-xs shadow-[0_12px_40px_-12px_rgba(15,23,42,0.2)]"
                 >
                   {buscandoClientes ? (
                     <li className="px-3 py-2 text-[var(--gris-texto)]">Buscando...</li>
@@ -313,9 +322,10 @@ export function FormularioAsunto() {
         </label>
       </div>
 
-      <div className="space-y-3 border-t border-neutral-100 pt-8">
-        <label className="space-y-1.5">
-          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Asunto (catálogo)</span>
+      <div className={`${estudioSectionRule} space-y-4`}>
+        <h2 className={estudioSectionTitle}>Asunto del catálogo</h2>
+        <label className="block space-y-1.5">
+          <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Selección</span>
           <select
             className="input-app"
             value={asuntoSeleccionado}
@@ -344,7 +354,7 @@ export function FormularioAsunto() {
         ) : null}
       </div>
 
-      <label className="space-y-1.5">
+      <label className="block space-y-1.5">
         <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">
           Profesional a cargo (opcional)
         </span>
@@ -362,7 +372,7 @@ export function FormularioAsunto() {
         </datalist>
       </label>
 
-      <label className="space-y-1.5">
+      <label className="block space-y-1.5">
         <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Descripción (opcional)</span>
         <textarea
           className="input-app min-h-20 resize-y"
@@ -371,7 +381,9 @@ export function FormularioAsunto() {
         />
       </label>
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="space-y-3">
+        <h2 className={estudioSectionTitle}>Fechas</h2>
+        <div className="grid gap-6 md:grid-cols-2">
         <label className="space-y-1.5">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Fecha de inicio</span>
           <input
@@ -390,21 +402,16 @@ export function FormularioAsunto() {
             onChange={(e) => setFechaAlerta(e.target.value)}
           />
         </label>
+        </div>
       </div>
 
-      <div className="border-t border-neutral-100 pt-8">
-        <button
-          className="btn-primary w-full min-h-[3rem] rounded-[10px] border-2 border-transparent px-8 py-3 text-base font-semibold shadow-md shadow-[rgba(0,166,81,0.15)] transition hover:shadow-lg hover:shadow-[rgba(0,166,81,0.2)] disabled:opacity-50 sm:w-auto"
-          disabled={guardando}
-          type="submit"
-        >
+      <div className={`${estudioSectionRule} flex flex-wrap gap-3`}>
+        <button className={estudioBtnPrimario} disabled={guardando} type="submit">
           {guardando ? "Guardando..." : "Crear asunto"}
         </button>
       </div>
 
-      {mensaje ? (
-        <p className="rounded-md bg-neutral-50 px-4 py-3 text-sm text-neutral-800 ring-1 ring-black/[0.06]">{mensaje}</p>
-      ) : null}
+      {mensaje ? <p className={estudioAlertInfo}>{mensaje}</p> : null}
     </form>
   );
 }

@@ -16,6 +16,8 @@
     "postinstall": "dotenv -e .env.local --override -- prisma generate --schema ./prisma/schema.prisma",
     "db:estudio:create": "docker exec sistema_escribanos_postgres psql -U admin_escribanos -d postgres -c \"CREATE DATABASE sistema_escribanos_estudio;\"",
     "db:estudio:push": "dotenv -e .env.local --override -- prisma db push --schema ./prisma/schema.prisma",
+    "db:estudio:migrate": "dotenv -e .env.local --override -- prisma migrate deploy --schema ./prisma/schema.prisma",
+    "db:estudio:migrate:dev": "dotenv -e .env.local --override -- prisma migrate dev --schema ./prisma/schema.prisma",
     "db:estudio:setup": "node scripts/ensure-estudio-db.cjs"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "postcss": "^8.5.3",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",

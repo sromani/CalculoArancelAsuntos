@@ -1,3 +1,7 @@
+/**
+ * Tailwind CSS v4 (paquetes: `tailwindcss`, `@tailwindcss/postcss`; ver `postcss.config.mjs`).
+ * Las utilidades (`flex`, `rounded-xl`, `text-[var(--verde-titulo)]`, etc.) se usan en los `.tsx`.
+ */
 @import "tailwindcss";
 
 :root {
@@ -26,6 +30,10 @@
   --crema: #fdfaf5;
   --dorado-claro: #f4e4c1;
   --color-neutral-900: #0f172a;
+  /* Altura aproximada del navbar principal (sticky) */
+  --navbar-app-height: 4.75rem;
+  /* Segunda franja bajo el navbar (0: sin barra de módulo) */
+  --estudio-barra-height: 0rem;
 }
 
 * {
@@ -40,14 +48,12 @@ body {
   font-family: var(--font-raleway), system-ui, -apple-system, sans-serif;
 }
 
-/* Navbar */
+/* Navbar — ancho de contenido alineado con gestión estudio / max-w-6xl */
 .navbar {
   position: sticky;
   top: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.9rem 3rem;
+  display: block;
+  padding: 0.55rem 0;
   background: linear-gradient(135deg, var(--fondo-navbar-claro) 0%, var(--fondo-navbar-medio) 100%);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 166, 81, 0.08);
@@ -55,14 +61,66 @@ body {
   border-bottom: 1px solid rgba(0, 166, 81, 0.1);
 }
 
+.navbar-inner {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 72rem; /* = max-w-6xl */
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .navbar-inner {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    gap: 0.5rem 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .navbar-inner {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .navbar-inner {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+  .navbar-logo {
+    order: 1;
+  }
+  .navbar-auth {
+    order: 2;
+    margin-left: auto;
+  }
+  .navbar-links {
+    order: 3;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.2rem;
+  }
+}
+
 .navbar-logo {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 0.8rem;
 }
 
 .navbar-logo img {
-  height: 55px;
+  height: 44px;
   width: auto;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   transition: transform 0.3s ease;
@@ -74,7 +132,12 @@ body {
 
 .navbar-links {
   display: flex;
-  gap: 0.5rem;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-width: 0;
 }
 
 .navbar-links a {
@@ -82,11 +145,42 @@ body {
   text-decoration: none;
   color: var(--verde-subtitulo);
   font-weight: 500;
-  font-size: 0.9rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 10px;
+  font-size: 0.8rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  letter-spacing: 0.3px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+  .navbar-links a {
+    font-size: 0.8125rem;
+    padding: 0.5rem 0.65rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .navbar-links a {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.85rem;
+  }
+}
+
+/* Textos largos / cortos según ancho (misma pestaña, menos overflow) */
+.navbar-links .navbar-link-short {
+  display: none;
+}
+.navbar-links .navbar-link-full {
+  display: inline;
+}
+@media (max-width: 1040px) {
+  .navbar-links .navbar-link-short {
+    display: inline;
+  }
+  .navbar-links .navbar-link-full {
+    display: none;
+  }
 }
 
 .navbar-links a::before {
@@ -112,26 +206,53 @@ body {
   width: 80%;
 }
 
-.navbar-links a.active {
-  background-color: rgba(0, 166, 81, 0.12);
+.navbar-links a.active:not(.navbar-link-primary) {
+  background-color: rgba(0, 166, 81, 0.1);
   color: var(--verde-principal);
 }
 
-.navbar-links a.active::before {
+.navbar-links a.active:not(.navbar-link-primary)::before {
   width: 80%;
+}
+
+/* Gestión clientes / asuntos: resaltado solo cuando la clase va junto a .active (ruta actual). */
+.navbar-links a.active.navbar-link-primary {
+  font-weight: 600;
+  color: var(--verde-principal);
+  background-color: rgba(0, 166, 81, 0.11);
+  border: 1px solid rgba(0, 166, 81, 0.28);
+}
+
+.navbar-links a.active.navbar-link-primary::before {
+  width: 0;
+  opacity: 0;
+}
+
+.navbar-links a.active.navbar-link-primary:hover {
+  background-color: rgba(0, 166, 81, 0.16);
+  color: var(--verde-oscuro, #006b36);
+  border-color: rgba(0, 166, 81, 0.38);
 }
 
 .navbar-auth a {
   text-decoration: none;
   color: var(--fondo-blanco);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   background: var(--verde-subtitulo);
-  padding: 0.8rem 2rem;
+  padding: 0.5rem 0.9rem;
   border-radius: 8px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 166, 81, 0.2);
-  letter-spacing: 0.3px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+  .navbar-auth a {
+    font-size: 0.85rem;
+    padding: 0.55rem 1.1rem;
+  }
 }
 
 .navbar-auth a:hover {
@@ -147,23 +268,42 @@ body {
 
 .navbar-auth {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.4rem;
 }
 
 .navbar-perfil {
   text-decoration: none;
   color: var(--fondo-blanco);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   background: var(--verde-subtitulo);
-  padding: 0.7rem 1.5rem;
-  border-radius: 25px;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 166, 81, 0.2);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
+  min-width: 0;
+  max-width: min(11rem, 32vw);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.navbar-perfil-nombre {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 900px) {
+  .navbar-perfil {
+    font-size: 0.82rem;
+    padding: 0.5rem 0.9rem;
+    max-width: 13rem;
+  }
 }
 
 .navbar-perfil:hover {
@@ -175,15 +315,23 @@ body {
 .navbar-logout {
   text-decoration: none;
   color: white;
-  font-weight: 500;
-  font-size: 0.85rem;
+  font-weight: 600;
+  font-size: 0.75rem;
   background: #ef4444;
-  padding: 0.6rem 1.2rem;
-  border-radius: 20px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15);
+  white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+  .navbar-logout {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.85rem;
+  }
 }
 
 .navbar-logout:hover {
@@ -1776,22 +1924,31 @@ body {
 /* —— Gestión estudio (ex-contabilidad): utilidades alineadas al tema verde —— */
 .input-app {
   width: 100%;
-  min-height: 2.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.98);
-  padding: 0.5rem 0.75rem;
+  min-height: 2rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.28rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
   color: var(--color-neutral-900);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 .input-app::placeholder {
-  color: #888;
+  color: #94a3b8;
+}
+.input-app:hover {
+  border-color: rgba(15, 23, 42, 0.1);
 }
 .input-app:focus {
   outline: none;
-  border-color: var(--verde-principal);
-  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.2);
+  border-color: rgba(0, 166, 81, 0.45);
+  box-shadow: 0 0 0 2px rgba(0, 166, 81, 0.12);
+  background: #fff;
 }
 
 .combobox-acto-wrap {
@@ -1799,10 +1956,10 @@ body {
 }
 
 .combobox-acto-input {
-  padding-right: 2rem;
+  padding-right: 1.75rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.65rem center;
+  background-position: right 0.5rem center;
 }
 
 .combobox-acto-list {
@@ -1814,19 +1971,19 @@ body {
   max-height: min(320px, 50vh);
   overflow-y: auto;
   margin: 0;
-  padding: 0.35rem 0;
+  padding: 0.3rem 0;
   list-style: none;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.98);
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.08),
-    0 2px 6px rgba(0, 166, 81, 0.08);
+    0 4px 20px rgba(15, 23, 42, 0.07),
+    0 1px 3px rgba(0, 166, 81, 0.06);
 }
 
 .combobox-acto-option {
-  padding: 0.45rem 0.75rem;
-  font-size: 0.8125rem;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.75rem;
   line-height: 1.35;
   color: var(--color-neutral-800);
   cursor: pointer;
@@ -1891,17 +2048,58 @@ body {
 }
 
 .estudio-main {
-  background: linear-gradient(
-    180deg,
-    var(--fondo-verde-muy-claro) 0%,
-    var(--fondo-blanco) 35%,
-    var(--fondo-blanco) 100%
-  );
+  background: transparent;
+}
+
+/* Fondo del módulo estudio: misma familia que simulador / home (sin slate aparte) */
+.estudio-shell {
+  min-height: calc(100vh - var(--navbar-app-height) - var(--estudio-barra-height));
+  background: linear-gradient(160deg, #fafafa 0%, #f4f4f5 45%, #ecfdf5 100%);
+}
+
+/**
+ * Área de página bajo el navbar: mismo max-width y paddings horizontales que `.navbar-inner`
+ * (72rem), centrada. Flujo en bloque — sin `items-center` ni `text-center` heredados.
+ */
+.estudio-page-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 1.25rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .estudio-page-wrap {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .estudio-page-wrap {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+  }
 }
 
 /* Texto principal del área estudio: mismo contraste que el sitio público */
 .estudio-tema-marca {
   color: var(--color-neutral-900);
+}
+
+/* Formularios del módulo estudio: labels acordes a `.input-app` compacto */
+.estudio-shell .form-field label {
+  font-size: 0.75rem;
+  line-height: 1.35;
 }
 
 .estudio-nav-brand {

@@ -7,6 +7,13 @@ import {
   type PuestoCatalogo,
   ETIQUETA_PUESTO,
 } from "@/lib/profesional-equipo-catalogo";
+import {
+  estudioBtnSecundario,
+  estudioCard,
+  estudioCardPad,
+  estudioLinkBack,
+  estudioSpinnerLg,
+} from "@/lib/estudio-estilos";
 
 type RolMe =
   | "ADMIN"
@@ -116,6 +123,35 @@ function hoyIsoDate(): string {
   return `${y}-${m}-${day}`;
 }
 
+function fechaAsuntoADateInput(iso: string | null | undefined): string {
+  if (!iso) return hoyIsoDate();
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return hoyIsoDate();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function etiquetaTipoAsunto(tipo: string): string {
+  switch (tipo) {
+    case "NOTARIAL":
+      return "Notarial";
+    case "LEGAL":
+      return "Legal";
+    case "TODOS":
+      return "Todos";
+    default:
+      return tipo;
+  }
+}
+
+const slLabel = "text-[0.65rem] font-semibold uppercase tracking-wide text-neutral-400";
+const slBox = "rounded-lg border border-neutral-200/75 bg-neutral-100/60 px-3 py-2 text-sm text-neutral-600";
+const slCard = "rounded-2xl border border-neutral-200/80 bg-neutral-50/50 p-5 sm:p-6";
+const editableCard =
+  "rounded-2xl border-2 border-emerald-300/70 bg-white p-5 shadow-[0_6px_28px_-10px_rgba(5,150,105,0.35)] ring-1 ring-emerald-500/15 sm:p-6";
+
 export function FichaAsunto({ id }: { id: string }) {
   const router = useRouter();
   const [asunto, setAsunto] = useState<AsuntoFicha | null>(null);
@@ -125,9 +161,6 @@ export function FichaAsunto({ id }: { id: string }) {
   const [movTexto, setMovTexto] = useState("");
   const [movFecha, setMovFecha] = useState(() => hoyIsoDate());
   const [guardandoMov, setGuardandoMov] = useState(false);
-  const [fechaFin, setFechaFin] = useState(() => hoyIsoDate());
-  const [accionando, setAccionando] = useState(false);
-
   const [profesionalesCat, setProfesionalesCat] = useState<ProfesionalItem[]>([]);
   const [sociosCat, setSociosCat] = useState<SocioItem[]>([]);
   const [reaSocioId, setReaSocioId] = useState("");
@@ -140,6 +173,11 @@ export function FichaAsunto({ id }: { id: string }) {
   const [cargandoReaCat, setCargandoReaCat] = useState(false);
   /** Formulario de reasignación: no visible hasta que el usuario elija la acción. */
   const [accionReasignarAbierta, setAccionReasignarAbierta] = useState(false);
+
+  const [descEdit, setDescEdit] = useState("");
+  const [estadoEdit, setEstadoEdit] = useState<"EN_TRAMITE" | "FINALIZADO">("EN_TRAMITE");
+  const [fechaCierreEstado, setFechaCierreEstado] = useState(() => hoyIsoDate());
+  const [guardandoFicha, setGuardandoFicha] = useState(false);
 
   const cargar = useCallback(async () => {
     setCargando(true);
@@ -209,10 +247,19 @@ export function FichaAsunto({ id }: { id: string }) {
 
   /** Al abrir otra ficha, las fechas editables vuelven a hoy. */
   useEffect(() => {
-    const hoy = hoyIsoDate();
-    setMovFecha(hoy);
-    setFechaFin(hoy);
+    setMovFecha(hoyIsoDate());
   }, [id]);
+
+  useEffect(() => {
+    if (!asunto) return;
+    setDescEdit(descripcionSinMarcador(asunto.descripcion) ?? "");
+    setEstadoEdit(asunto.estado === "FINALIZADO" ? "FINALIZADO" : "EN_TRAMITE");
+    setFechaCierreEstado(
+      asunto.estado === "FINALIZADO" && asunto.fechaFinalizacion
+        ? fechaAsuntoADateInput(asunto.fechaFinalizacion)
+        : hoyIsoDate(),
+    );
+  }, [asunto?.id, asunto?.descripcion, asunto?.estado, asunto?.fechaFinalizacion]);
 
   async function registrarMovimiento(e: React.FormEvent) {
     e.preventDefault();
@@ -243,37 +290,6 @@ export function FichaAsunto({ id }: { id: string }) {
       setMensaje("Error de conexion.");
     } finally {
       setGuardandoMov(false);
-    }
-  }
-
-  async function finalizar() {
-    if (!fechaFin) {
-      setMensaje("Indica la fecha de finalizacion.");
-      return;
-    }
-    setAccionando(true);
-    setMensaje("");
-    try {
-      const response = await fetch(`/api/asuntos/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "finalizar",
-          fechaFinalizacion: fechaFin,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setMensaje(data?.error ?? "No se pudo finalizar.");
-        return;
-      }
-      setFechaFin(hoyIsoDate());
-      await cargar();
-      router.refresh();
-    } catch {
-      setMensaje("Error de conexion.");
-    } finally {
-      setAccionando(false);
     }
   }
 
@@ -331,49 +347,105 @@ export function FichaAsunto({ id }: { id: string }) {
     }
   }
 
-  async function reabrir() {
-    if (!window.confirm("Reabrir este asunto? Quedara EN TRAMITE.")) return;
-    setAccionando(true);
+  async function guardarDescripcionYEstado(e: React.FormEvent) {
+    e.preventDefault();
+    if (!asunto) return;
+
+    const puedeEditarDescripcion = puedeMovimiento(rol);
+    const puedePasarAFinalizado = asunto.estado === "EN_TRAMITE" && puedeFinalizar(rol);
+    const puedeVolverATramite = asunto.estado === "FINALIZADO" && puedeReabrir(rol);
+    const puedeEditarEstadoSelect = puedePasarAFinalizado || puedeVolverATramite;
+
+    const prevDesc = (descripcionSinMarcador(asunto.descripcion) ?? "").trim();
+    const nextDesc = descEdit.trim();
+    const descCambio = puedeEditarDescripcion && nextDesc !== prevDesc;
+    const estadoCambio = puedeEditarEstadoSelect && estadoEdit !== asunto.estado;
+
+    if (!descCambio && !estadoCambio) {
+      setMensaje("No hay cambios para guardar.");
+      return;
+    }
+
+    setGuardandoFicha(true);
     setMensaje("");
     try {
-      const response = await fetch(`/api/asuntos/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accion: "reabrir" }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setMensaje(data?.error ?? "No se pudo reabrir.");
-        return;
+      if (descCambio) {
+        const r = await fetch(`/api/asuntos/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accion: "actualizarDescripcion", descripcion: nextDesc }),
+        });
+        const data = await r.json();
+        if (!r.ok) {
+          setMensaje(data?.error ?? "No se pudo guardar la descripción.");
+          return;
+        }
       }
+
+      if (estadoCambio) {
+        if (estadoEdit === "FINALIZADO") {
+          if (!fechaCierreEstado) {
+            setMensaje("Indicá la fecha de finalización.");
+            return;
+          }
+          const r = await fetch(`/api/asuntos/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              accion: "finalizar",
+              fechaFinalizacion: fechaCierreEstado,
+            }),
+          });
+          const data = await r.json();
+          if (!r.ok) {
+            setMensaje(data?.error ?? "No se pudo finalizar.");
+            return;
+          }
+        } else {
+          if (!window.confirm("¿Reabrir este asunto? Quedará EN TRÁMITE.")) {
+            setGuardandoFicha(false);
+            return;
+          }
+          const r = await fetch(`/api/asuntos/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accion: "reabrir" }),
+          });
+          const data = await r.json();
+          if (!r.ok) {
+            setMensaje(data?.error ?? "No se pudo reabrir.");
+            return;
+          }
+        }
+      }
+
       await cargar();
       router.refresh();
     } catch {
-      setMensaje("Error de conexion.");
+      setMensaje("Error de conexión.");
     } finally {
-      setAccionando(false);
+      setGuardandoFicha(false);
     }
   }
 
   if (cargando) {
     return (
-      <div className="flex min-h-[12rem] flex-col items-center justify-center gap-3 rounded-xl border border-black/[0.06] bg-white px-6 py-12 shadow-sm">
-        <span
-          className="inline-block size-9 animate-spin rounded-full border-2 border-neutral-200 border-t-[var(--verde-principal)]"
-          aria-hidden
-        />
-        <p className="text-sm text-neutral-600">Cargando ficha…</p>
+      <div
+        className={`${estudioCard} flex min-h-[14rem] flex-col items-center justify-center gap-4 px-6 py-14`}
+      >
+        <span className={estudioSpinnerLg} aria-hidden />
+        <p className="text-sm font-medium text-neutral-600">Cargando ficha…</p>
       </div>
     );
   }
 
   if (!asunto) {
     return (
-      <div className="rounded-xl border border-black/[0.06] bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-sm text-red-800">{mensaje || "Asunto no encontrado."}</p>
+      <div className={`${estudioCard} ${estudioCardPad}`}>
+        <p className="text-sm font-medium text-red-800">{mensaje || "Asunto no encontrado."}</p>
         <Link
           href="/estudio/asuntos"
-          className="btn-secondary mt-5 inline-flex min-h-[2.75rem] items-center justify-center px-5 text-sm"
+          className={`${estudioBtnSecundario} mt-6 !w-auto !min-h-[2.5rem] !max-w-none !px-6`}
         >
           Volver al listado
         </Link>
@@ -382,46 +454,55 @@ export function FichaAsunto({ id }: { id: string }) {
   }
 
   const enTramite = asunto.estado === "EN_TRAMITE";
+  const puedeEditarDescripcion = puedeMovimiento(rol);
+  const puedePasarAFinalizado = enTramite && puedeFinalizar(rol);
+  const puedeVolverATramite = !enTramite && puedeReabrir(rol);
+  const puedeEditarEstadoSelect = puedePasarAFinalizado || puedeVolverATramite;
+  const mostrarTarjetaEditable = puedeEditarDescripcion || puedeEditarEstadoSelect;
+  const mostrarFechaCierre =
+    puedeEditarEstadoSelect && estadoEdit === "FINALIZADO" && asunto.estado === "EN_TRAMITE";
 
-  const panel =
-    "rounded-xl border border-black/[0.06] bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:p-8";
+  const panel = `${estudioCard} ${estudioCardPad}`;
 
   return (
-    <div className="max-w-4xl space-y-8 sm:space-y-10">
-      <div className="flex flex-col gap-5 border-b border-neutral-100 pb-6 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-6">
-        <div className="min-w-0 flex-1">
+    <div className="mx-auto w-full max-w-4xl space-y-6 text-left sm:space-y-8">
+      <div className={estudioCard}>
+        <div className="border-b border-neutral-200/80 bg-neutral-50/70 px-6 py-6 sm:px-8">
           <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href="/estudio/asuntos"
-              className="inline-flex min-h-[2.25rem] items-center gap-1.5 rounded-lg border border-black/[0.08] bg-white px-3 py-1.5 text-sm font-medium text-[var(--verde-principal)] shadow-sm transition-colors hover:border-[rgba(0,166,81,0.35)] hover:bg-[var(--fondo-verde-muy-claro)]"
-            >
-              <span aria-hidden className="text-neutral-400">
-                ←
-              </span>
+            <Link href="/estudio/asuntos" className={estudioLinkBack}>
+              <span aria-hidden>←</span>
               Listado
             </Link>
-            <span className="text-xs tabular-nums text-neutral-400">#{asunto.ordinal}</span>
+            <span className="rounded-full bg-neutral-200/80 px-2.5 py-0.5 text-xs font-semibold tabular-nums text-neutral-600 ring-1 ring-neutral-300/60">
+              #{asunto.ordinal}
+            </span>
           </div>
-          <h1 className="mt-3 break-words text-2xl font-semibold tracking-tight text-[var(--verde-titulo)] sm:text-3xl">
+          <h1 className="mt-4 break-words text-xl font-semibold tracking-tight text-neutral-700 sm:text-2xl">
             {asunto.catalogo.nombre}
           </h1>
-          <p className="mt-2 break-words text-sm text-neutral-600">
-            {asunto.cliente.nombre} · {asunto.cliente.documento}
-          </p>
-        </div>
-        <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
-          <span
-            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
-              enTramite
-                ? "bg-[rgba(0,166,81,0.12)] text-[var(--verde-oscuro)] ring-1 ring-[rgba(0,166,81,0.2)]"
-                : "bg-neutral-100 text-neutral-600 ring-1 ring-neutral-200/80"
-            }`}
-          >
-            {enTramite ? "En trámite" : "Finalizado"}
-          </span>
-          <span className="text-sm text-neutral-500">
-            Tipo: <span className="font-medium text-neutral-700">{asunto.tipo}</span>
-          </span>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <p className={slLabel}>Cliente</p>
+              <p className={slBox}>
+                {asunto.cliente.nombre}
+                <span className="mt-1 block text-xs text-neutral-500 tabular-nums">{asunto.cliente.documento}</span>
+              </p>
+            </div>
+            <div>
+              <p className={slLabel}>Tipo de asunto</p>
+              <p className={slBox}>{etiquetaTipoAsunto(asunto.tipo)}</p>
+            </div>
+            <div className="sm:col-span-2">
+              <p className={slLabel}>Estado actual</p>
+              <p className={slBox}>
+                {enTramite ? (
+                  <span className="font-medium text-emerald-800">En trámite</span>
+                ) : (
+                  <span className="font-medium text-neutral-700">Finalizado</span>
+                )}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -429,34 +510,102 @@ export function FichaAsunto({ id }: { id: string }) {
         <p className="rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200/50">{mensaje}</p>
       ) : null}
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <div className={`${panel} space-y-3 text-sm`}>
-          <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Datos</h2>
-          <p>
-            <span className="text-[var(--gris-texto)]/90">Inicio:</span> {fmtFecha(asunto.fechaInicio)}
-          </p>
-          <p>
-            <span className="text-[var(--gris-texto)]/90">Alerta venc.:</span> {fmtFecha(asunto.fechaAlertaVencimiento)}
-          </p>
-          <p>
-            <span className="text-[var(--gris-texto)]/90">Finalizacion:</span> {fmtFecha(asunto.fechaFinalizacion)}
-          </p>
-          <p>
-            <span className="text-[var(--gris-texto)]/90">Ultimo movimiento:</span> {fmtFecha(asunto.ultimoMovimientoFecha)}
-          </p>
-          {asunto.ultimoMovimientoTexto ? (
-            <p className="rounded-md bg-neutral-50 p-3 text-neutral-800">{asunto.ultimoMovimientoTexto}</p>
-          ) : null}
-          {asunto.descripcion ? (
-            <p>
-              <span className="text-[var(--gris-texto)]/90">Descripcion:</span>{" "}
-              {descripcionSinMarcador(asunto.descripcion)}
+      {mostrarTarjetaEditable ? (
+        <form className={`${editableCard} space-y-4`} onSubmit={(ev) => void guardarDescripcionYEstado(ev)}>
+          <div>
+            <h2 className="text-base font-bold text-emerald-900">Descripción y estado</h2>
+            <p className="mt-1 text-xs leading-relaxed text-emerald-900/75">
+              Los campos editables están en este recuadro. El resto del expediente es solo referencia.
             </p>
+          </div>
+
+          <label className="block space-y-2">
+            <span className="text-xs font-semibold text-emerald-900">Descripción</span>
+            <textarea
+              className="input-app min-h-[7rem] resize-y disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-500"
+              value={descEdit}
+              onChange={(e) => setDescEdit(e.target.value)}
+              disabled={!puedeEditarDescripcion}
+              placeholder={puedeEditarDescripcion ? "Texto libre del asunto…" : "Tu rol no permite editar la descripción."}
+            />
+          </label>
+
+          {puedeEditarEstadoSelect ? (
+            <div className="space-y-3 rounded-xl border border-emerald-200/60 bg-emerald-50/40 p-4">
+              <label className="block space-y-2">
+                <span className="text-xs font-semibold text-emerald-900">Estado del expediente</span>
+                <select
+                  className="input-app font-medium text-neutral-900"
+                  value={estadoEdit}
+                  onChange={(e) => setEstadoEdit(e.target.value as "EN_TRAMITE" | "FINALIZADO")}
+                >
+                  <option value="EN_TRAMITE">En trámite</option>
+                  <option value="FINALIZADO">Finalizado</option>
+                </select>
+              </label>
+              {mostrarFechaCierre ? (
+                <label className="block space-y-2">
+                  <span className="text-xs font-semibold text-emerald-900">Fecha de finalización</span>
+                  <input
+                    className="input-app max-w-xs"
+                    type="date"
+                    value={fechaCierreEstado}
+                    onChange={(e) => setFechaCierreEstado(e.target.value)}
+                  />
+                </label>
+              ) : null}
+            </div>
+          ) : (
+            <p className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-600">
+              Para cambiar el estado (finalizar o reabrir) necesitás permisos de socio o administrador.
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[var(--verde-principal)] px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--verde-oscuro)] disabled:cursor-not-allowed disabled:opacity-55"
+            disabled={guardandoFicha}
+          >
+            {guardandoFicha ? "Guardando…" : "Guardar cambios"}
+          </button>
+        </form>
+      ) : null}
+
+      <div className="grid gap-8 md:grid-cols-2">
+        <div className={`${slCard} space-y-3 text-xs`}>
+          <h2 className={`${slLabel} !text-neutral-500`}>Expediente (solo lectura)</h2>
+          <div>
+            <p className={slLabel}>Inicio</p>
+            <p className={slBox}>{fmtFecha(asunto.fechaInicio)}</p>
+          </div>
+          <div>
+            <p className={slLabel}>Alerta vencimiento</p>
+            <p className={slBox}>{fmtFecha(asunto.fechaAlertaVencimiento)}</p>
+          </div>
+          <div>
+            <p className={slLabel}>Finalización</p>
+            <p className={slBox}>{fmtFecha(asunto.fechaFinalizacion)}</p>
+          </div>
+          <div>
+            <p className={slLabel}>Último movimiento</p>
+            <p className={slBox}>{fmtFecha(asunto.ultimoMovimientoFecha)}</p>
+          </div>
+          {asunto.ultimoMovimientoTexto ? (
+            <div>
+              <p className={slLabel}>Texto último movimiento</p>
+              <p className={`${slBox} whitespace-pre-wrap`}>{asunto.ultimoMovimientoTexto}</p>
+            </div>
+          ) : null}
+          {!puedeEditarDescripcion ? (
+            <div>
+              <p className={slLabel}>Descripción</p>
+              <p className={`${slBox} whitespace-pre-wrap`}>{descripcionSinMarcador(asunto.descripcion) || "—"}</p>
+            </div>
           ) : null}
         </div>
 
-        <div className={`${panel} space-y-3 text-sm`}>
-          <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Equipo</h2>
+        <div className={`${slCard} space-y-3 text-xs`}>
+          <h2 className={`${slLabel} !text-neutral-500`}>Equipo (solo lectura)</h2>
           <p>
             <span className="text-[var(--gris-texto)]/90">Socio referente:</span>{" "}
             {asunto.socioReferente ? (
@@ -537,7 +686,7 @@ export function FichaAsunto({ id }: { id: string }) {
           </p>
           <div className="grid gap-3 md:grid-cols-2">
             <label className="space-y-1">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Socio referente (opcional)</span>
+              <span className="text-xs font-medium text-[var(--verde-titulo)]">Socio referente (opcional)</span>
               <select
                 className="input-app"
                 value={reaSocioId}
@@ -552,7 +701,7 @@ export function FichaAsunto({ id }: { id: string }) {
               </select>
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Equipo a cargo (legal / notarial, opcional)</span>
+              <span className="text-xs font-medium text-[var(--verde-titulo)]">Equipo a cargo (legal / notarial, opcional)</span>
               <select
                 className="input-app"
                 value={reaProfId}
@@ -567,7 +716,7 @@ export function FichaAsunto({ id }: { id: string }) {
               </select>
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Colaborador 1 (opcional)</span>
+              <span className="text-xs font-medium text-[var(--verde-titulo)]">Colaborador 1 (opcional)</span>
               <select
                 className="input-app"
                 value={reaCol1}
@@ -582,7 +731,7 @@ export function FichaAsunto({ id }: { id: string }) {
               </select>
             </label>
             <label className="space-y-1">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Colaborador 2 (opcional)</span>
+              <span className="text-xs font-medium text-[var(--verde-titulo)]">Colaborador 2 (opcional)</span>
               <select
                 className="input-app"
                 value={reaCol2}
@@ -597,7 +746,7 @@ export function FichaAsunto({ id }: { id: string }) {
               </select>
             </label>
             <label className="space-y-1 md:col-span-2">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Contador referente (opcional)</span>
+              <span className="text-xs font-medium text-[var(--verde-titulo)]">Contador referente (opcional)</span>
               <select className="input-app" value={reaCont} onChange={(e) => setReaCont(e.target.value)}>
                 <option value="">—</option>
                 {contadoresLista.map((p) => (
@@ -608,7 +757,7 @@ export function FichaAsunto({ id }: { id: string }) {
               </select>
             </label>
             <label className="space-y-1 md:col-span-2">
-              <span className="text-sm font-medium text-[var(--verde-titulo)]">Nota en historial</span>
+              <span className="text-xs font-medium text-[var(--verde-titulo)]">Nota en historial</span>
               <input
                 className="input-app"
                 value={reaNota}
@@ -637,7 +786,7 @@ export function FichaAsunto({ id }: { id: string }) {
             onChange={(e) => setMovTexto(e.target.value)}
           />
           <label className="block space-y-1">
-            <span className="text-sm font-medium text-[var(--verde-titulo)]">Fecha (por defecto hoy; podés cambiarla)</span>
+            <span className="text-xs font-medium text-[var(--verde-titulo)]">Fecha (por defecto hoy; podés cambiarla)</span>
             <input
               className="input-app w-full max-w-full sm:max-w-xs"
               type="date"
@@ -646,7 +795,7 @@ export function FichaAsunto({ id }: { id: string }) {
             />
           </label>
           <button
-            className="btn-primary min-h-[2.75rem] px-6 disabled:cursor-not-allowed disabled:opacity-55"
+            className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[var(--verde-principal)] px-5 text-xs font-semibold text-white shadow-sm transition hover:bg-[var(--verde-oscuro)] disabled:cursor-not-allowed disabled:opacity-55"
             type="submit"
             disabled={guardandoMov}
           >
@@ -657,47 +806,40 @@ export function FichaAsunto({ id }: { id: string }) {
         <p className="text-sm text-[var(--gris-texto)]">Tu rol no permite registrar movimientos en este asunto.</p>
       ) : null}
 
-      {enTramite && puedeFinalizar(rol) ? (
-        <div className={`${panel} flex flex-col gap-4 sm:flex-row sm:items-end`}>
-          <label className="space-y-1">
-            <span className="text-sm font-medium text-[var(--verde-titulo)]">Finalizar — fecha</span>
-            <input className="input-app" type="date" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} />
-          </label>
-          <button
-            type="button"
-            className="btn-secondary min-h-[2.75rem] px-5 disabled:cursor-not-allowed disabled:opacity-55"
-            disabled={accionando}
-            onClick={() => void finalizar()}
-          >
-            {accionando ? "…" : "Finalizar asunto"}
-          </button>
-        </div>
-      ) : null}
-
-      {!enTramite && puedeReabrir(rol) ? (
-        <div className={panel}>
-          <button
-            type="button"
-            className="btn-secondary min-h-[2.75rem] px-5 disabled:cursor-not-allowed disabled:opacity-55"
-            disabled={accionando}
-            onClick={() => void reabrir()}
-          >
-            {accionando ? "…" : "Reabrir asunto (solo admin)"}
-          </button>
-        </div>
-      ) : null}
-
       <div className={panel}>
         <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Historial</h2>
-        <ul className="mt-6 space-y-6 border-l border-neutral-200 pl-5">
-          {asunto.seguimientos.map((s) => (
-            <li key={s.id} className="relative text-sm">
-              <span className="absolute -left-[21px] top-1.5 size-2 rounded-full bg-[var(--verde-principal)]/80" aria-hidden />
-              <p className="text-xs text-neutral-500">{fmtFecha(s.fecha)}</p>
-              <p className="mt-1 whitespace-pre-wrap text-neutral-800">{s.descripcion}</p>
-            </li>
-          ))}
-        </ul>
+        {asunto.seguimientos.length === 0 ? (
+          <p className="mt-4 text-sm text-neutral-500">No hay movimientos registrados.</p>
+        ) : (
+          <ul className="mt-6">
+            {asunto.seguimientos.map((s, i) => (
+              <li key={s.id} className="relative flex gap-4 pb-8 last:pb-0">
+                <div className="relative flex w-5 shrink-0 flex-col items-center">
+                  <span
+                    className="z-10 mt-1 size-3 shrink-0 rounded-full border-2 border-white bg-emerald-500 shadow-sm ring-2 ring-emerald-100"
+                    aria-hidden
+                  />
+                  {i < asunto.seguimientos.length - 1 ? (
+                    <span
+                      className="absolute bottom-0 left-1/2 top-4 w-[3px] -translate-x-1/2 rounded-full bg-emerald-200/95"
+                      aria-hidden
+                    />
+                  ) : null}
+                </div>
+                <div
+                  className={
+                    i < asunto.seguimientos.length - 1 ? "min-w-0 flex-1 border-b border-neutral-100 pb-6" : "min-w-0 flex-1"
+                  }
+                >
+                  <time className="text-xs font-semibold tabular-nums text-emerald-900/75" dateTime={s.fecha}>
+                    {fmtFecha(s.fecha)}
+                  </time>
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-neutral-800">{s.descripcion}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

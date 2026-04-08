@@ -17,7 +17,7 @@ function LoginForm() {
     syncEstudioCookies,
   } = useAuth()
 
-  const nextAfterAuth = searchParams.get('next') || '/perfil'
+  const nextAfterAuth = searchParams.get('next') || '/estudio/clientes'
 
   /** Ya logueado (p. ej. token en localStorage) y el middleware mandó acá: sincronizar cookies y entrar a gestión. */
   useEffect(() => {
@@ -28,13 +28,13 @@ function LoginForm() {
       return;
     }
     const next = searchParams.get('next');
-    if (!next?.startsWith('/estudio')) {
+    if (next && !next.startsWith('/estudio')) {
       return;
     }
     void (async () => {
       const { ok } = await syncEstudioCookies();
       if (ok) {
-        window.location.assign(next);
+        window.location.assign(next || '/estudio/clientes');
       }
     })();
   }, [authLoading, isAuthenticated, searchParams, syncEstudioCookies])

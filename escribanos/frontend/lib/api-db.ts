@@ -20,13 +20,13 @@ function mensajePorCodigoPrisma(code: string, message: string): string | null {
     case "P2003":
       return "Violacion de clave foranea: algun dato relacionado no existe en la base.";
     case "P2011":
-      return "Violacion de NOT NULL en la base: faltan datos obligatorios o la tabla no coincide con el modelo. Ejecuta: npx prisma migrate dev";
+      return "Violacion de NOT NULL en la base: faltan datos obligatorios o la tabla no coincide con el modelo. En escribanos/frontend: npm run db:estudio:migrate (o db:estudio:migrate:dev si creas migraciones).";
     case "P2021":
-      return "Falta una tabla en la base (modelo mas nuevo que la BD). Ejecuta en la carpeta del proyecto: npx prisma migrate dev";
+      return "Falta una tabla en la base (modelo mas nuevo que la BD). En escribanos/frontend: npm run db:estudio:migrate";
     case "P2022":
-      return "La base esta desactualizada (faltan columnas). Ejecuta: npx prisma migrate dev";
+      return "La base esta desactualizada (faltan columnas). En escribanos/frontend: npm run db:estudio:migrate";
     default:
-      return `Error en la base (${code}). ${message.split("\n")[0] ?? message} — Si acabas de actualizar el codigo, ejecuta: npx prisma migrate dev`;
+      return `Error en la base (${code}). ${message.split("\n")[0] ?? message} — Si acabas de actualizar el codigo, en escribanos/frontend: npm run db:estudio:migrate`;
   }
 }
 
@@ -62,7 +62,7 @@ export function mensajeErrorApiDbAcceso(error: unknown): string {
   return (
     mensajeErrorPrismaParaUsuario(error) ??
     mensajeErrorDesarrollo(error) ??
-    "No se pudo acceder a la base de datos. Verifica DATABASE_URL, que PostgreSQL este en marcha y ejecuta npx prisma migrate deploy si actualizaste el codigo."
+    "No se pudo acceder a la base de datos. Verifica DATABASE_URL, que PostgreSQL este en marcha y en escribanos/frontend: npm run db:estudio:migrate"
   );
 }
 

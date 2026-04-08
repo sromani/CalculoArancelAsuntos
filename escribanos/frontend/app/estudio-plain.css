@@ -75,8 +75,8 @@
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
 }
 
-/* Layout principal si las utilidades de Tailwind no se generan */
-body > main {
+/* Layout principal si las utilidades de Tailwind no se generan (no pisar gestión estudio) */
+body > main:not(.estudio-main) {
   box-sizing: border-box;
   margin-left: auto;
   margin-right: auto;

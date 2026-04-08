@@ -17,20 +17,20 @@ export default function LayoutAdmin({ children }: { children: ReactNode }) {
       try {
         const r = await fetch("/api/auth/me", { cache: "no-store" });
         if (!r.ok) {
-          router.replace(`/login?next=${encodeURIComponent(pathname || "/estudio")}`);
+          router.replace(`/login?next=${encodeURIComponent(pathname || "/estudio/asuntos")}`);
           return;
         }
         const me = (await r.json()) as { rol?: string };
         const rol = me.rol as RolSesion;
         if (!esAdministrador(rol)) {
-          router.replace("/estudio");
+          router.replace("/estudio/asuntos");
           return;
         }
         if (!cancel) {
           setListo(true);
         }
       } catch {
-        router.replace(`/login?next=${encodeURIComponent(pathname || "/estudio")}`);
+        router.replace(`/login?next=${encodeURIComponent(pathname || "/estudio/asuntos")}`);
       }
     })();
     return () => {

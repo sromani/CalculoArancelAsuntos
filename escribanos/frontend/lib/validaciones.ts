@@ -167,11 +167,17 @@ export function etiquetaEstadoCivil(codigo: string | null | undefined): string {
   if (detallado) {
     const base = ETIQUETA_ESTADO_CIVIL[detallado.codigo];
     const partes = [base];
-    if (detallado.nupcias != null) {
-      partes.push(`${detallado.nupcias}ª nupcias`);
-    }
-    if (detallado.conyuge) {
-      partes.push(`con ${detallado.conyuge}`);
+    if (detallado.codigo === "UNION_CONCUBINARIA") {
+      if (detallado.conyuge) {
+        partes.push(`con ${detallado.conyuge}`);
+      }
+    } else {
+      if (detallado.nupcias != null) {
+        partes.push(`${detallado.nupcias}ª nupcias`);
+      }
+      if (detallado.conyuge) {
+        partes.push(`con ${detallado.conyuge}`);
+      }
     }
     return partes.join(" · ");
   }
@@ -193,15 +199,19 @@ export type EstadoCivilDetallado = {
 export function parseEstadoCivilDetallado(valor: string): EstadoCivilDetallado | null {
   const raw = String(valor ?? "").trim();
   if (!raw) return null;
-  if (esEstadoCivilCliente(raw)) {
-    return { codigo: raw, nupcias: null, conyuge: null };
+  const soloCodigo = raw.toUpperCase();
+  if (esEstadoCivilCliente(soloCodigo)) {
+    return { codigo: soloCodigo, nupcias: null, conyuge: null };
   }
-  const [codigoRaw, nupciasRaw, conyugeRaw] = raw.split("|");
+  const partes = raw.split("|");
+  const codigoRaw = partes[0]?.trim().toUpperCase() ?? "";
   if (!esEstadoCivilCliente(codigoRaw)) return null;
-  const n = nupciasRaw ? Number(nupciasRaw) : NaN;
+  const nupciasRaw = partes[1];
+  const conyugeRaw = partes.slice(2).join("|");
+  const n = nupciasRaw != null && String(nupciasRaw).trim() !== "" ? Number(nupciasRaw) : NaN;
   const nupcias = Number.isInteger(n) && n > 0 ? n : null;
   const conyuge = conyugeRaw?.trim() ? conyugeRaw.trim() : null;
-  return { codigo: codigoRaw, nupcias, conyuge };
+  return { codigo: codigoRaw as CodigoEstadoCivil, nupcias, conyuge };
 }
 
 export function construirEstadoCivilPersistido(
@@ -210,12 +220,19 @@ export function construirEstadoCivilPersistido(
   conyuge: string | null,
 ): string | null {
   if (!codigo) return null;
-  if (!esEstadoCivilCliente(codigo)) return null;
-  const necesitaDetalle = codigo === "CASADO" || codigo === "DIVORCIADO" || codigo === "VIUDO";
-  if (!necesitaDetalle) return codigo;
-  const n = nupcias != null && Number.isInteger(nupcias) && nupcias > 0 ? nupcias : 1;
+  const c0 = codigo.toUpperCase();
+  if (!esEstadoCivilCliente(c0)) return null;
+  if (c0 === "UNION_CONCUBINARIA") {
+    const c = (conyuge ?? "").trim();
+    return c ? `UNION_CONCUBINARIA||${c}` : c0;
+  }
+  const necesitaDetalle = c0 === "CASADO" || c0 === "DIVORCIADO" || c0 === "VIUDO";
+  if (!necesitaDetalle) return c0;
   const c = (conyuge ?? "").trim();
-  return `${codigo}|${n}|${c}`;
+  const tieneNupcias = nupcias != null && Number.isInteger(nupcias) && nupcias > 0;
+  if (!c && !tieneNupcias) return c0;
+  const nFinal = tieneNupcias ? nupcias! : 1;
+  return `${c0}|${nFinal}|${c}`;
 }
 
 /** Convierte input date (YYYY-MM-DD) a Date UTC medianoche; invalido devuelve null. */
@@ -243,4 +260,75 @@ export function fechaIsoADateInput(iso: string | Date | null | undefined): strin
   } catch {
     return "";
   }
+}
+
+/** Persona jurídica: forma societaria (texto libre en BD). */
+export const TIPOS_SOCIAL_CLIENTE = ["SA", "SRL", "SAS", "UNIPERSONAL", "OTRO"] as const;
+export type TipoSocialCliente = (typeof TIPOS_SOCIAL_CLIENTE)[number];
+
+export const ETIQUETA_TIPO_SOCIAL_CLIENTE: Record<TipoSocialCliente, string> = {
+  SA: "Sociedad Anónima (SA)",
+  SRL: "Sociedad de Responsabilidad Limitada (SRL)",
+  SAS: "Sociedad por Acciones Simplificada (SAS)",
+  UNIPERSONAL: "Unipersonal",
+  OTRO: "Otro",
+};
+
+export function esTipoSocialCliente(v: string): v is TipoSocialCliente {
+  return (TIPOS_SOCIAL_CLIENTE as readonly string[]).includes(v);
+}
+
+/** Campos del formulario de domicilio reconstruidos desde el texto persistido (`domicilioParaGuardar`). */
+export type DomicilioClienteCampos = {
+  calle: string;
+  numero: string;
+  apto: string;
+  ciudad: string;
+  departamento: string;
+  pais: string;
+  aclaraciones: string;
+};
+
+const DOMICILIO_VACIO: DomicilioClienteCampos = {
+  calle: "",
+  numero: "",
+  apto: "",
+  ciudad: "",
+  departamento: "",
+  pais: "",
+  aclaraciones: "",
+};
+
+/**
+ * Parsea el valor guardado en BD (segmentos `Etiqueta: valor` unidos con ` | `).
+ * Si no reconoce el formato, devuelve todo el texto en `calle` (texto libre histórico).
+ */
+export function parseDomicilioClientePersistido(raw: string | null | undefined): DomicilioClienteCampos {
+  const r = String(raw ?? "").trim();
+  if (!r) return { ...DOMICILIO_VACIO };
+  const partes = r.split(/\s*\|\s*/);
+  let huboEtiqueta = false;
+  const out: DomicilioClienteCampos = { ...DOMICILIO_VACIO };
+  for (const p of partes) {
+    const s = p.trim();
+    if (!s) continue;
+    const m = s.match(
+      /^(Calle|N[°º]|Apto|Ciudad|Departamento|Pais|Aclaraciones)\s*:\s*(.*)$/i,
+    );
+    if (!m) continue;
+    huboEtiqueta = true;
+    const tag = m[1].trim().toUpperCase().replace("º", "°");
+    const valor = m[2].trim();
+    if (tag === "CALLE") out.calle = valor;
+    else if (tag === "N°") out.numero = valor;
+    else if (tag === "APTO") out.apto = valor;
+    else if (tag === "CIUDAD") out.ciudad = valor;
+    else if (tag === "DEPARTAMENTO") out.departamento = valor;
+    else if (tag === "PAIS") out.pais = valor;
+    else if (tag === "ACLARACIONES") out.aclaraciones = valor;
+  }
+  if (!huboEtiqueta) {
+    return { ...DOMICILIO_VACIO, calle: r };
+  }
+  return out;
 }

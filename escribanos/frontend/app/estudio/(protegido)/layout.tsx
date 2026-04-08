@@ -3,12 +3,14 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BarraNavegacion } from "@/components/barra-navegacion";
 import { useAuth } from "@/app/context/AuthContext";
+import { estudioPageWrapClass } from "@/lib/estudio-estilos";
+import { estudioTw } from "@/lib/estudio-tw";
+import { cn } from "@/lib/cn";
 
 /**
- * Gestión del estudio contable: sin redirect en middleware ni layout servidor.
- * Quien entra logueado (token Nest en localStorage) sincroniza cookies y ve el módulo.
+ * Rutas bajo /estudio (clientes, asuntos, cuenta): sesión Nest + cookies de estudio.
+ * Contenido debajo del navbar del sitio; columna centrada `.estudio-page-wrap` (misma anchura que el menú).
  */
 export default function LayoutEstudioProtegido({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading, syncEstudioCookies } = useAuth();
@@ -21,7 +23,7 @@ export default function LayoutEstudioProtegido({ children }: { children: ReactNo
       return;
     }
     if (!isAuthenticated) {
-      router.replace("/login?next=/estudio");
+      router.replace("/login?next=/estudio/clientes");
       return;
     }
     void (async () => {
@@ -37,8 +39,12 @@ export default function LayoutEstudioProtegido({ children }: { children: ReactNo
 
   if (loading) {
     return (
-      <div className="estudio-main mx-auto flex min-h-[50vh] items-center justify-center px-4">
-        <p className="text-[var(--gris-texto)]">Cargando gestión del estudio…</p>
+      <div className="estudio-shell estudio-tema-marca w-full min-w-0">
+        <main
+          className={cn(estudioPageWrapClass, "estudio-main flex min-h-[45vh] items-center justify-center text-center")}
+        >
+          <p className={estudioTw.body}>Cargando…</p>
+        </main>
       </div>
     );
   }
@@ -49,39 +55,42 @@ export default function LayoutEstudioProtegido({ children }: { children: ReactNo
 
   if (fase === "inicial") {
     return (
-      <div className="estudio-main mx-auto flex min-h-[50vh] items-center justify-center px-4">
-        <p className="text-[var(--gris-texto)]">Preparando sesión del estudio…</p>
+      <div className="estudio-shell estudio-tema-marca w-full min-w-0">
+        <main
+          className={cn(estudioPageWrapClass, "estudio-main flex min-h-[45vh] items-center justify-center text-center")}
+        >
+          <p className={estudioTw.body}>Preparando sesión…</p>
+        </main>
       </div>
     );
   }
 
   if (fase === "error") {
     return (
-      <div className="estudio-main mx-auto max-w-lg px-4 py-12">
-        <p className="text-red-800 whitespace-pre-wrap">{mensajeError}</p>
-        <p className="mt-4 text-sm text-[var(--gris-texto)]">
-          Comprobaciones rápidas: backend Nest en 3001 · Postgres con la base del estudio ·{" "}
-          <code className="rounded bg-neutral-100 px-1">DATABASE_URL</code> y{" "}
-          <code className="rounded bg-neutral-100 px-1">NEST_INTERNAL_URL</code> en{" "}
-          <code className="rounded bg-neutral-100 px-1">.env.local</code>.
-        </p>
-        <button
-          type="button"
-          className="mt-4 text-[var(--verde-principal)] underline"
-          onClick={() => window.location.reload()}
-        >
-          Reintentar
-        </button>
+      <div className="estudio-shell estudio-tema-marca w-full min-w-0">
+        <main className={cn(estudioPageWrapClass, "estudio-main py-12 text-center")}>
+          <p className="whitespace-pre-wrap text-red-800">{mensajeError}</p>
+          <p className={cn("mt-4 text-justify", estudioTw.bodySm)}>
+            Comprobaciones rápidas: backend Nest en 3001 · Postgres con la base del estudio ·{" "}
+            <code className="rounded bg-neutral-100 px-1">DATABASE_URL</code> y{" "}
+            <code className="rounded bg-neutral-100 px-1">NEST_INTERNAL_URL</code> en{" "}
+            <code className="rounded bg-neutral-100 px-1">.env.local</code>.
+          </p>
+          <button
+            type="button"
+            className="mt-4 text-sm font-medium text-emerald-700 underline transition hover:text-emerald-800"
+            onClick={() => window.location.reload()}
+          >
+            Reintentar
+          </button>
+        </main>
       </div>
     );
   }
 
   return (
-    <>
-      <BarraNavegacion />
-      <main className="estudio-main estudio-tema-marca mx-auto min-w-0 max-w-5xl px-3 py-5 sm:px-4 sm:py-8">
-        {children}
-      </main>
-    </>
+    <div className="estudio-shell estudio-tema-marca w-full min-w-0">
+      <main className={cn(estudioPageWrapClass, "estudio-main min-w-0")}>{children}</main>
+    </div>
   );
 }

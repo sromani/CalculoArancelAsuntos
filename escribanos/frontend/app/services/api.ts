@@ -9,8 +9,32 @@ function authUrl(path: string): string {
   return `${NEST_PREFIX}${p}`;
 }
 
+/** Cuando Nest (3001) está apagado, Next suele responder 500 con cuerpo plano "Internal Server Error". */
+function mensajeSiApiNestCaido(status: number, text: string): string | null {
+  const t = text.trim();
+  if (status !== 500 && status !== 502 && status !== 503 && status !== 504) {
+    return null;
+  }
+  if (
+    /^internal server error$/i.test(t) ||
+    /^bad gateway$/i.test(t) ||
+    /^gateway timeout$/i.test(t) ||
+    (status === 500 && /internal server error/i.test(text) && text.length < 2000)
+  ) {
+    return "El API Nest no está en marcha (puerto 3001). Desde la raíz del monorepo: npm run dev:escribanos-api — o npm run dev:escribanos para web y API juntas.";
+  }
+  if (status >= 502 && text.length < 80) {
+    return "El servicio de cuentas no responde. Comprobá que el API Nest esté corriendo en el puerto 3001 y que PostgreSQL esté disponible.";
+  }
+  return null;
+}
+
 async function readErrorMessage(response: Response): Promise<string> {
   const text = await response.text();
+  const hint = mensajeSiApiNestCaido(response.status, text);
+  if (hint) {
+    return hint;
+  }
   try {
     const j = JSON.parse(text) as { message?: string | string[]; error?: string };
     if (typeof j.message === "string") return j.message;

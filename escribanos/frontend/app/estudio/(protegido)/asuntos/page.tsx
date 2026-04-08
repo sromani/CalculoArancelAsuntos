@@ -1,26 +1,20 @@
 import Link from "next/link";
 import { ListaAsuntos } from "@/components/lista-asuntos";
+import { estudioTw } from "@/lib/estudio-tw";
+import { cn } from "@/lib/cn";
 
 export default function AsuntosPage() {
   return (
-    <section className="min-w-0 max-w-7xl space-y-10">
-      <header className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-        <div className="min-w-0 max-w-2xl">
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--verde-titulo)] sm:text-[2rem] sm:leading-tight">
-            Asuntos
-          </h1>
-          <p className="mt-3 text-[0.9375rem] leading-relaxed text-neutral-600">
-            Gestión integral de expedientes. Filtre, consulte o cree un nuevo asunto.
-          </p>
-        </div>
+    <div className="flex w-full min-w-0 flex-col gap-4 text-left sm:gap-5">
+      <div className="flex w-full shrink-0 justify-end">
         <Link
           href="/estudio/asuntos/nuevo"
-          className="btn-primary inline-flex min-h-[2.875rem] w-full shrink-0 items-center justify-center rounded-xl border-2 border-transparent px-7 py-2.5 text-[0.9375rem] font-semibold shadow-md shadow-[rgba(0,166,81,0.18)] transition hover:shadow-lg hover:shadow-[rgba(0,166,81,0.22)] sm:w-auto"
+          className={cn(estudioTw.btnPrimary, "min-w-[12.5rem] justify-center px-8 sm:min-w-[14rem] sm:px-10")}
         >
           Nuevo asunto
         </Link>
-      </header>
+      </div>
       <ListaAsuntos />
-    </section>
+    </div>
   );
 }

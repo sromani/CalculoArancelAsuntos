@@ -13,7 +13,13 @@ import {
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
-import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
+import {
+  RegisterDto,
+  LoginDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  ChangePasswordDto,
+} from './dto/auth.dto';
 
 const MSG_DB_API =
   'La base del API (tabla users) no está creada o la conexión falló. En escribanos/backend, con DATABASE_URL apuntando a sistema_escribanos_db, ejecutá: npx prisma db push';
@@ -192,6 +198,45 @@ export class AuthService {
     });
 
     return { message: 'Contraseña restablecida exitosamente' };
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const { currentPassword, newPassword } = dto;
+
+    let user;
+    try {
+      user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, password: true },
+      });
+    } catch (e) {
+      this.rethrowPrismaDb(e);
+    }
+
+    if (!user) {
+      throw new UnauthorizedException('Usuario no encontrado');
+    }
+
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      throw new UnauthorizedException('La contraseña actual no es correcta');
+    }
+
+    if (currentPassword === newPassword) {
+      throw new BadRequestException('La nueva contraseña debe ser distinta de la actual');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    try {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+      });
+    } catch (e) {
+      this.rethrowPrismaDb(e);
+    }
+
+    return { message: 'Contraseña actualizada correctamente' };
   }
 
   async validateUser(userId: string) {

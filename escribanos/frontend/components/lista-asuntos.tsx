@@ -4,6 +4,20 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
+import { estudioTw } from "@/lib/estudio-tw";
+import { cn } from "@/lib/cn";
+
+const surface = estudioTw.surface;
+const cardPadX = estudioTw.cardPadX;
+const inputBase = estudioTw.inputSm;
+const btnPrimary = estudioTw.btnPrimarySm;
+const btnSecondary = estudioTw.btnSecondarySm;
+const btnGhost = estudioTw.btnGhost;
+
+/** Enlace de acción: texto verde y subrayado (más marcado al hover / foco). */
+const linkVerFicha =
+  "text-xs font-semibold text-emerald-700 underline decoration-emerald-600/35 underline-offset-2 transition hover:text-emerald-800 hover:decoration-emerald-700 focus-visible:rounded-sm focus-visible:text-emerald-800 focus-visible:decoration-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:text-sm";
+
 function ToggleSwitch({
   checked,
   onChange,
@@ -23,13 +37,13 @@ function ToggleSwitch({
       aria-checked={checked}
       aria-label={ariaLabel}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border border-black/[0.06] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--verde-principal)] ${
-        checked ? "bg-[var(--verde-principal)]" : "bg-neutral-200/90"
+      className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 ${
+        checked ? "bg-emerald-600" : "bg-gray-200"
       }`}
     >
       <span
-        className={`pointer-events-none absolute top-1 left-1 size-6 rounded-full bg-white shadow-md ring-1 ring-black/[0.06] transition-transform duration-200 ease-out ${
-          checked ? "translate-x-6" : "translate-x-0"
+        className={`pointer-events-none absolute top-0.5 left-0.5 size-6 rounded-full bg-white shadow-md ring-1 ring-slate-900/5 transition-transform duration-200 ease-out ${
+          checked ? "translate-x-5" : "translate-x-0"
         }`}
       />
     </button>
@@ -65,51 +79,12 @@ type SocioFiltro = {
   nombre: string;
 };
 
-type RolMe =
-  | "ADMIN"
-  | "USUARIO"
-  | "SOCIO"
-  | "PROFESIONAL"
-  | "COLABORADOR"
-  | "CONTADOR"
-  | "SOLO_LECTURA";
-
-/** Contenedor general del área de filtros (sin esquinas redondeadas) */
-const panelFiltros =
-  "border border-neutral-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)] sm:p-6 lg:p-7";
-
-/** Separación entre grupos de filtros: solo líneas, sin marcos redondeados */
-const seccionFiltro = "py-6 first:pt-0";
-
-/** Campos dentro de un bloque */
-const inputFiltro =
-  "input-app border-neutral-200/80 bg-white text-neutral-900 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] placeholder:text-neutral-400 focus:border-[rgba(0,166,81,0.45)]";
-
-function TituloBloqueFiltro({ children, ayuda }: { children: ReactNode; ayuda?: ReactNode }) {
-  return (
-    <div
-      className="group relative border-b border-neutral-200 pb-3 outline-none focus-visible:ring-2 focus-visible:ring-[var(--verde-principal)]/25 focus-visible:ring-offset-2"
-      tabIndex={ayuda ? 0 : undefined}
-    >
-      <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-neutral-600">{children}</h3>
-      {ayuda ? (
-        <div
-          className="absolute left-0 right-0 top-full z-20 pt-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
-          role="tooltip"
-        >
-          <div className="max-w-[min(100%,28rem)] border border-neutral-200/90 bg-white px-3 py-2 text-left text-xs font-normal normal-case leading-snug tracking-normal text-neutral-600 shadow-md">
-            {ayuda}
-          </div>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function EtiquetaCampo({ children }: { children: ReactNode }) {
-  return (
-    <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wide text-neutral-500">{children}</span>
-  );
+function EtiquetaCampo({ children, size = "sm" }: { children: ReactNode; size?: "sm" | "lg" }) {
+  const sizeClass =
+    size === "lg"
+      ? "text-base font-semibold tracking-tight text-gray-900 sm:text-[1.0625rem]"
+      : "text-sm font-semibold text-gray-700";
+  return <span className={`mb-2.5 block ${sizeClass}`}>{children}</span>;
 }
 
 function etiquetaTipo(tipo: string): string {
@@ -143,6 +118,66 @@ function textoColaboradores(a: AsuntoRow): string {
   return parts.length ? parts.join(" · ") : "—";
 }
 
+function ChevronDown({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+      <path
+        fillRule="evenodd"
+        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.94a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+function FiltroAccordion({
+  sectionId,
+  title,
+  helpText,
+  open,
+  onToggle,
+  children,
+}: {
+  sectionId: string;
+  title: string;
+  helpText?: string;
+  open: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className="border-b border-gray-100 last:border-b-0">
+      <button
+        type="button"
+        className="flex w-full items-center justify-between gap-3 rounded-lg py-3.5 text-left transition-colors hover:bg-gray-50/90 sm:py-4"
+        aria-expanded={open}
+        aria-controls={`${sectionId}-panel`}
+        id={`${sectionId}-btn`}
+        onClick={onToggle}
+      >
+        <span className="text-sm font-semibold text-gray-900">{title}</span>
+        <ChevronDown
+          className={cn("size-5 shrink-0 text-gray-500 transition-transform duration-200", open ? "rotate-180" : "")}
+        />
+      </button>
+      <div
+        id={`${sectionId}-panel`}
+        role="region"
+        aria-labelledby={`${sectionId}-btn`}
+        hidden={!open}
+        className={cn(!open && "hidden")}
+      >
+        {helpText ? (
+          <p className="mb-4 max-w-3xl text-xs leading-relaxed text-gray-600">{helpText}</p>
+        ) : null}
+        {children}
+      </div>
+    </div>
+  );
+}
+
+type FiltroAccKey = "criterios" | "equipo" | "pendientes" | "fechas";
+
 export function ListaAsuntos() {
   const [estado, setEstado] = useState<string>("");
   const [tipo, setTipo] = useState<string>("");
@@ -162,7 +197,17 @@ export function ListaAsuntos() {
   const [lista, setLista] = useState<AsuntoRow[]>([]);
   const [cargando, setCargando] = useState(true);
   const [mensaje, setMensaje] = useState("");
-  const [rol, setRol] = useState<RolMe | null>(null);
+  const [busquedaAvanzada, setBusquedaAvanzada] = useState(false);
+  const [filtroAcc, setFiltroAcc] = useState<Record<FiltroAccKey, boolean>>({
+    criterios: true,
+    equipo: false,
+    pendientes: false,
+    fechas: false,
+  });
+
+  const toggleFiltroAcc = useCallback((k: FiltroAccKey) => {
+    setFiltroAcc((prev) => ({ ...prev, [k]: !prev[k] }));
+  }, []);
 
   const hayFiltrosActivos = useMemo(
     () =>
@@ -247,13 +292,6 @@ export function ListaAsuntos() {
   }, [q]);
 
   useEffect(() => {
-    void fetch("/api/auth/me")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => d && setRol(d.rol as RolMe))
-      .catch(() => setRol(null));
-  }, []);
-
-  useEffect(() => {
     void fetch("/api/catalogos")
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
@@ -331,395 +369,422 @@ export function ListaAsuntos() {
   }, [cargar]);
 
   return (
-    <div className="min-w-0 space-y-9">
-      <div className="flex flex-col gap-4 border-b border-neutral-200/70 pb-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-[0.9375rem] text-neutral-700">
-          <span className="font-medium text-neutral-500">Rol:</span>{" "}
-          <span className="font-semibold text-neutral-900">{rol ?? "…"}</span>
-          {!cargando ? (
-            <>
-              <span className="mx-2 text-neutral-300">|</span>
-              <span className="tabular-nums text-[var(--verde-titulo)]">
-                {lista.length} {lista.length === 1 ? "resultado" : "resultados"}
-              </span>
-            </>
-          ) : null}
-        </p>
-        {hayFiltrosActivos ? (
-          <button
-            type="button"
-            className="inline-flex min-h-[2.625rem] items-center justify-center self-start rounded-xl border border-neutral-200/90 bg-white px-4 py-2 text-sm font-semibold text-neutral-700 shadow-sm transition-colors hover:border-[rgba(0,166,81,0.3)] hover:bg-[var(--fondo-verde-muy-claro)] sm:self-auto"
-            onClick={limpiarFiltros}
-          >
-            Limpiar filtros
-          </button>
-        ) : null}
-      </div>
-
-      <div className={panelFiltros}>
-        {filtrosActivosCount > 0 ? (
-          <div className="mb-6 border border-[rgba(0,166,81,0.25)] bg-[rgba(0,166,81,0.07)] px-4 py-3 text-sm font-semibold text-[var(--verde-oscuro)]">
-            <span>Filtros aplicados</span>
-            <span className="ml-2 font-normal text-neutral-600">
-              · {filtrosActivosCount} criterio{filtrosActivosCount === 1 ? "" : "s"}
-            </span>
-          </div>
-        ) : null}
-
-        <div className="divide-y divide-neutral-200/80">
-          <div className={seccionFiltro}>
-            <TituloBloqueFiltro
-              ayuda="Buscá por cliente, documento o nombre del asunto. Podés combinar con estado (en trámite / finalizado) y tipo (notarial, legal o catálogo)."
-            >
-              Búsqueda y criterios
-            </TituloBloqueFiltro>
-            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-              <label className="lg:col-span-2">
-                <EtiquetaCampo>Buscar</EtiquetaCampo>
-                <input
-                  className={inputFiltro}
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="Cliente, documento, asunto…"
-                  autoComplete="off"
-                />
-              </label>
-              <label>
-                <EtiquetaCampo>Estado</EtiquetaCampo>
-                <select className={inputFiltro} value={estado} onChange={(e) => setEstado(e.target.value)}>
-                  <option value="">Todos</option>
-                  <option value="EN_TRAMITE">En trámite</option>
-                  <option value="FINALIZADO">Finalizado</option>
-                </select>
-              </label>
-              <label>
-                <EtiquetaCampo>Tipo</EtiquetaCampo>
-                <select className={inputFiltro} value={tipo} onChange={(e) => setTipo(e.target.value)}>
-                  <option value="">Todos</option>
-                  <option value="TODOS">Todos (catálogo)</option>
-                  <option value="NOTARIAL">Notarial</option>
-                  <option value="LEGAL">Legal</option>
-                </select>
-              </label>
-            </div>
-          </div>
-
-          <div className={seccionFiltro}>
-            <TituloBloqueFiltro
-              ayuda="Legal a cargo: profesional del estudio asignado al expediente. Socio referente: socio vinculado al asunto (puede quedar sin asignar)."
-            >
-              Equipo
-            </TituloBloqueFiltro>
-            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:gap-6">
-              <label className="min-w-0">
-                <EtiquetaCampo>Legal a cargo</EtiquetaCampo>
-                <select
-                  className={inputFiltro}
-                  value={profesionalACargoId}
-                  onChange={(e) => setProfesionalACargoId(e.target.value)}
-                >
-                  <option value="">Todos</option>
-                  {profesionales.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.nombre}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="min-w-0">
-                <EtiquetaCampo>Socio referente</EtiquetaCampo>
-                <select
-                  className={inputFiltro}
-                  value={socioReferenteId}
-                  onChange={(e) => setSocioReferenteId(e.target.value)}
-                >
-                  <option value="">Todos</option>
-                  {socios.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.nombre}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          </div>
-
-          <div className={seccionFiltro}>
-            <TituloBloqueFiltro
-              ayuda="Opcional: listá solo expedientes sin colaboradores (ni en colab. 1 ni en 2) o sin contador referente. Usá «Filtrar» para refrescar la lista."
-            >
-              Pendientes
-            </TituloBloqueFiltro>
-            <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
-                <div className="flex items-center gap-3 border border-neutral-200/90 bg-neutral-50/80 px-4 py-3">
-                  <ToggleSwitch
-                    id="filtro-sin-equipo"
-                    ariaLabel="Filtrar asuntos sin colaboradores"
-                    checked={sinEquipo}
-                    onChange={setSinEquipo}
+    <div className="flex w-full min-w-0 flex-col gap-6 text-left">
+      <div className={surface}>
+        <div
+          className={cn(
+            "sticky z-30 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md",
+            cardPadX,
+            "py-4 sm:py-5",
+          )}
+          style={{
+            top: "calc(var(--navbar-app-height) + var(--estudio-barra-height))",
+          }}
+        >
+          <div className="min-w-0">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
+              <div className={estudioTw.busquedaFieldOuter}>
+                <div className={estudioTw.busquedaFieldShell}>
+                  <span className={estudioTw.busquedaIconWrap} aria-hidden>
+                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.2-5.2M10 18a8 8 0 110-16 8 8 0 010 16z" />
+                    </svg>
+                  </span>
+                  <input
+                    type="search"
+                    aria-label="Buscar asuntos"
+                    className={estudioTw.busquedaFieldInput}
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Ej. García, 12345678, compraventa…"
+                    autoComplete="off"
                   />
-                  <span className="text-sm font-semibold text-neutral-800">Sin colaboradores</span>
-                </div>
-                <div className="flex items-center gap-3 border border-neutral-200/90 bg-neutral-50/80 px-4 py-3">
-                  <ToggleSwitch
-                    id="filtro-sin-contador"
-                    ariaLabel="Filtrar asuntos sin contador"
-                    checked={sinContador}
-                    onChange={setSinContador}
-                  />
-                  <span className="text-sm font-semibold text-neutral-800">Sin contador</span>
                 </div>
               </div>
               <button
                 type="button"
-                className="btn-primary inline-flex min-h-[2.75rem] shrink-0 items-center justify-center rounded-xl px-8 py-2.5 text-sm font-semibold shadow-md shadow-[rgba(0,166,81,0.2)] lg:min-w-[10.5rem]"
-                onClick={() => void cargar()}
+                className={busquedaAvanzada ? btnSecondary : btnGhost}
+                aria-expanded={busquedaAvanzada}
+                onClick={() => setBusquedaAvanzada((v) => !v)}
               >
-                Filtrar
+                <span className="hidden sm:inline">{busquedaAvanzada ? "Ocultar filtros" : "Más filtros"}</span>
+                <span className="sm:hidden">{busquedaAvanzada ? "Ocultar" : "Filtros"}</span>
+              </button>
+            </div>
+
+            {filtrosActivosCount > 0 ? (
+              <div className="mt-4 rounded-xl border border-emerald-200/80 bg-emerald-50/70 px-3 py-2.5 text-xs text-gray-600">
+                <span className="font-semibold text-gray-900">Filtros activos:</span>{" "}
+                <span className="tabular-nums">{filtrosActivosCount}</span> criterio
+                {filtrosActivosCount === 1 ? "" : "s"}
+              </div>
+            ) : null}
+
+            {cargando || hayFiltrosActivos ? (
+              <div className="mt-4 flex flex-wrap items-center justify-end gap-3 border-t border-gray-100/90 pt-4">
+                {cargando ? (
+                  <span className="inline-flex items-center gap-2 text-xs text-gray-600">
+                    <span
+                      className="size-3.5 shrink-0 animate-spin rounded-full border-2 border-gray-200 border-t-emerald-600"
+                      aria-hidden
+                    />
+                    Actualizando…
+                  </span>
+                ) : null}
+                {hayFiltrosActivos ? (
+                  <button type="button" className={btnGhost} onClick={limpiarFiltros}>
+                    Limpiar filtros
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {busquedaAvanzada ? (
+          <div className="border-t border-gray-100 bg-gray-50/40">
+            <div className={cardPadX}>
+              <p className="py-3 text-xs font-medium text-gray-500">
+                Desplegá cada bloque para afinar el listado. Los valores se mantienen al cerrar.
+              </p>
+              <FiltroAccordion
+                sectionId="filtro-criterios"
+                title="Criterios del asunto"
+                helpText="Filtrá por situación del expediente y por tipo de actuación."
+                open={filtroAcc.criterios}
+                onToggle={() => toggleFiltroAcc("criterios")}
+              >
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label>
+                    <EtiquetaCampo>Estado</EtiquetaCampo>
+                    <select className={inputBase} value={estado} onChange={(e) => setEstado(e.target.value)}>
+                      <option value="">Todos</option>
+                      <option value="EN_TRAMITE">En trámite</option>
+                      <option value="FINALIZADO">Finalizado</option>
+                    </select>
+                  </label>
+                  <label>
+                    <EtiquetaCampo>Tipo</EtiquetaCampo>
+                    <select className={inputBase} value={tipo} onChange={(e) => setTipo(e.target.value)}>
+                      <option value="">Todos</option>
+                      <option value="TODOS">Todos (catálogo)</option>
+                      <option value="NOTARIAL">Notarial</option>
+                      <option value="LEGAL">Legal</option>
+                    </select>
+                  </label>
+                </div>
+              </FiltroAccordion>
+
+              <FiltroAccordion
+                sectionId="filtro-equipo"
+                title="Equipo"
+                helpText="Legal a cargo: profesional del estudio asignado al expediente. Socio referente: socio vinculado al asunto (puede quedar sin asignar)."
+                open={filtroAcc.equipo}
+                onToggle={() => toggleFiltroAcc("equipo")}
+              >
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="min-w-0">
+                    <EtiquetaCampo>Legal a cargo</EtiquetaCampo>
+                    <select
+                      className={inputBase}
+                      value={profesionalACargoId}
+                      onChange={(e) => setProfesionalACargoId(e.target.value)}
+                    >
+                      <option value="">Todos</option>
+                      {profesionales.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="min-w-0">
+                    <EtiquetaCampo>Socio referente</EtiquetaCampo>
+                    <select
+                      className={inputBase}
+                      value={socioReferenteId}
+                      onChange={(e) => setSocioReferenteId(e.target.value)}
+                    >
+                      <option value="">Todos</option>
+                      {socios.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </FiltroAccordion>
+
+              <FiltroAccordion
+                sectionId="filtro-pendientes"
+                title="Pendientes"
+                helpText="Listá solo expedientes sin colaboradores (ni en colab. 1 ni en 2) o sin contador referente."
+                open={filtroAcc.pendientes}
+                onToggle={() => toggleFiltroAcc("pendientes")}
+              >
+                <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+                  <div className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3.5 shadow-sm">
+                    <ToggleSwitch
+                      id="filtro-sin-equipo"
+                      ariaLabel="Filtrar asuntos sin colaboradores"
+                      checked={sinEquipo}
+                      onChange={setSinEquipo}
+                    />
+                    <span className="text-sm font-medium text-gray-900">Sin colaboradores</span>
+                  </div>
+                  <div className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3.5 shadow-sm">
+                    <ToggleSwitch
+                      id="filtro-sin-contador"
+                      ariaLabel="Filtrar asuntos sin contador"
+                      checked={sinContador}
+                      onChange={setSinContador}
+                    />
+                    <span className="text-sm font-medium text-gray-900">Sin contador</span>
+                  </div>
+                </div>
+              </FiltroAccordion>
+
+              <FiltroAccordion
+                sectionId="filtro-fechas"
+                title="Fechas"
+                helpText="Filtrá por año de inicio o por rango de fechas de inicio y de finalización del expediente."
+                open={filtroAcc.fechas}
+                onToggle={() => toggleFiltroAcc("fechas")}
+              >
+                <div className="space-y-8">
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <label>
+                      <EtiquetaCampo>Año inicio</EtiquetaCampo>
+                      <input
+                        className={inputBase}
+                        value={anioInicio}
+                        onChange={(e) => setAnioInicio(e.target.value)}
+                        placeholder="Ej. 2026"
+                        inputMode="numeric"
+                      />
+                    </label>
+                    <label>
+                      <EtiquetaCampo>Inicio desde</EtiquetaCampo>
+                      <input
+                        className={inputBase}
+                        type="date"
+                        value={fechaInicioDesde}
+                        onChange={(e) => setFechaInicioDesde(e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      <EtiquetaCampo>Inicio hasta</EtiquetaCampo>
+                      <input
+                        className={inputBase}
+                        type="date"
+                        value={fechaInicioHasta}
+                        onChange={(e) => setFechaInicioHasta(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <div className="grid gap-4 border-t border-gray-200 pt-6 sm:grid-cols-2">
+                    <label>
+                      <EtiquetaCampo>Finalización desde</EtiquetaCampo>
+                      <input
+                        className={inputBase}
+                        type="date"
+                        value={fechaFinalizacionDesde}
+                        onChange={(e) => setFechaFinalizacionDesde(e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      <EtiquetaCampo>Finalización hasta</EtiquetaCampo>
+                      <input
+                        className={inputBase}
+                        type="date"
+                        value={fechaFinalizacionHasta}
+                        onChange={(e) => setFechaFinalizacionHasta(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </FiltroAccordion>
+            </div>
+
+            <div
+              className={cn(
+                "flex flex-col gap-3 border-t border-gray-200 bg-white/80 py-6 sm:flex-row sm:flex-wrap sm:justify-end sm:gap-3",
+                cardPadX,
+              )}
+            >
+              <button type="button" className={btnPrimary} onClick={() => void cargar()}>
+                Aplicar filtros
+              </button>
+              <button type="button" className={btnSecondary} onClick={limpiarFiltros}>
+                Limpiar
               </button>
             </div>
           </div>
+        ) : null}
 
-          <div className={seccionFiltro}>
-            <TituloBloqueFiltro
-              ayuda="Filtrá por año de inicio o por rango de fechas de inicio y de finalización del expediente."
-            >
-              Fechas
-            </TituloBloqueFiltro>
-            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-              <label>
-                <EtiquetaCampo>Año inicio</EtiquetaCampo>
-                <input
-                  className={inputFiltro}
-                  value={anioInicio}
-                  onChange={(e) => setAnioInicio(e.target.value)}
-                  placeholder="Ej. 2026"
-                  inputMode="numeric"
-                />
-              </label>
-              <label>
-                <EtiquetaCampo>Inicio desde</EtiquetaCampo>
-                <input
-                  className={inputFiltro}
-                  type="date"
-                  value={fechaInicioDesde}
-                  onChange={(e) => setFechaInicioDesde(e.target.value)}
-                />
-              </label>
-              <label>
-                <EtiquetaCampo>Inicio hasta</EtiquetaCampo>
-                <input
-                  className={inputFiltro}
-                  type="date"
-                  value={fechaInicioHasta}
-                  onChange={(e) => setFechaInicioHasta(e.target.value)}
-                />
-              </label>
-            </div>
-            <div className="mt-6 grid gap-5 border-t border-neutral-200/80 pt-6 sm:grid-cols-2 lg:gap-6">
-              <label>
-                <EtiquetaCampo>Finalización desde</EtiquetaCampo>
-                <input
-                  className={inputFiltro}
-                  type="date"
-                  value={fechaFinalizacionDesde}
-                  onChange={(e) => setFechaFinalizacionDesde(e.target.value)}
-                />
-              </label>
-              <label>
-                <EtiquetaCampo>Finalización hasta</EtiquetaCampo>
-                <input
-                  className={inputFiltro}
-                  type="date"
-                  value={fechaFinalizacionHasta}
-                  onChange={(e) => setFechaFinalizacionHasta(e.target.value)}
-                />
-              </label>
-            </div>
+        <div className="mt-6 border-t border-gray-200 bg-gray-50/50 pt-4 sm:mt-8 sm:pt-5">
+          {lista.length > 0 ? (
+            <>
+          <div className="hidden overflow-x-auto px-4 pb-2 pt-2 [-webkit-overflow-scrolling:touch] sm:px-5 md:block">
+            <table className="w-full min-w-[800px] text-left text-gray-600">
+              <caption className="sr-only">Asuntos del estudio</caption>
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-100/95">
+                  <th className="sticky left-0 z-20 w-[5.5rem] min-w-[5.5rem] border-r border-gray-200 bg-gray-100 py-2.5 pl-3 pr-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 shadow-[4px_0_12px_-6px_rgba(15,23,42,0.08)] sm:w-[6rem] sm:min-w-[6rem] sm:py-3 sm:pl-4 sm:pr-3 sm:text-sm">
+                    Acción
+                  </th>
+                  <th className="whitespace-nowrap px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">
+                    #
+                  </th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Estado</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Tipo</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Cliente</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Asunto</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Socio</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Prof.</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Colab.</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Cont.</th>
+                  <th className="px-2 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 sm:px-3 sm:py-3 sm:text-sm">Inicio</th>
+                </tr>
+              </thead>
+              <tbody className="text-xs leading-snug sm:text-sm">
+                {lista.map((a, rowIdx) => (
+                  <tr
+                    key={a.id}
+                    className={cn(
+                      "group border-b border-gray-100 transition-colors hover:bg-emerald-50/50",
+                      rowIdx % 2 === 1 ? "bg-gray-50/60" : "bg-white",
+                    )}
+                  >
+                    <td
+                      className={cn(
+                        "sticky left-0 z-10 border-r border-gray-100 py-2 align-middle pl-3 pr-2 shadow-[4px_0_12px_-6px_rgba(15,23,42,0.06)] sm:py-2.5 sm:pl-4 sm:pr-3",
+                        rowIdx % 2 === 1 ? "bg-gray-50/95 group-hover:bg-emerald-50/60" : "bg-white group-hover:bg-emerald-50/50",
+                      )}
+                    >
+                      <Link className={linkVerFicha} href={`/estudio/asuntos/${a.id}`}>
+                        Ver ficha
+                      </Link>
+                    </td>
+                    <td className="whitespace-nowrap px-2 py-2 font-mono text-xs tabular-nums text-gray-600 sm:px-3 sm:py-2.5">
+                      {a.ordinal}
+                    </td>
+                    <td className="px-2 py-2 sm:px-3 sm:py-2.5">
+                      <span
+                        className={
+                          a.estado === "FINALIZADO"
+                            ? "inline-flex rounded-full bg-gray-200/80 px-1.5 py-0.5 text-[0.65rem] font-medium text-gray-700 sm:text-xs"
+                            : "text-[0.65rem] font-semibold text-emerald-800 sm:text-xs"
+                        }
+                      >
+                        {a.estado === "EN_TRAMITE" ? "En trámite" : "Finalizado"}
+                      </span>
+                    </td>
+                    <td className="px-2 py-2 text-gray-600 sm:px-3 sm:py-2.5">{etiquetaTipo(a.tipo)}</td>
+                    <td className="max-w-[160px] px-2 py-2 sm:max-w-[180px] sm:px-3 sm:py-2.5">
+                      <span className="font-medium text-gray-900">{a.cliente.nombre}</span>
+                      <span className="mt-0.5 block truncate text-[0.65rem] text-gray-600 sm:text-xs">{a.cliente.documento}</span>
+                    </td>
+                    <td className="max-w-[160px] truncate px-2 py-2 text-gray-900 sm:max-w-[180px] sm:px-3 sm:py-2.5" title={a.catalogo.nombre}>
+                      {a.catalogo.nombre}
+                    </td>
+                    <td className="max-w-[100px] truncate px-2 py-2 text-gray-600 sm:max-w-[110px] sm:px-3 sm:py-2.5" title={a.socioReferente?.nombre}>
+                      {a.socioReferente?.nombre ?? "—"}
+                    </td>
+                    <td className="max-w-[100px] truncate px-2 py-2 text-gray-600 sm:max-w-[110px] sm:px-3 sm:py-2.5" title={a.profesionalACargo?.nombre}>
+                      {a.profesionalACargo?.nombre ?? "—"}
+                    </td>
+                    <td className="max-w-[120px] truncate px-2 py-2 text-gray-600 sm:max-w-[130px] sm:px-3 sm:py-2.5" title={textoColaboradores(a) === "—" ? undefined : textoColaboradores(a)}>
+                      {textoColaboradores(a)}
+                    </td>
+                    <td className="max-w-[90px] truncate px-2 py-2 text-gray-600 sm:px-3 sm:py-2.5" title={a.contadorReferente?.nombre}>
+                      {a.contadorReferente?.nombre ?? "—"}
+                    </td>
+                    <td className="whitespace-nowrap px-2 py-2 tabular-nums text-gray-600 sm:px-3 sm:py-2.5">{fmtFechaCorta(a.fechaInicio)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+
+          <ul className={`flex flex-col gap-4 bg-transparent pb-4 pt-2 md:hidden ${cardPadX}`}>
+            {lista.map((a) => (
+              <li
+                key={a.id}
+                className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-black/[0.02] transition-shadow hover:shadow-md"
+              >
+                <div className="flex items-start justify-between gap-3 border-b border-gray-100 pb-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-bold tabular-nums text-gray-500">#{a.ordinal}</span>
+                      <span
+                        className={
+                          a.estado === "FINALIZADO"
+                            ? "rounded-full bg-gray-100 px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-600"
+                            : "text-[0.65rem] font-semibold uppercase tracking-wide text-emerald-800"
+                        }
+                      >
+                        {a.estado === "EN_TRAMITE" ? "En trámite" : "Finalizado"}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-base font-semibold leading-snug text-gray-900">{a.catalogo.nombre}</p>
+                    <p className="mt-1 text-sm text-gray-700">{a.cliente.nombre}</p>
+                    <p className="text-xs text-gray-500">{a.cliente.documento}</p>
+                  </div>
+                </div>
+                <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs text-gray-600">
+                  <div>
+                    <dt className="font-semibold text-gray-500">Tipo</dt>
+                    <dd className="mt-0.5">{etiquetaTipo(a.tipo)}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-gray-500">Inicio</dt>
+                    <dd className="mt-0.5 tabular-nums">{fmtFechaCorta(a.fechaInicio)}</dd>
+                  </div>
+                  <div className="col-span-2">
+                    <dt className="font-semibold text-gray-500">Socio</dt>
+                    <dd className="mt-0.5 truncate">{a.socioReferente?.nombre ?? "—"}</dd>
+                  </div>
+                  <div className="col-span-2">
+                    <dt className="font-semibold text-gray-500">Prof. / Colab. / Cont.</dt>
+                    <dd className="mt-0.5 line-clamp-2">
+                      {[a.profesionalACargo?.nombre, textoColaboradores(a), a.contadorReferente?.nombre]
+                        .filter((x) => x && x !== "—")
+                        .join(" · ") || "—"}
+                    </dd>
+                  </div>
+                </dl>
+                <Link className={cn(linkVerFicha, "mt-4 block text-center")} href={`/estudio/asuntos/${a.id}`}>
+                  Ver ficha
+                </Link>
+              </li>
+            ))}
+          </ul>
+            </>
+          ) : !cargando ? (
+            <div className={`bg-white py-14 text-center sm:py-16 ${cardPadX}`}>
+              <p className="text-base font-bold text-gray-900">Sin resultados</p>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gray-600">
+                {hayFiltrosActivos ? "Probá otros filtros o limpiá la búsqueda." : "Creá un asunto con Nuevo asunto (arriba a la derecha)."}
+              </p>
+              {hayFiltrosActivos ? (
+                <button
+                  type="button"
+                  className={`${btnGhost} mt-6 text-emerald-700 hover:bg-emerald-50`}
+                  onClick={limpiarFiltros}
+                >
+                  Limpiar filtros
+                </button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
 
       {mensaje ? (
-        <p className="rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200/50">{mensaje}</p>
+        <div className="rounded-xl border border-amber-200/80 bg-amber-50 px-4 py-3 text-sm text-amber-950">{mensaje}</div>
       ) : null}
-
-      {cargando ? (
-        <p className="flex items-center gap-3 text-sm text-neutral-500">
-          <span
-            className="inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-neutral-200 border-t-[var(--verde-principal)]"
-            aria-hidden
-          />
-          Cargando…
-        </p>
-      ) : lista.length === 0 ? (
-        <div className="border border-dashed border-neutral-200 bg-neutral-50/50 px-6 py-12 text-center">
-          <p className="text-sm font-medium text-[var(--verde-titulo)]">Sin resultados</p>
-          <p className="mx-auto mt-2 max-w-sm text-sm text-neutral-600">
-            {hayFiltrosActivos ? "Probá otros filtros o limpiá la búsqueda." : "Creá un asunto desde el botón superior."}
-          </p>
-          {hayFiltrosActivos ? (
-            <button
-              type="button"
-              className="mt-4 text-sm font-medium text-[var(--verde-principal)] underline underline-offset-4"
-              onClick={limpiarFiltros}
-            >
-              Limpiar filtros
-            </button>
-          ) : null}
-        </div>
-      ) : (
-        <>
-          <div className="hidden min-w-0 overflow-hidden border border-neutral-200/80 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] md:block">
-            <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
-              <table className="w-full min-w-[920px] text-left text-[0.8125rem] leading-snug text-neutral-800">
-                <thead>
-                  <tr className="border-b border-neutral-200 bg-[#f4f5f7]">
-                    <th className="sticky left-0 z-20 bg-[#f4f5f7] px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.06)]">
-                      #
-                    </th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Estado</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Tipo</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Cliente</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Asunto</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Socio</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Prof.</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Colab.</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Cont.</th>
-                    <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wider text-neutral-500">Inicio</th>
-                    <th className="sticky right-0 z-30 min-w-[8.5rem] border-l border-neutral-200/90 bg-[#f4f5f7] px-3 py-2.5 text-right text-[10px] font-bold uppercase tracking-wider text-neutral-500 shadow-[-6px_0_12px_-4px_rgba(0,0,0,0.06)]">
-                      Acción
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-100">
-                  {lista.map((a) => (
-                    <tr
-                      key={a.id}
-                      className="group transition-colors hover:bg-[rgba(0,166,81,0.04)]"
-                    >
-                      <td className="sticky left-0 z-10 bg-white px-3 py-2.5 font-mono text-xs tabular-nums text-neutral-500 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] group-hover:bg-[rgba(0,166,81,0.04)]">
-                        {a.ordinal}
-                      </td>
-                      <td className="px-3 py-2.5">
-                        <span
-                          className={
-                            a.estado === "FINALIZADO"
-                              ? "text-xs text-neutral-500"
-                              : "text-xs font-medium text-[var(--verde-principal)]"
-                          }
-                        >
-                          {a.estado === "EN_TRAMITE" ? "En trámite" : "Finalizado"}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-neutral-600">{etiquetaTipo(a.tipo)}</td>
-                      <td className="max-w-[200px] px-3 py-2.5">
-                        <span className="font-semibold text-neutral-900">{a.cliente.nombre}</span>
-                        <span className="mt-0.5 block truncate text-[0.75rem] text-neutral-500">{a.cliente.documento}</span>
-                      </td>
-                      <td className="max-w-[200px] truncate px-3 py-2.5 text-neutral-900" title={a.catalogo.nombre}>
-                        {a.catalogo.nombre}
-                      </td>
-                      <td
-                        className="max-w-[120px] truncate px-3 py-2.5 text-neutral-600"
-                        title={a.socioReferente?.nombre}
-                      >
-                        {a.socioReferente?.nombre ?? "—"}
-                      </td>
-                      <td
-                        className="max-w-[120px] truncate px-3 py-2.5 text-neutral-600"
-                        title={a.profesionalACargo?.nombre}
-                      >
-                        {a.profesionalACargo?.nombre ?? "—"}
-                      </td>
-                      <td
-                        className="max-w-[140px] truncate px-3 py-2.5 text-neutral-600"
-                        title={textoColaboradores(a) === "—" ? undefined : textoColaboradores(a)}
-                      >
-                        {textoColaboradores(a)}
-                      </td>
-                      <td className="max-w-[100px] truncate px-3 py-2.5 text-neutral-600" title={a.contadorReferente?.nombre}>
-                        {a.contadorReferente?.nombre ?? "—"}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-2.5 tabular-nums text-neutral-600">{fmtFechaCorta(a.fechaInicio)}</td>
-                      <td className="sticky right-0 z-10 min-w-[8.5rem] border-l border-neutral-100 bg-white px-2.5 py-2 text-right shadow-[-8px_0_14px_-6px_rgba(0,0,0,0.07)] group-hover:bg-[rgba(0,166,81,0.04)]">
-                        <Link
-                          className="inline-flex min-h-[2.125rem] min-w-[6.25rem] items-center justify-center bg-[var(--verde-principal)] px-3 py-1.5 text-xs font-semibold text-white shadow-sm ring-1 ring-black/[0.04] transition-colors hover:bg-[var(--verde-oscuro)]"
-                          href={`/estudio/asuntos/${a.id}`}
-                        >
-                          Ver ficha
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <ul className="space-y-4 md:hidden">
-            {lista.map((a) => (
-              <li
-                key={a.id}
-                className="border border-black/[0.06] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs text-neutral-400">#{a.ordinal}</p>
-                    <p className="mt-0.5 font-medium leading-snug text-neutral-900">{a.catalogo.nombre}</p>
-                    <p className="mt-1 text-sm text-neutral-600">{a.cliente.nombre}</p>
-                    <p className="text-xs text-neutral-500">{a.cliente.documento}</p>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end gap-2">
-                    <span
-                      className={
-                        a.estado === "FINALIZADO"
-                          ? "text-xs text-neutral-500"
-                          : "text-xs font-medium text-[var(--verde-principal)]"
-                      }
-                    >
-                      {a.estado === "EN_TRAMITE" ? "En trámite" : "Finalizado"}
-                    </span>
-                    <Link
-                      className="inline-flex min-h-[2.5rem] min-w-[6.5rem] items-center justify-center bg-[var(--verde-principal)] px-3 py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[var(--verde-oscuro)]"
-                      href={`/estudio/asuntos/${a.id}`}
-                    >
-                      Ver ficha
-                    </Link>
-                  </div>
-                </div>
-                <dl className="mt-4 grid gap-1 border-t border-neutral-100 pt-4 text-sm text-neutral-600">
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Tipo</dt>
-                    <dd>{etiquetaTipo(a.tipo)}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Socio</dt>
-                    <dd className="min-w-0 truncate text-right">{a.socioReferente?.nombre ?? "—"}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Prof.</dt>
-                    <dd className="min-w-0 truncate text-right">{a.profesionalACargo?.nombre ?? "—"}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Colab.</dt>
-                    <dd className="min-w-0 truncate text-right">{textoColaboradores(a)}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Cont.</dt>
-                    <dd className="min-w-0 truncate text-right">{a.contadorReferente?.nombre ?? "—"}</dd>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <dt className="text-neutral-400">Inicio</dt>
-                    <dd className="tabular-nums">{fmtFechaCorta(a.fechaInicio)}</dd>
-                  </div>
-                </dl>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
     </div>
   );
 }

@@ -5,9 +5,28 @@ import { mensajeErrorValidacionEquipoAsunto } from "@/lib/asunto-equipo-validar"
 import { registrarAuditoria } from "@/lib/auditoria";
 import { obtenerErrorConfiguracionDb } from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
-import { puedeFinalizarAsunto, puedeReabrirAsunto } from "@/lib/roles-app";
+import {
+  puedeFinalizarAsunto,
+  puedeReabrirAsunto,
+  puedeRegistrarMovimiento,
+} from "@/lib/roles-app";
 
 type Params = { params: Promise<{ id: string }> };
+
+/** Conserva la línea interna [PROFESIONAL_A_CARGO_LIBRE] al editar la descripción visible. */
+function marcadorProfesionalLibreLine(descripcion: string | null): string | null {
+  const s = String(descripcion ?? "");
+  const m = s.match(/\[PROFESIONAL_A_CARGO_LIBRE\]:[^\n]*/i);
+  return m ? m[0].trim() : null;
+}
+
+function mergeDescripcionVisible(marcador: string | null, visible: string): string | null {
+  const v = visible.trim();
+  if (marcador && v) return `${v}\n${marcador}`;
+  if (marcador) return marcador;
+  if (v) return v;
+  return null;
+}
 
 function parseFechaIso(s: unknown): Date | null {
   if (s === undefined || s === null || s === "") {
@@ -85,6 +104,41 @@ export async function PATCH(request: Request, context: Params) {
     const actual = await prisma.asunto.findUnique({ where: { id } });
     if (!actual) {
       return NextResponse.json({ error: "Asunto no encontrado." }, { status: 404 });
+    }
+
+    if (accion === "actualizarDescripcion") {
+      if (!puedeRegistrarMovimiento(auth.sesion.rol)) {
+        return NextResponse.json({ error: "Tu rol no permite editar la descripción." }, { status: 403 });
+      }
+      const raw = body?.descripcion;
+      const visible = raw === null || raw === undefined ? "" : String(raw);
+      const marcador = marcadorProfesionalLibreLine(actual.descripcion);
+      const merged = mergeDescripcionVisible(marcador, visible);
+
+      const actualizado = await prisma.asunto.update({
+        where: { id },
+        data: { descripcion: merged },
+        include: {
+          cliente: true,
+          catalogo: true,
+          socioReferente: true,
+          profesionalACargo: true,
+          colaboradorACargo: true,
+          colaboradorACargo2: true,
+          contadorReferente: true,
+          seguimientos: { orderBy: { fecha: "desc" } },
+        },
+      });
+
+      await registrarAuditoria({
+        usuarioId: auth.sesion.sub,
+        accion: "ASUNTO_DESCRIPCION_EDITAR",
+        entidad: "Asunto",
+        entidadId: id,
+        detalle: {},
+      });
+
+      return NextResponse.json(actualizado);
     }
 
     if (accion === "finalizar") {

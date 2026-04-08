@@ -12,11 +12,12 @@ import {
 import { prisma } from "@/lib/prisma";
 import {
   construirEstadoCivilPersistido,
-  esEstadoCivilCliente,
   esTipoDocumentoCliente,
+  esTipoSocialCliente,
   mensajeValidacionDocumentoCliente,
   normalizarNombrePersona,
   normalizarDocumentoCliente,
+  parseEstadoCivilDetallado,
   parseFechaNacimientoCliente,
 } from "@/lib/validaciones";
 
@@ -85,16 +86,31 @@ export async function POST(request: Request) {
     const email = body?.email != null ? String(body.email).trim() || null : null;
     const domicilio = body?.domicilio != null ? String(body.domicilio).trim() || null : null;
 
-    const estadoCivilRaw =
+    const estadoCivilBody =
       body?.estadoCivil != null && String(body.estadoCivil).trim() !== ""
-        ? String(body.estadoCivil).toUpperCase()
+        ? String(body.estadoCivil).trim()
         : null;
-    if (estadoCivilRaw !== null && !esEstadoCivilCliente(estadoCivilRaw)) {
-      return NextResponse.json({ error: "Estado civil invalido." }, { status: 400 });
+
+    let estadoCivilPersistido: string | null = null;
+    if (tipoPersona === TipoPersona.FISICA && estadoCivilBody) {
+      const det = parseEstadoCivilDetallado(estadoCivilBody);
+      if (!det) {
+        return NextResponse.json({ error: "Estado civil invalido." }, { status: 400 });
+      }
+      estadoCivilPersistido = construirEstadoCivilPersistido(det.codigo, det.nupcias, det.conyuge);
     }
-    const nupciasRaw =
-      body?.nupcias != null && String(body.nupcias).trim() !== "" ? Number(body.nupcias) : null;
-    const conyugeRaw = body?.conyuge != null ? String(body.conyuge).trim() || null : null;
+
+    let tipoSocialValor: string | null = null;
+    if (tipoPersona === TipoPersona.JURIDICA) {
+      const ts =
+        body?.tipoSocial != null && String(body.tipoSocial).trim() !== ""
+          ? String(body.tipoSocial).trim().toUpperCase()
+          : "";
+      if (ts && !esTipoSocialCliente(ts)) {
+        return NextResponse.json({ error: "Tipo social invalido." }, { status: 400 });
+      }
+      tipoSocialValor = ts || null;
+    }
 
     let fechaNacimiento: Date | null = null;
     if (tipoPersona === TipoPersona.FISICA) {
@@ -120,7 +136,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Tipo de persona invalido." }, { status: 400 });
     }
 
-    if (!nombre || !nombre.includes(",")) {
+    if (tipoPersona === TipoPersona.JURIDICA) {
+      if (!nombre || nombre.length < 2) {
+        return NextResponse.json({ error: "El nombre o razon social es obligatorio." }, { status: 400 });
+      }
+    } else if (!nombre || !nombre.includes(",")) {
       return NextResponse.json({ error: "Apellidos y nombres son obligatorios." }, { status: 400 });
     }
 
@@ -133,6 +153,7 @@ export async function POST(request: Request) {
         tipoPersona,
         documento,
         nombre,
+        tipoSocial: tipoPersona === TipoPersona.JURIDICA ? tipoSocialValor : null,
         contacto,
         telefono,
         email,
@@ -142,13 +163,8 @@ export async function POST(request: Request) {
 
     if (
       tipoPersona === TipoPersona.FISICA &&
-      (fechaNacimiento !== null || estadoCivilRaw !== null)
+      (fechaNacimiento !== null || estadoCivilPersistido !== null)
     ) {
-      const estadoCivilPersistido = construirEstadoCivilPersistido(
-        estadoCivilRaw,
-        nupciasRaw,
-        conyugeRaw,
-      );
       await prisma.$executeRaw(
         Prisma.sql`
           UPDATE "Cliente"

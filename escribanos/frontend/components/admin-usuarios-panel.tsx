@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { estudioTw } from "@/lib/estudio-tw";
+import { cn } from "@/lib/cn";
 
 const ROLES_APP = [
   "ADMIN",
@@ -130,34 +132,34 @@ export function AdminUsuariosPanel() {
   }
 
   return (
-    <div className="space-y-8">
-      <form className="card-app space-y-4" onSubmit={crearUsuario}>
-        <h2 className="text-lg font-semibold text-[var(--verde-titulo)]">Nuevo usuario</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <label className="space-y-1.5">
-            <span className="text-sm font-medium text-[var(--verde-titulo)]">Usuario (login)</span>
+    <div className={cn(estudioTw.stack, "w-full text-left")}>
+      <form className={cn(estudioTw.card, "space-y-6")} onSubmit={crearUsuario}>
+        <h2 className={estudioTw.h2}>Nuevo usuario</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <label className="space-y-2">
+            <span className={estudioTw.label}>Usuario (login)</span>
             <input
-              className="input-app"
+              className={estudioTw.inputSm}
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
             />
           </label>
-          <label className="space-y-1.5">
-            <span className="text-sm font-medium text-[var(--verde-titulo)]">Nombre visible</span>
-            <input className="input-app" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+          <label className="space-y-2">
+            <span className={estudioTw.label}>Nombre visible</span>
+            <input className={estudioTw.inputSm} value={nombre} onChange={(e) => setNombre(e.target.value)} />
           </label>
-          <label className="space-y-1.5">
-            <span className="text-sm font-medium text-[var(--verde-titulo)]">Clave inicial</span>
+          <label className="space-y-2">
+            <span className={estudioTw.label}>Clave inicial</span>
             <input
-              className="input-app"
+              className={estudioTw.inputSm}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>
-          <label className="space-y-1.5">
-            <span className="text-sm font-medium text-[var(--verde-titulo)]">Rol en la app</span>
-            <select className="input-app" value={rol} onChange={(e) => setRol(e.target.value as RolAppUi)}>
+          <label className="space-y-2">
+            <span className={estudioTw.label}>Rol en la app</span>
+            <select className={estudioTw.inputSm} value={rol} onChange={(e) => setRol(e.target.value as RolAppUi)}>
               {ROLES_APP.map((r) => (
                 <option key={r} value={r}>
                   {r}
@@ -166,7 +168,11 @@ export function AdminUsuariosPanel() {
             </select>
           </label>
         </div>
-        <button className="btn-primary" disabled={creando} type="submit">
+        <button
+          className={cn(estudioTw.btnPrimarySm, "disabled:opacity-50")}
+          disabled={creando}
+          type="submit"
+        >
           {creando ? "Creando..." : "Crear usuario"}
         </button>
       </form>
@@ -175,29 +181,29 @@ export function AdminUsuariosPanel() {
         <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">{mensaje}</p>
       ) : null}
 
-      <div className="card-app overflow-x-auto">
-        <h2 className="mb-4 text-lg font-semibold text-[var(--verde-titulo)]">Usuarios</h2>
+      <div className={cn(estudioTw.card, "overflow-x-auto")}>
+        <h2 className={cn(estudioTw.h2, "mb-4")}>Usuarios</h2>
         {cargando ? (
-          <p className="text-sm text-[var(--gris-texto)]">Cargando...</p>
+          <p className={estudioTw.bodySm}>Cargando...</p>
         ) : (
-          <table className="w-full min-w-[720px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-[rgba(0,166,81,0.2)] text-[var(--gris-texto)]/90">
-                <th className="pb-2 pr-2 font-medium">Usuario</th>
-                <th className="pb-2 pr-2 font-medium">Nombre</th>
-                <th className="pb-2 pr-2 font-medium">Rol</th>
-                <th className="pb-2 pr-2 font-medium">Estado</th>
-                <th className="pb-2 font-medium">Acciones</th>
+          <table className="w-full min-w-[720px] text-left">
+            <thead className="text-sm">
+              <tr className="border-b border-gray-200">
+                <th className="pb-3 pr-2 text-left text-sm font-semibold text-gray-600">Usuario</th>
+                <th className="pb-3 pr-2 text-left text-sm font-semibold text-gray-600">Nombre</th>
+                <th className="pb-3 pr-2 text-left text-sm font-semibold text-gray-600">Rol</th>
+                <th className="pb-3 pr-2 text-left text-sm font-semibold text-gray-600">Estado</th>
+                <th className="pb-3 text-left text-sm font-semibold text-gray-600">Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-xs leading-snug text-gray-600">
               {lista.map((u) => (
-                <tr key={u.id} className="border-b border-[rgba(0,166,81,0.14)]">
-                  <td className="py-3 pr-2 font-medium text-[var(--verde-titulo)]">{u.usuario}</td>
-                  <td className="py-3 pr-2 text-[var(--gris-texto)]">{u.nombre}</td>
+                <tr key={u.id} className="border-b border-gray-100">
+                  <td className="py-3 pr-2 font-medium text-gray-900">{u.usuario}</td>
+                  <td className="py-3 pr-2">{u.nombre}</td>
                   <td className="py-3 pr-2">
                     <select
-                      className="input-app max-w-[220px] py-1.5 text-xs"
+                      className={cn(estudioTw.inputSm, "max-w-[220px] py-1.5")}
                       value={u.rol}
                       disabled={actualizandoRol === u.id}
                       onChange={(e) =>
@@ -225,7 +231,7 @@ export function AdminUsuariosPanel() {
                   </td>
                   <td className="py-3">
                     <button
-                      className="btn-secondary px-2 py-1 text-xs"
+                      className={cn(estudioTw.btnSecondarySm, "px-2 py-1")}
                       type="button"
                       onClick={() =>
                         void alternarActivo(u).catch(() =>
