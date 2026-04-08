@@ -5,6 +5,7 @@ import {
   honorarioPesosDesdePrincipalEntero,
   honorarioPrincipalRedondeadoDesdePesosBrutos,
   montoPrincipalAPesos,
+  sinMenosCero,
 } from "./conversion";
 import type { DetalleSpec, HonorarioParsed, Regla } from "./types";
 import usufructoData from "./usufructo-coefs.json";
@@ -68,10 +69,11 @@ function formatMoney(n: number): string {
 }
 
 function formatHonorarioPesosMostrar(n: number): string {
+  const r = sinMenosCero(Math.round(n));
   return new Intl.NumberFormat("es-UY", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(Math.round(n));
+  }).format(r);
 }
 
 function formatCoeficiente(n: number): string {

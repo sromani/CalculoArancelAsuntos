@@ -7,12 +7,13 @@ import {
   useState,
   type ChangeEvent,
   type FormEvent,
-  type ReactNode,
 } from 'react';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
+import ActoSearchCombobox from '../components/ui/ActoSearchCombobox';
 import { datosPorCapitulo } from '@/lib/arancel/data';
+import { listaActosSimuladorOrdenada, parseActoKey } from '@/lib/arancel/actos-simulador';
 import {
   calcularHonorario,
   reglaRequiereEntradaMontos,
@@ -31,11 +32,6 @@ import {
 } from '@/lib/arancel/conversion';
 import type { CapituloIData } from '@/lib/arancel/types';
 import {
-  FRL_OPCION_DEFAULT_ID,
-  OPCIONES_FRL_FORM_SELECT,
-  pesosFrlPorOpcionId,
-} from '@/lib/arancel/frl-tabla';
-import {
   calcularDesgloseLiquido,
   calcularDesgloseLiquidoConAportesArancel,
   formatearMontoEnMoneda,
@@ -43,12 +39,6 @@ import {
   parseHonorarioACobrarInput,
   type LineasDesgloseLiquido,
 } from '@/lib/arancel/liquido-escribano';
-
-const CAPITULOS = [
-  { id: 'actos-contratos', label: 'Actos y Contratos', disponible: true },
-  { id: 'certificaciones', label: 'Certificaciones', disponible: true },
-  { id: 'actas-protocolizaciones', label: 'Actas y Protocolizaciones', disponible: true },
-] as const;
 
 const OPCIONES_PLAZO_USUFRUCTO = [
   { value: '', label: 'Tipo de plazo del usufructo', disabled: true },
@@ -289,11 +279,7 @@ function bloqueFacturaDesglose(
   );
 }
 
-function bloqueAportesDesglose(
-  lineas: LineasDesgloseLiquido,
-  moneda: MonedaEntrada,
-  frlSelect: ReactNode
-) {
+function bloqueAportesDesglose(lineas: LineasDesgloseLiquido, moneda: MonedaEntrada) {
   const fmt = (n: number) => formatearMontoEnMoneda(n, moneda);
   return (
     <div className="simulador-desglose-bloque-interno">
@@ -306,11 +292,6 @@ function bloqueAportesDesglose(
         <span>Fondo gremial</span>
         <strong>{fmt(lineas.fondoGremial)}</strong>
       </div>
-      <div className="simulador-desglose-row">
-        <span>Fondo de Reconversión Laboral</span>
-        <strong>{fmt(lineas.fondoReconversionLaboral)}</strong>
-      </div>
-      {frlSelect}
       <div className="simulador-desglose-row simulador-desglose-total">
         <span>Total</span>
         <strong>{fmt(lineas.totalAportes)}</strong>
@@ -360,8 +341,7 @@ function bloqueLiquidoDesglose(lineas: LineasDesgloseLiquido, moneda: MonedaEntr
 }
 
 export default function SimuladorPage() {
-  const [capituloId, setCapituloId] = useState<string>('');
-  const [posDocStr, setPosDocStr] = useState('');
+  const [actoKey, setActoKey] = useState('');
   const [posBienStr, setPosBienStr] = useState('');
   const [valores, setValores] = useState<ValoresForm>({});
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
@@ -375,15 +355,26 @@ export default function SimuladorPage() {
 
   const [fonasaPctStr, setFonasaPctStr] = useState('4.5');
   const [irpfPctStr, setIrpfPctStr] = useState('0');
-  const [frlOpcionId, setFrlOpcionId] = useState(FRL_OPCION_DEFAULT_ID);
   const [honorarioAlternativoStr, setHonorarioAlternativoStr] = useState('');
 
+  const actoParsed = useMemo(() => parseActoKey(actoKey), [actoKey]);
+  const capituloId = actoParsed?.capituloId ?? '';
+
   const data: CapituloIData | null = useMemo(() => {
-    if (capituloId === 'actos-contratos') return datosPorCapitulo['actos-contratos'];
-    if (capituloId === 'certificaciones') return datosPorCapitulo.certificaciones;
-    if (capituloId === 'actas-protocolizaciones') return datosPorCapitulo['actas-protocolizaciones'];
-    return null;
-  }, [capituloId]);
+    if (!actoParsed) return null;
+    return datosPorCapitulo[actoParsed.capituloId];
+  }, [actoParsed]);
+
+  const posDocStr = actoParsed ? String(actoParsed.posDoc) : '';
+
+  const opcionesActo = useMemo(
+    () =>
+      listaActosSimuladorOrdenada().map((a) => ({
+        value: a.key,
+        label: a.nombre,
+      })),
+    []
+  );
 
   const cargarCotizaciones = useCallback(async (fecha: string) => {
     setCotizacionesCargando(true);
@@ -435,8 +426,6 @@ export default function SimuladorPage() {
     ['4.5', '6', '8'].includes(fonasaPctStr) &&
     [0, 10, 15, 24, 25, 27, 31, 36].includes(irpfPctNum);
 
-  const frlPesosTabla = pesosFrlPorOpcionId(frlOpcionId);
-
   const lineasArancelColumna = useMemo(() => {
     if (!resultado || !tasasCalculo || !pctOk) return null;
     const h = honorarioEnPrincipal(resultado, tasasCalculo);
@@ -445,10 +434,9 @@ export default function SimuladorPage() {
       resultado.monedaPrincipal,
       tasasCalculo,
       fonasaPctNum,
-      irpfPctNum,
-      frlPesosTabla
+      irpfPctNum
     );
-  }, [resultado, tasasCalculo, pctOk, fonasaPctNum, irpfPctNum, frlPesosTabla]);
+  }, [resultado, tasasCalculo, pctOk, fonasaPctNum, irpfPctNum]);
 
   const honorarioAltValor = parseHonorarioACobrarInput(honorarioAlternativoStr);
 
@@ -547,29 +535,16 @@ export default function SimuladorPage() {
     setErrorMsg(null);
   }, [regla?.articulo, regla?.honorarioParsed]);
 
-  const handleCapitulo = (e: ChangeEvent<HTMLSelectElement>) => {
-    setCapituloId(e.target.value);
-    setPosDocStr('');
+  const handleActoKey = useCallback((key: string) => {
+    setActoKey(key);
     setPosBienStr('');
     setValores({});
     setResultado(null);
     setErrorMsg(null);
-  };
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === 'capitulo') {
-      handleCapitulo(e as ChangeEvent<HTMLSelectElement>);
-      return;
-    }
-    if (name === 'posDoc') {
-      setPosDocStr(value);
-      setPosBienStr('');
-      setValores({});
-      setResultado(null);
-      setErrorMsg(null);
-      return;
-    }
     if (name === 'posBien') {
       setPosBienStr(value);
       setValores({});
@@ -607,7 +582,7 @@ export default function SimuladorPage() {
     setErrorMsg(null);
     setResultado(null);
     if (!regla) {
-      setErrorMsg('Completá capítulo, documento y tipo de bien si corresponde.');
+      setErrorMsg('Elegí el acto y, si corresponde, el tipo de bien.');
       return;
     }
     if (!cotizaciones) {
@@ -629,12 +604,6 @@ export default function SimuladorPage() {
     }
     setResultado(out);
   };
-
-  const docOptions =
-    data?.documentos.map((d) => ({
-      value: String(d.posDoc),
-      label: d.nombre,
-    })) ?? [];
 
   const bienOptions =
     documentoSel?.opcionesBien.map((b) => ({
@@ -675,45 +644,27 @@ export default function SimuladorPage() {
 
         <form onSubmit={handleSubmit} className="simulador-form">
           <div className="form-section">
-            <h2>Paso 1: Capítulo</h2>
-            <Select
-              label="Elegí el capítulo"
-              name="capitulo"
-              value={capituloId}
-              onChange={handleChange}
-              options={CAPITULOS.map((c) => ({
-                value: c.id,
-                label: c.disponible ? c.label : `${c.label} (próximamente)`,
-                disabled: !c.disponible,
-              }))}
-              placeholder="Seleccioná un capítulo"
+            <h2>Paso 1: Acto</h2>
+            <ActoSearchCombobox
+              label="Acto"
+              name="acto"
+              options={opcionesActo}
+              value={actoKey}
+              onChange={handleActoKey}
+              placeholder="Buscá por palabras (ej. firmas, certificación…)"
               required
             />
+            <p className="form-hint" style={{ marginTop: '0.65rem' }}>
+              Listado único de los tres capítulos del arancel, ordenado alfabéticamente. Podés escribir varias palabras;
+              se muestran los actos que contienen todas ellas.
+            </p>
           </div>
-
-          {data && (
-            <>
-              <hr className="form-divider" />
-              <div className="form-section">
-                <h2>Paso 2: Documento</h2>
-                <Select
-                  label="Documento"
-                  name="posDoc"
-                  value={posDocStr}
-                  onChange={handleChange}
-                  options={docOptions}
-                  placeholder="Seleccioná el documento"
-                  required
-                />
-              </div>
-            </>
-          )}
 
           {muestraPasoBien && (
             <>
               <hr className="form-divider" />
               <div className="form-section">
-                <h2>Paso 3: Tipo de bien</h2>
+                <h2>Paso 2: Tipo de bien</h2>
                 <Select
                   label="Tipo de bien"
                   name="posBien"
@@ -756,7 +707,7 @@ export default function SimuladorPage() {
             <>
               <hr className="form-divider" />
               <div className="form-section">
-                <h2>Fecha del documento y moneda</h2>
+                <h2>Fecha del acto y moneda</h2>
                 <div className="form-grid form-grid--align-end">
                   <Input
                     label="Fecha del acto / firma"
@@ -915,19 +866,7 @@ export default function SimuladorPage() {
                       </div>
                       <div className="simulador-desglose-seccion">
                         {lineasArancelColumna ? (
-                          bloqueAportesDesglose(
-                            lineasArancelColumna,
-                            resultado.monedaPrincipal,
-                            <Select
-                              label="Categoría FRL (años de ejercicio)"
-                              name="simFrlArancel"
-                              value={frlOpcionId}
-                              onChange={(e) => setFrlOpcionId(e.target.value)}
-                              options={[...OPCIONES_FRL_FORM_SELECT]}
-                              placeholder="Elegí la categoría"
-                              className="simulador-desglose-select-field"
-                            />
-                          )
+                          bloqueAportesDesglose(lineasArancelColumna, resultado.monedaPrincipal)
                         ) : null}
                       </div>
                     </div>
@@ -1022,19 +961,7 @@ export default function SimuladorPage() {
                       </div>
                       <div className="simulador-desglose-seccion">
                         {lineasAltColumna && lineasArancelColumna ? (
-                          bloqueAportesDesglose(
-                            lineasArancelColumna,
-                            resultado.monedaPrincipal,
-                            <Select
-                              label="Categoría FRL (años de ejercicio)"
-                              name="simFrlAlt"
-                              value={frlOpcionId}
-                              onChange={(e) => setFrlOpcionId(e.target.value)}
-                              options={[...OPCIONES_FRL_FORM_SELECT]}
-                              placeholder="Elegí la categoría"
-                              className="simulador-desglose-select-field"
-                            />
-                          )
+                          bloqueAportesDesglose(lineasArancelColumna, resultado.monedaPrincipal)
                         ) : null}
                       </div>
                     </div>

@@ -1794,6 +1794,50 @@ body {
   box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.2);
 }
 
+.combobox-acto-wrap {
+  position: relative;
+}
+
+.combobox-acto-input {
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+}
+
+.combobox-acto-list {
+  position: absolute;
+  z-index: 60;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  max-height: min(320px, 50vh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 166, 81, 0.08);
+}
+
+.combobox-acto-option {
+  padding: 0.45rem 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--color-neutral-800);
+  cursor: pointer;
+}
+
+.combobox-acto-option:hover,
+.combobox-acto-option--active {
+  background: rgba(0, 166, 81, 0.08);
+  color: var(--verde-oscuro);
+}
+
 .card-app {
   border-radius: 0.75rem;
   border: none;

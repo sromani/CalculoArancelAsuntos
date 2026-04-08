@@ -4,6 +4,7 @@ import {
   honorarioPrincipalHaciaArriba,
   montoPrincipalAPesos,
   pesosAMontoPrincipal,
+  sinMenosCero,
 } from "./conversion";
 import type { ResultadoCalculo } from "./compute";
 
@@ -88,14 +89,18 @@ export function honorarioEnPrincipal(resultado: ResultadoCalculo, tasas: TasasLi
 /** Todo monto del desglose en moneda de visualización: entero hacia arriba. */
 function montoDisplayEnteroArriba(n: number): number {
   if (!Number.isFinite(n)) return 0;
-  return Math.ceil(n - 1e-9);
+  if (n === 0) return 0;
+  if (Math.abs(n) < 1e-9) return 0;
+  const c = Math.ceil(n - 1e-9);
+  return sinMenosCero(c);
 }
 
 function formatMoneyEntero(n: number): string {
+  const r = sinMenosCero(Math.round(n));
   return new Intl.NumberFormat("es-UY", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(Math.round(n));
+  }).format(r);
 }
 
 function redondearLineasDesglose(l: LineasDesgloseLiquido): LineasDesgloseLiquido {
@@ -151,22 +156,15 @@ export type LineasDesgloseLiquido = {
   liquido: number;
 };
 
-function frlEnMonedaPrincipal(pesosTabla: number, moneda: MonedaEntrada, tasas: TasasLineas): number {
-  const raw = pesosAMontoPrincipal(pesosTabla, moneda, tasas);
-  return montoDisplayEnteroArriba(raw);
-}
-
 /**
  * honorario: en moneda de visualización (se redondea hacia arriba a entero).
- * frlPesosTabla: importe en $ de la tabla FRL (se convierte a la moneda elegida y se redondea hacia arriba).
  */
 export function calcularDesgloseLiquido(
   honorario: number,
   moneda: MonedaEntrada,
   tasas: TasasLineas,
   fonasaPct: number,
-  irpfPct: number,
-  frlPesosTabla: number
+  irpfPct: number
 ): LineasDesgloseLiquido | null {
   const h = honorarioPrincipalHaciaArriba(honorario);
   if (!Number.isFinite(h) || h < 0) return null;
@@ -177,7 +175,7 @@ export function calcularDesgloseLiquido(
   const fgPesos = fgUr * tasas.urSemestralPesos;
   const fondoGremial = pesosAMontoPrincipal(fgPesos, moneda, tasas);
 
-  const fondoReconversionLaboral = frlEnMonedaPrincipal(frlPesosTabla, moneda, tasas);
+  const fondoReconversionLaboral = 0;
 
   const montepio = h * 0.19;
   const iva = h * 0.22;

@@ -41,10 +41,15 @@ export function pesosAMontoPrincipal(pesos: number, moneda: MonedaEntrada, tasas
   }
 }
 
+/** Cero canónico (+0): `Intl` puede mostrar "-0" si el número interno es -0. */
+export function sinMenosCero(x: number): number {
+  return x === 0 ? 0 : x;
+}
+
 /** Honorario en moneda de visualización: redondeo hacia arriba a la unidad entera ($, USD, UI o UR). */
 export function honorarioPrincipalHaciaArriba(principal: number): number {
   if (!Number.isFinite(principal) || principal <= 0) return 0;
-  return Math.ceil(principal - 1e-9);
+  return sinMenosCero(Math.ceil(principal - 1e-9));
 }
 
 export function honorarioPrincipalRedondeadoDesdePesosBrutos(
@@ -64,9 +69,8 @@ export function honorarioPesosDesdePrincipalEntero(
 }
 
 export function formatoHonorarioEntero(n: number): string {
-  return new Intl.NumberFormat('es-UY', { maximumFractionDigits: 0, minimumFractionDigits: 0 }).format(
-    Math.round(n)
-  );
+  const r = sinMenosCero(Math.round(n));
+  return new Intl.NumberFormat('es-UY', { maximumFractionDigits: 0, minimumFractionDigits: 0 }).format(r);
 }
 
 export const ETIQUETA_MONEDA: Record<MonedaEntrada, string> = {
