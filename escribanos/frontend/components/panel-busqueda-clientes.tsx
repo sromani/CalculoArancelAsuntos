@@ -95,16 +95,12 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
 
   return (
     <div className="w-full min-w-0">
-      <div
-        className={cn(
-          "overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-[0_12px_40px_-18px_rgba(15,23,42,0.18)]",
-        )}
-      >
-        <div className={cn("border-b border-gray-100 bg-white py-4 sm:py-5", estudioTw.cardPadX)}>
-          <div className={estudioTw.busquedaFieldOuter}>
-            <div className={estudioTw.busquedaFieldShell}>
-              <span className={estudioTw.busquedaIconWrap} aria-hidden>
-                <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <div className={cn("overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-md")}>
+        <div className={cn("border-b border-gray-100/90 bg-gradient-to-b from-white to-gray-50/30 py-3 sm:py-4", estudioTw.cardPadX)}>
+          <div className={estudioTw.busquedaCompactOuter}>
+            <div className={estudioTw.busquedaCompactShell}>
+              <span className={estudioTw.busquedaCompactIconWrap} aria-hidden>
+                <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.2-5.2M10 18a8 8 0 110-16 8 8 0 010 16z" />
                 </svg>
               </span>
@@ -114,32 +110,32 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                 aria-label="Buscar clientes"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Ej. García, 4.567.890-1, 099…"
+                placeholder="Nombre, documento o teléfono…"
                 autoComplete="off"
-                className={estudioTw.busquedaFieldInput}
+                className={estudioTw.busquedaCompactInput}
               />
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium tracking-wide text-gray-400 sm:text-xs sm:tracking-normal">
             {cargando ? (
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-gray-500">
                 <span
-                  className="size-3.5 animate-spin rounded-full border-2 border-gray-200 border-t-emerald-600"
+                  className="size-3 animate-spin rounded-full border border-gray-200 border-t-emerald-600"
                   aria-hidden
                 />
-                Actualizando…
+                Actualizando
               </span>
             ) : busquedaActiva ? (
-              <span>
-                <span className="font-semibold tabular-nums text-gray-800">{lista.length}</span>
-                {lista.length === 1 ? " resultado" : " resultados"} para la búsqueda
+              <span className="text-gray-500">
+                <span className="tabular-nums text-gray-700">{lista.length}</span>
+                {lista.length === 1 ? " coincidencia" : " coincidencias"}
               </span>
             ) : (
-              <span>
-                <span className="font-semibold tabular-nums text-gray-800">{lista.length}</span>
+              <span className="text-gray-500">
+                <span className="tabular-nums text-gray-700">{lista.length}</span>
                 {lista.length === 1 ? " cliente" : " clientes"}
-                {lista.length >= 500 ? " (máx. mostrados)" : ""}
+                {lista.length >= 500 ? " · máx. mostrados" : ""}
               </span>
             )}
           </div>
@@ -149,24 +145,24 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
           {lista.length > 0 ? (
             <>
               <div className="hidden md:block">
-                <div className="overflow-x-auto px-4 pb-4 pt-2 sm:px-6">
-                  <table className="w-full min-w-[1020px] text-left text-sm text-gray-700">
+                <div className="overflow-x-auto px-4 pb-3 pt-1.5 sm:px-6">
+                  <table className="w-full min-w-[980px] text-left text-[11px] leading-snug text-gray-700 sm:text-xs">
                     <caption className="sr-only">Clientes del estudio</caption>
                     <thead>
-                      <tr className="border-b border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        <th className="sticky left-0 z-20 w-[4rem] min-w-[4rem] border-r border-gray-200 bg-gray-50 px-2 py-3 text-left text-emerald-800 shadow-[4px_0_12px_-6px_rgba(15,23,42,0.06)]">
+                      <tr className="border-b border-gray-200 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:text-[11px]">
+                        <th className="sticky left-0 z-20 w-[3.5rem] min-w-[3.5rem] border-r border-gray-200 bg-gray-50 px-1.5 py-2 text-left text-emerald-800 shadow-[4px_0_12px_-6px_rgba(15,23,42,0.06)]">
                           Editar
                         </th>
-                        <th className="px-3 py-3">Cliente</th>
-                        <th className="px-3 py-3">Tipo doc.</th>
-                        <th className="px-3 py-3">Número</th>
-                        <th className="px-3 py-3">Domicilio</th>
-                        <th className="px-3 py-3">Persona</th>
-                        <th className="px-3 py-3">Tipo social</th>
-                        <th className="px-3 py-3">Nacimiento</th>
-                        <th className="px-3 py-3">Estado civil</th>
-                        <th className="px-3 py-3">Teléfono</th>
-                        <th className="px-3 py-3">Email</th>
+                        <th className="px-2 py-2">Cliente</th>
+                        <th className="px-2 py-2">Tipo doc.</th>
+                        <th className="px-2 py-2">Número</th>
+                        <th className="px-2 py-2">Domicilio</th>
+                        <th className="px-2 py-2">Persona</th>
+                        <th className="px-2 py-2">Tipo social</th>
+                        <th className="px-2 py-2">Nacimiento</th>
+                        <th className="px-2 py-2">Estado civil</th>
+                        <th className="px-2 py-2">Teléfono</th>
+                        <th className="px-2 py-2">Email</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -180,43 +176,43 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                         >
                           <td
                             className={cn(
-                              "sticky left-0 z-10 border-r border-gray-100 px-2 py-3 align-middle shadow-[4px_0_12px_-6px_rgba(15,23,42,0.05)]",
+                              "sticky left-0 z-10 border-r border-gray-100 px-1.5 py-2 align-middle shadow-[4px_0_12px_-6px_rgba(15,23,42,0.05)]",
                               i % 2 === 1 ? "bg-gray-50/95" : "bg-white",
                             )}
                           >
                             <Link
                               href={`/estudio/clientes/${c.id}/editar`}
-                              className={cn(linkEditarCliente, "inline-block text-xs sm:text-sm")}
+                              className={cn(linkEditarCliente, "inline-block text-[11px]")}
                             >
                               Editar
                             </Link>
                           </td>
-                          <td className="px-3 py-3">
+                          <td className="px-2 py-2">
                             <p className="min-w-0 font-medium text-gray-900">{c.nombre}</p>
                           </td>
-                          <td className="whitespace-nowrap px-3 py-3 text-xs font-medium text-emerald-700">
+                          <td className="whitespace-nowrap px-2 py-2 font-medium text-emerald-700">
                             {etiquetaTipoDocumentoCliente(c.tipoDocumento)}
                           </td>
-                          <td className="whitespace-nowrap px-3 py-3 tabular-nums text-gray-800">{c.documento}</td>
-                          <td className="max-w-[11rem] px-3 py-3 text-xs text-gray-600" title={c.domicilio?.trim() || undefined}>
+                          <td className="whitespace-nowrap px-2 py-2 tabular-nums text-gray-800">{c.documento}</td>
+                          <td className="max-w-[10rem] px-2 py-2 text-gray-600" title={c.domicilio?.trim() || undefined}>
                             {c.domicilio?.trim() || "—"}
                           </td>
-                          <td className="whitespace-nowrap px-3 py-3 text-xs text-gray-800">
+                          <td className="whitespace-nowrap px-2 py-2 text-gray-800">
                             {etiquetaTipoPersonaCliente(c.tipoPersona)}
                           </td>
-                          <td className="max-w-[8rem] truncate px-3 py-3 text-xs text-gray-600" title={c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : undefined}>
+                          <td className="max-w-[7rem] truncate px-2 py-2 text-gray-600" title={c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : undefined}>
                             {c.tipoPersona === "JURIDICA" && c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : "—"}
                           </td>
-                          <td className="whitespace-nowrap px-3 py-3 text-xs tabular-nums text-gray-600">
+                          <td className="whitespace-nowrap px-2 py-2 tabular-nums text-gray-600">
                             {c.tipoPersona === "FISICA" ? fmtFechaNac(c.fechaNacimiento) : "—"}
                           </td>
-                          <td className="max-w-[7rem] truncate px-3 py-3 text-xs text-gray-600" title={c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : undefined}>
+                          <td className="max-w-[6.5rem] truncate px-2 py-2 text-gray-600" title={c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : undefined}>
                             {c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : "—"}
                           </td>
-                          <td className="max-w-[7rem] truncate px-3 py-3 text-xs text-gray-600" title={c.telefono ?? undefined}>
+                          <td className="max-w-[6.5rem] truncate px-2 py-2 text-gray-600" title={c.telefono ?? undefined}>
                             {c.telefono?.trim() || "—"}
                           </td>
-                          <td className="max-w-[9rem] truncate px-3 py-3 text-xs text-gray-600" title={c.email ?? undefined}>
+                          <td className="max-w-[8rem] truncate px-2 py-2 text-gray-600" title={c.email ?? undefined}>
                             {c.email?.trim() || "—"}
                           </td>
                         </tr>
@@ -226,64 +222,64 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                 </div>
               </div>
 
-              <ul className="flex flex-col gap-4 p-4 md:hidden sm:p-5">
+              <ul className="flex flex-col gap-3 p-3 md:hidden sm:p-4">
                 {lista.map((c) => (
                   <li
                     key={c.id}
-                    className="rounded-2xl border border-gray-200/90 bg-white p-4 shadow-sm ring-1 ring-black/[0.02]"
+                    className="rounded-xl border border-gray-200/90 bg-white p-3 shadow-sm ring-1 ring-black/[0.02] sm:p-3.5"
                   >
-                    <div className="flex gap-3">
+                    <div className="flex gap-2.5">
                       <Link
                         href={`/estudio/clientes/${c.id}/editar`}
-                        className={cn(linkEditarCliente, "shrink-0 self-start pt-0.5 text-sm")}
+                        className={cn(linkEditarCliente, "shrink-0 self-start pt-0.5 text-[11px]")}
                       >
                         Editar
                       </Link>
-                      <dl className="min-w-0 flex-1 grid grid-cols-1 gap-x-3 gap-y-2 text-xs sm:grid-cols-2">
+                      <dl className="min-w-0 flex-1 grid grid-cols-1 gap-x-2 gap-y-1.5 text-[11px] leading-snug sm:grid-cols-2 sm:text-xs">
                         <div className="sm:col-span-2">
-                          <dt className="font-semibold text-gray-500">Nombre</dt>
-                          <dd className="mt-0.5 text-sm font-semibold text-gray-900">{c.nombre}</dd>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Nombre</dt>
+                          <dd className="mt-0.5 font-semibold text-gray-900">{c.nombre}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold text-gray-500">Tipo doc.</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Tipo doc.</dt>
                           <dd className="mt-0.5 text-emerald-800">{etiquetaTipoDocumentoCliente(c.tipoDocumento)}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold text-gray-500">Número</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Número</dt>
                           <dd className="mt-0.5 tabular-nums text-gray-800">{c.documento}</dd>
                         </div>
                         <div className="sm:col-span-2">
-                          <dt className="font-semibold text-gray-500">Domicilio</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Domicilio</dt>
                           <dd className="mt-0.5 text-gray-700">{c.domicilio?.trim() || "—"}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold text-gray-500">Persona</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Persona</dt>
                           <dd className="mt-0.5 text-gray-800">{etiquetaTipoPersonaCliente(c.tipoPersona)}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold text-gray-500">Tipo social</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Tipo social</dt>
                           <dd className="mt-0.5 text-gray-700">
                             {c.tipoPersona === "JURIDICA" && c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : "—"}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold text-gray-500">Nacimiento</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Nacimiento</dt>
                           <dd className="mt-0.5 tabular-nums text-gray-700">
                             {c.tipoPersona === "FISICA" ? fmtFechaNac(c.fechaNacimiento) : "—"}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold text-gray-500">Estado civil</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Estado civil</dt>
                           <dd className="mt-0.5 text-gray-700">
                             {c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : "—"}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold text-gray-500">Teléfono</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Teléfono</dt>
                           <dd className="mt-0.5 text-gray-700">{c.telefono?.trim() || "—"}</dd>
                         </div>
                         <div className="sm:col-span-2">
-                          <dt className="font-semibold text-gray-500">Email</dt>
+                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Email</dt>
                           <dd className="mt-0.5 break-all text-gray-700">{c.email?.trim() || "—"}</dd>
                         </div>
                       </dl>

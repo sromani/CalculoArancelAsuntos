@@ -28,17 +28,16 @@ export const estudioTw = {
 
   cardPadX: "px-6 sm:px-8",
 
-  /** Caja buscador (lupa + input sin borde) — clientes y asuntos. */
-  busquedaFieldShell:
-    "flex min-h-[3rem] w-full min-w-0 items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 shadow-inner shadow-gray-100/80 transition focus-within:border-emerald-400/80 focus-within:ring-4 focus-within:ring-emerald-500/15",
+  /** Buscador compacto (clientes y asuntos): bajo, tipografía fina, borde sutil. */
+  busquedaCompactOuter: "min-w-0 w-full flex-1 sm:max-w-sm lg:max-w-md",
 
-  busquedaFieldInput:
-    "min-w-0 flex-1 appearance-none border-0 bg-transparent py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden",
+  busquedaCompactShell:
+    "flex min-h-[2.25rem] w-full min-w-0 items-center gap-2 rounded-lg border border-gray-200/70 bg-white/90 px-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur-[2px] transition focus-within:border-emerald-400/50 focus-within:bg-white focus-within:shadow-[inset_0_1px_0_rgba(255,255,255,1),0_0_0_1px_rgba(16,185,129,0.2),0_2px_8px_-2px_rgba(16,185,129,0.12)]",
 
-  busquedaIconWrap: "shrink-0 text-emerald-600/70",
+  busquedaCompactInput:
+    "min-w-0 flex-1 appearance-none border-0 bg-transparent py-1.5 text-[13px] leading-tight text-gray-800 outline-none placeholder:text-gray-400/85 placeholder:font-normal [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden",
 
-  /** Ancho máximo del buscador (mismo en clientes y asuntos). */
-  busquedaFieldOuter: "min-w-0 w-full flex-1 sm:max-w-xl lg:max-w-2xl",
+  busquedaCompactIconWrap: "shrink-0 text-emerald-700/35",
 
   h1: "text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl",
   h2: "text-lg font-semibold text-gray-900",

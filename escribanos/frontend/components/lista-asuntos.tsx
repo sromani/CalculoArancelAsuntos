@@ -373,30 +373,29 @@ export function ListaAsuntos() {
       <div className={surface}>
         <div
           className={cn(
-            "sticky z-30 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md",
+            "sticky z-30 border-b border-gray-100/90 bg-gradient-to-b from-white/98 to-gray-50/25 py-3 shadow-sm backdrop-blur-md sm:py-4",
             cardPadX,
-            "py-4 sm:py-5",
           )}
           style={{
             top: "calc(var(--navbar-app-height) + var(--estudio-barra-height))",
           }}
         >
           <div className="min-w-0">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
-              <div className={estudioTw.busquedaFieldOuter}>
-                <div className={estudioTw.busquedaFieldShell}>
-                  <span className={estudioTw.busquedaIconWrap} aria-hidden>
-                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+              <div className={estudioTw.busquedaCompactOuter}>
+                <div className={estudioTw.busquedaCompactShell}>
+                  <span className={estudioTw.busquedaCompactIconWrap} aria-hidden>
+                    <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.2-5.2M10 18a8 8 0 110-16 8 8 0 010 16z" />
                     </svg>
                   </span>
                   <input
                     type="search"
                     aria-label="Buscar asuntos"
-                    className={estudioTw.busquedaFieldInput}
+                    className={estudioTw.busquedaCompactInput}
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
-                    placeholder="Ej. García, 12345678, compraventa…"
+                    placeholder="Nombre, nº carpeta, escribano…"
                     autoComplete="off"
                   />
                 </div>
@@ -413,22 +412,22 @@ export function ListaAsuntos() {
             </div>
 
             {filtrosActivosCount > 0 ? (
-              <div className="mt-4 rounded-xl border border-emerald-200/80 bg-emerald-50/70 px-3 py-2.5 text-xs text-gray-600">
+              <div className="mt-2.5 rounded-lg border border-emerald-200/70 bg-emerald-50/60 px-2.5 py-2 text-[11px] text-gray-600 sm:text-xs">
                 <span className="font-semibold text-gray-900">Filtros activos:</span>{" "}
-                <span className="tabular-nums">{filtrosActivosCount}</span> criterio
+                <span className="tabular-nums text-gray-700">{filtrosActivosCount}</span> criterio
                 {filtrosActivosCount === 1 ? "" : "s"}
               </div>
             ) : null}
 
             {cargando || hayFiltrosActivos ? (
-              <div className="mt-4 flex flex-wrap items-center justify-end gap-3 border-t border-gray-100/90 pt-4">
+              <div className="mt-2.5 flex flex-wrap items-center justify-end gap-2 border-t border-gray-100/80 pt-2.5 sm:gap-3 sm:pt-3">
                 {cargando ? (
-                  <span className="inline-flex items-center gap-2 text-xs text-gray-600">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-medium tracking-wide text-gray-500 sm:text-xs sm:tracking-normal">
                     <span
-                      className="size-3.5 shrink-0 animate-spin rounded-full border-2 border-gray-200 border-t-emerald-600"
+                      className="size-3 shrink-0 animate-spin rounded-full border border-gray-200 border-t-emerald-600"
                       aria-hidden
                     />
-                    Actualizando…
+                    Actualizando
                   </span>
                 ) : null}
                 {hayFiltrosActivos ? (
