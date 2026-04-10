@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import {
   armarSoapCotizacion,
-  BCU_CODIGO_DOLAR_BILLETE,
   BCU_CODIGO_UI,
   BCU_CODIGO_UR,
   diaHabilAnterior,
@@ -14,8 +13,25 @@ import {
   statusOk,
   type CotizacionesSimulador,
 } from '@/lib/bcu-cotizaciones';
+import { obtenerDolarDiaHabilAnterior } from '@/lib/dolar-publico';
+
+export const runtime = 'nodejs';
 
 const BCU_URL = 'https://cotizaciones.bcu.gub.uy/wscotizaciones/servlet/awsbcucotizaciones';
+
+function detalleErrorRed(e: unknown): string {
+  if (!(e instanceof Error)) return String(e);
+  const partes = [e.message];
+  const c = e.cause;
+  if (c instanceof Error) {
+    partes.push(`causa: ${c.message}`);
+  } else if (c != null && typeof c === 'object' && 'code' in c) {
+    partes.push(`código: ${String((c as { code: unknown }).code)}`);
+  } else if (c != null) {
+    partes.push(`causa: ${String(c)}`);
+  }
+  return partes.join(' — ');
+}
 
 async function postSoap(body: string): Promise<string> {
   const res = await fetch(BCU_URL, {
@@ -25,6 +41,7 @@ async function postSoap(body: string): Promise<string> {
       SOAPAction: 'Cotizaction.Execute',
     },
     body,
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) {
     throw new Error(`BCU HTTP ${res.status}`);
@@ -66,6 +83,14 @@ export async function GET(request: Request) {
   }
 
   const fechaFirmaStr = formatDateLocal(fechaFirma);
+  const hoyStr = formatDateLocal(new Date());
+  if (fechaFirmaStr > hoyStr) {
+    return NextResponse.json(
+      { error: 'La fecha del acto no puede ser posterior a hoy.', paso: 'validacion' },
+      { status: 400 }
+    );
+  }
+
   const fDolar = diaHabilAnterior(fechaFirma);
   const fDolarStr = formatDateLocal(fDolar);
   const fIndices = fechaConsultaIndices(fechaFirma);
@@ -73,60 +98,95 @@ export async function GET(request: Request) {
   const fUrSem = fechaReferenciaUrSemestral(fechaFirma);
   const fUrSemStr = formatDateLocal(fUrSem);
 
+  let dolar: number;
+  let fechaDolarUsada: string;
+  let fuenteDolar: 'ine' | 'brou';
+  let dolarNota: string | undefined;
   try {
-    const { xml: xmlDolar, fechaUsada: fechaDolarUsada } = await cotizacionConFallback(
-      [BCU_CODIGO_DOLAR_BILLETE],
-      fDolarStr
-    );
-    const datosDolar = extraerDatosCotizacion(xmlDolar);
-    const dolar = pickTcc(datosDolar, BCU_CODIGO_DOLAR_BILLETE, fechaDolarUsada);
-    if (dolar == null) {
-      throw new Error('Sin cotización dólar');
-    }
-
-    const { xml: xmlUiUr, fechaUsada: fechaUiUrUsada } = await cotizacionConFallback(
-      [BCU_CODIGO_UI, BCU_CODIGO_UR],
-      fIndicesStr
-    );
-    const datosUiUr = extraerDatosCotizacion(xmlUiUr);
-    const ui = pickTcc(datosUiUr, BCU_CODIGO_UI, fechaUiUrUsada);
-    const urMes = pickTcc(datosUiUr, BCU_CODIGO_UR, fechaUiUrUsada);
-    if (ui == null || urMes == null) {
-      throw new Error('Sin cotización UI/UR');
-    }
-
-    const { xml: xmlUrSem, fechaUsada: fechaUrSemUsada } = await cotizacionConFallback(
-      [BCU_CODIGO_UR],
-      fUrSemStr
-    );
-    const datosUrSem = extraerDatosCotizacion(xmlUrSem);
-    const urSem = pickTcc(datosUrSem, BCU_CODIGO_UR, fechaUrSemUsada);
-    if (urSem == null) {
-      throw new Error('Sin cotización UR semestral');
-    }
-
-    const payload: CotizacionesSimulador = {
-      fechaFirma: fechaFirmaStr,
-      fechaConsultaUiUr: fechaUiUrUsada,
-      fechaDolarCompra: fechaDolarUsada,
-      dolarComprador: dolar,
-      uiPesos: ui,
-      urMensualPesos: urMes,
-      urSemestralPesos: urSem,
-      fechaReferenciaUrSemestral: fechaUrSemUsada,
-      actualizado: new Date().toISOString(),
-    };
-
-    return NextResponse.json(payload, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
-      },
-    });
+    const d = await obtenerDolarDiaHabilAnterior(fDolarStr);
+    dolar = d.valor;
+    fechaDolarUsada = d.fechaUsadaYmd;
+    fuenteDolar = d.fuenteDolar;
+    dolarNota = d.nota;
   } catch (e) {
-    const detalle = e instanceof Error ? e.message : String(e);
     return NextResponse.json(
-      { error: 'No se pudieron obtener cotizaciones del BCU.', detalle },
+      {
+        error: 'No se pudo obtener la cotización del dólar (día hábil anterior al acto).',
+        detalle: detalleErrorRed(e),
+        paso: 'dolar',
+      },
       { status: 502 }
     );
   }
+
+  let fechaUiUrUsada: string;
+  let ui: number;
+  let urMes: number;
+  try {
+    const { xml: xmlUiUr, fechaUsada } = await cotizacionConFallback(
+      [BCU_CODIGO_UI, BCU_CODIGO_UR],
+      fIndicesStr
+    );
+    fechaUiUrUsada = fechaUsada;
+    const datosUiUr = extraerDatosCotizacion(xmlUiUr);
+    const uiVal = pickTcc(datosUiUr, BCU_CODIGO_UI, fechaUiUrUsada);
+    const urMesVal = pickTcc(datosUiUr, BCU_CODIGO_UR, fechaUiUrUsada);
+    if (uiVal == null || urMesVal == null) {
+      throw new Error('Sin cotización UI/UR');
+    }
+    ui = uiVal;
+    urMes = urMesVal;
+  } catch (e) {
+    return NextResponse.json(
+      {
+        error: 'No se pudieron obtener UI ni UR mensual del BCU.',
+        detalle: detalleErrorRed(e),
+        paso: 'bcu_ui_ur',
+      },
+      { status: 502 }
+    );
+  }
+
+  let fechaUrSemUsada: string;
+  let urSem: number;
+  try {
+    const { xml: xmlUrSem, fechaUsada } = await cotizacionConFallback([BCU_CODIGO_UR], fUrSemStr);
+    fechaUrSemUsada = fechaUsada;
+    const datosUrSem = extraerDatosCotizacion(xmlUrSem);
+    const urSemVal = pickTcc(datosUrSem, BCU_CODIGO_UR, fechaUrSemUsada);
+    if (urSemVal == null) {
+      throw new Error('Sin cotización UR semestral');
+    }
+    urSem = urSemVal;
+  } catch (e) {
+    return NextResponse.json(
+      {
+        error: 'No se pudo obtener la UR semestral del BCU.',
+        detalle: detalleErrorRed(e),
+        paso: 'bcu_ur_semestral',
+      },
+      { status: 502 }
+    );
+  }
+
+  const payload: CotizacionesSimulador = {
+    fechaFirma: fechaFirmaStr,
+    fechaDiaHabilAnteriorActo: fDolarStr,
+    fechaConsultaUiUr: fechaUiUrUsada,
+    fechaDolarCompra: fechaDolarUsada,
+    fuenteDolar,
+    dolarComprador: dolar,
+    uiPesos: ui,
+    urMensualPesos: urMes,
+    urSemestralPesos: urSem,
+    fechaReferenciaUrSemestral: fechaUrSemUsada,
+    actualizado: new Date().toISOString(),
+    ...(dolarNota ? { dolarNota } : {}),
+  };
+
+  return NextResponse.json(payload, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+    },
+  });
 }

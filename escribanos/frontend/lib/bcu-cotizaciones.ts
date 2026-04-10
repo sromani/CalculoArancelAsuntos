@@ -1,16 +1,22 @@
 /**
  * Utilidades de fechas y tipos para cotizaciones BCU (WSCotizaciones).
- * Códigos: 2225 Dólar USA billete, 9800 Unidad Indexada, 9900 Unidad Reajustable.
+ * Códigos: 9800 Unidad Indexada, 9900 Unidad Reajustable.
+ * El dólar al público: INE (ver `lib/dolar-publico.ts`).
  */
 
-export const BCU_CODIGO_DOLAR_BILLETE = 2225;
 export const BCU_CODIGO_UI = 9800;
 export const BCU_CODIGO_UR = 9900;
 
 export type CotizacionesSimulador = {
   fechaFirma: string;
+  /** Día hábil inmediatamente anterior a la fecha del acto (criterio para el dólar). */
+  fechaDiaHabilAnteriorActo: string;
   fechaConsultaUiUr: string;
   fechaDolarCompra: string;
+  /** INE (Cotización monedas); BROU solo si el INE falla y el día hábil anterior es hoy. */
+  fuenteDolar: 'ine' | 'brou';
+  /** Aviso si el dólar no vino del INE. */
+  dolarNota?: string;
   dolarComprador: number;
   uiPesos: number;
   /** UR del mes (referencia BCU); el simulador usa urSemestralPesos para montos en UR y honorarios en UR. */

@@ -8,6 +8,8 @@ interface InputProps {
   required?: boolean;
   disabled?: boolean;
   inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
+  min?: string;
+  max?: string;
 }
 
 export default function Input({ 
@@ -20,6 +22,8 @@ export default function Input({
   required = false,
   disabled = false,
   inputMode,
+  min,
+  max,
 }: InputProps) {
   return (
     <div className="form-field">
@@ -36,6 +40,8 @@ export default function Input({
         required={required}
         disabled={disabled}
         inputMode={inputMode}
+        min={min}
+        max={max}
       />
     </div>
   );

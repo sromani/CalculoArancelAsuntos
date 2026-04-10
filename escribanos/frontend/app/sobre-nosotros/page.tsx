@@ -4,7 +4,7 @@ export default function SobreNosotros() {
       <section className="sobre-hero">
         <h1>Sobre Nosotros</h1>
         <p className="sobre-subtitle">
-          El primer simulador uruguayo de aranceles notariales diseñado por escribanos, para escribanos.
+        El primer sistema integral de gestión para escribanos y abogados del Uruguay, con el primer simulador del Arancel Notarial.
         </p>
       </section>
 
@@ -13,9 +13,10 @@ export default function SobreNosotros() {
           <span className="sobre-icon">🎯</span>
           <h2>Nuestra Misión</h2>
           <p>
-            Simplificar el cálculo de honorarios notariales en Uruguay, ahorrando tiempo y 
-            facilitando cálculos sistemáticos. Creemos que la tecnología debe estar 
-            al servicio de los profesionales del derecho.
+          Simplificar la gestión de clientes, asuntos en trámite, y el cálculo de 
+          honorarios notariales en Uruguay. Ahorrando tiempo y facilitando cálculos 
+          sistemáticos. Creemos que la tecnología debe estar al servicio de los 
+          profesionales del derecho.
           </p>
         </div>
 
@@ -23,9 +24,11 @@ export default function SobreNosotros() {
           <span className="sobre-icon">⚖️</span>
           <h2>Por Qué Existimos</h2>
           <p>
-            Sabemos que calcular honorarios manualmente puede llevar muchas horas según cada caso, 
-            considerando todas las variables del Arancel Notarial. Nuestro simulador lo hace en 
-            tan solo unos segundos, sin errores respecto al arancel, actualizado con cada cambio normativo.
+          Sabemos que la gestión del estudio profesional y calcular honorarios 
+          manualmente puede llevar muchas horas según cada caso. Nuestro sistema 
+          permite una gestión de clientes y trámites amigable con el usuario y el 
+          simulador de arancel hace el cálculo en tan solo unos segundos, sin 
+          errores respecto al arancel, actualizado con cada cambio normativo.
           </p>
         </div>
 
@@ -33,9 +36,10 @@ export default function SobreNosotros() {
           <span className="sobre-icon">🤝</span>
           <h2>Compromiso</h2>
           <p>
-            Mantenemos el arancel actualizado, ofrecemos 5 cálculos mensuales gratuitos, 
-            y garantizamos que nuestro sistema refleja exactamente la normativa vigente. 
-            Tu confianza es nuestra prioridad.
+          Cumplimos con los estándares más exigentes de seguridad y privacidad 
+          de los datos. Mantenemos el arancel actualizado. Garantizamos que 
+          nuestro sistema refleje exactamente la normativa vigente. Tu confianza 
+          es nuestra prioridad
           </p>
         </div>
       </section>

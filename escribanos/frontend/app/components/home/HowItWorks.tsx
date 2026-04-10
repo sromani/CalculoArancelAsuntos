@@ -3,26 +3,26 @@ export default function HowItWorks() {
     {
       number: "1",
       title: "Seleccioná el tipo de acto",
-      description: "Elegí entre compraventa, hipoteca, donación y más de 50 tipos de actos notariales",
+      description: "Elegí entre compraventa, hipoteca, donación y más de 50 tipos de actos notariales.",
       icon: "📋"
     },
     {
       number: "2",
       title: "Ingresá los valores",
-      description: "Completá el precio, valor catastral o los datos específicos según el acto seleccionado",
+      description: "Completá el precio, valor catastral o los datos específicos según el acto seleccionado.",
       icon: "💵"
     },
     {
       number: "3",
       title: "Obtené el resultado",
-      description: "Recibí el cálculo detallado con honorarios, impuestos y deducciones en segundos",
+      description: "Recibí el cálculo detallado con honorarios, impuestos y deducciones en segundos.",
       icon: "✅"
     }
   ]
 
   return (
     <section className="how-it-works">
-      <h2>¿Cómo funciona?</h2>
+      <h2>¿Cómo funciona el simulador?</h2>
       <p className="how-subtitle">Calculá tus honorarios en 3 simples pasos</p>
       
       <div className="steps-container">

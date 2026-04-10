@@ -37,6 +37,9 @@ export type ResultadoCalculo =
       montoPrincipalFormateado: string;
       monedaPrincipal: MonedaEntrada;
       articulo: string;
+      /** Art. 18 arancel: mínimo 12 UR (40 UR fideicomiso) en honorarios proporcionales. */
+      aplicoMinimoArt18: boolean;
+      minimoArt18Ur: number;
     }
   | {
       tipo: "monto_simple";
@@ -51,6 +54,14 @@ export type ResultadoCalculo =
 export type ContextoCalculo = {
   monedaPrincipal: MonedaEntrada;
   tasas: TasasLineas;
+};
+
+const UR_MIN_ART18_GENERAL = 12;
+const UR_MIN_ART18_FIDEICOMISO = 40;
+
+export type OpcionesHonorario = {
+  /** Capítulo I actos: constitución o adeudo de fideicomiso (mín. 40 UR en proporcional). */
+  esFideicomiso?: boolean;
 };
 
 function parseNum(raw: string): number | null {
@@ -287,7 +298,8 @@ function honorarioMontoSimple(
 export function calcularHonorario(
   regla: Regla | undefined,
   valores: ValoresForm,
-  ctx: ContextoCalculo
+  ctx: ContextoCalculo,
+  opciones?: OpcionesHonorario
 ): ResultadoCalculo | { error: string } {
   if (!regla) {
     return { error: "No se encontró la combinación capítulo / documento / bien." };
@@ -361,9 +373,13 @@ export function calcularHonorario(
     if (!baseR.ok) {
       return { error: baseR.mensaje };
     }
+    const minUrArt18 = opciones?.esFideicomiso ? UR_MIN_ART18_FIDEICOMISO : UR_MIN_ART18_GENERAL;
+    const minPesosArt18 = minUrArt18 * tasas.urSemestralPesos;
     const montoPesosBruto = baseR.basePesos * pct;
+    const montoPesosConMin = Math.max(montoPesosBruto, minPesosArt18);
+    const aplicoMinimoArt18 = montoPesosConMin - montoPesosBruto > 1e-6;
     const principalRd = honorarioPrincipalRedondeadoDesdePesosBrutos(
-      montoPesosBruto,
+      montoPesosConMin,
       monedaPrincipal,
       tasas
     );
@@ -379,6 +395,8 @@ export function calcularHonorario(
       montoPrincipalFormateado: `${formatoHonorarioEntero(principalRd)} ${ETIQUETA_MONEDA[monedaPrincipal]}`,
       monedaPrincipal,
       articulo: regla.articulo,
+      aplicoMinimoArt18,
+      minimoArt18Ur: minUrArt18,
     };
   }
 

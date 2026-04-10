@@ -17,9 +17,9 @@ export default function Book() {
       description: "Todos los artículos del arancel actualizados"
     },
     {
-      icon: "💰",
+      icon: "🤝",
       title: "Accesible para todos",
-      description: "5 cálculos mensuales sin costo. Con opción Pro."
+      description: "Consultá la sección de Planes en 'Sobre Nosotros'."
     }
   ]
 

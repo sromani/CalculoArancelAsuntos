@@ -384,7 +384,10 @@ export default function SimuladorPage() {
       const json = await res.json();
       if (!res.ok) {
         setCotizaciones(null);
-        setCotizacionesError(json.detalle ? `${json.error} (${json.detalle})` : json.error ?? 'Error al cargar cotizaciones');
+        const partes: string[] = [String(json.error ?? 'Error al cargar cotizaciones')];
+        if (typeof json.paso === 'string') partes.push(`[${json.paso}]`);
+        if (json.detalle) partes.push(String(json.detalle));
+        setCotizacionesError(partes.join(' '));
         return;
       }
       setCotizaciones(json as CotizacionesSimulador);
@@ -402,6 +405,13 @@ export default function SimuladorPage() {
 
   useEffect(() => {
     if (!fechaFirma) return;
+    const hoy = formatDateLocal(new Date());
+    if (fechaFirma > hoy) {
+      setCotizaciones(null);
+      setCotizacionesCargando(false);
+      setCotizacionesError('La fecha del acto no puede ser posterior a hoy.');
+      return;
+    }
     void cargarCotizaciones(fechaFirma);
   }, [fechaFirma, cargarCotizaciones]);
 
@@ -553,7 +563,17 @@ export default function SimuladorPage() {
       return;
     }
     if (name === 'fechaFirma') {
+      const hoy = formatDateLocal(new Date());
+      if (value && value > hoy) {
+        setFechaFirma(value);
+        setCotizaciones(null);
+        setCotizacionesError('La fecha del acto no puede ser posterior a hoy.');
+        setResultado(null);
+        setErrorMsg(null);
+        return;
+      }
       setFechaFirma(value);
+      setCotizacionesError(null);
       setResultado(null);
       setErrorMsg(null);
       return;
@@ -585,8 +605,13 @@ export default function SimuladorPage() {
       setErrorMsg('Elegí el acto y, si corresponde, el tipo de bien.');
       return;
     }
+    const hoy = formatDateLocal(new Date());
+    if (fechaFirma > hoy) {
+      setErrorMsg('La fecha del acto no puede ser posterior a hoy.');
+      return;
+    }
     if (!cotizaciones) {
-      setErrorMsg('Esperá a que carguen las cotizaciones del BCU o revisá la fecha del documento.');
+      setErrorMsg('Esperá a que carguen las cotizaciones o revisá la fecha del documento.');
       return;
     }
     const ctx = {
@@ -597,7 +622,10 @@ export default function SimuladorPage() {
         urSemestralPesos: cotizaciones.urSemestralPesos,
       },
     };
-    const out = calcularHonorario(regla, valores, ctx);
+    const esFideicomiso =
+      actoParsed?.capituloId === 'actos-contratos' &&
+      (actoParsed.posDoc === 10 || actoParsed.posDoc === 11);
+    const out = calcularHonorario(regla, valores, ctx, { esFideicomiso });
     if ('error' in out) {
       setErrorMsg(out.error);
       return;
@@ -708,6 +736,10 @@ export default function SimuladorPage() {
               <hr className="form-divider" />
               <div className="form-section">
                 <h2>Fecha del acto y moneda</h2>
+                <p className="form-hint" style={{ marginBottom: '0.75rem' }}>
+                  La fecha debe ser <strong>hoy o anterior</strong>: el simulador usa cotizaciones ya publicadas (no proyecta actos
+                  futuros).
+                </p>
                 <div className="form-grid form-grid--align-end">
                   <Input
                     label="Fecha del acto / firma"
@@ -715,6 +747,7 @@ export default function SimuladorPage() {
                     type="date"
                     value={fechaFirma}
                     onChange={handleChange}
+                    max={formatDateLocal(new Date())}
                     required
                   />
                   <Select
@@ -727,7 +760,7 @@ export default function SimuladorPage() {
                   />
                 </div>
                 {cotizacionesCargando && (
-                  <p className="form-hint">Consultando cotizaciones del BCU…</p>
+                  <p className="form-hint">Consultando cotizaciones (dólar, UI, UR)…</p>
                 )}
                 {cotizacionesError && (
                   <div className="form-note" style={{ borderColor: '#fecaca', background: '#fef2f2' }}>
@@ -737,12 +770,22 @@ export default function SimuladorPage() {
                 {cotizaciones && !cotizacionesCargando && (
                   <div className="form-note" style={{ marginTop: '1rem' }}>
                     <p className="form-hint" style={{ marginBottom: '0.5rem' }}>
-                      <strong>Cotizaciones usadas</strong> (BCU WSCotizaciones)
+                      <strong>Cotizaciones usadas</strong> (dólar: INE Cotización monedas; UI y UR: BCU)
                     </p>
                     <ul className="form-hint" style={{ paddingLeft: '1.25rem', lineHeight: 1.6 }}>
                       <li>
-                        Dólar USA billete <strong>compra</strong>: {cotizaciones.dolarComprador.toLocaleString('es-UY')} $ —{' '}
-                        {cotizaciones.fechaDolarCompra} (día hábil anterior al acto; sin feriados).
+                        <strong>Día hábil anterior al acto</strong> (criterio dólar):{' '}
+                        {cotizaciones.fechaDiaHabilAnteriorActo}. Dólar USA <strong>compra</strong>:{' '}
+                        {cotizaciones.dolarComprador.toLocaleString('es-UY')} $ — dato del día{' '}
+                        {cotizaciones.fechaDolarCompra}
+                        {cotizaciones.fuenteDolar === 'ine'
+                          ? ' (serie Cotización monedas del INE; si no hay fila exacta, el día previo con dato).'
+                          : ' (pizarra BROU, último respaldo cuando el día hábil anterior es hoy y el INE no respondió).'}
+                        {cotizaciones.dolarNota ? (
+                          <span style={{ display: 'block', marginTop: '0.25rem', fontStyle: 'italic' }}>
+                            {cotizaciones.dolarNota}
+                          </span>
+                        ) : null}
                       </li>
                       <li>
                         UI: {cotizaciones.uiPesos.toLocaleString('es-UY')} $ — {cotizaciones.fechaConsultaUiUr}.
@@ -834,6 +877,12 @@ export default function SimuladorPage() {
                   <p style={{ marginTop: '0.75rem', fontSize: '1.35rem', color: 'var(--verde-oscuro)' }}>
                     Honorario estimado: <strong>{resultado.montoPrincipalFormateado}</strong>
                   </p>
+                  {resultado.aplicoMinimoArt18 && (
+                    <p className="form-hint" style={{ marginTop: '0.4rem' }}>
+                      Se aplicó el honorario mínimo del artículo 18 del Arancel ({resultado.minimoArt18Ur} UR según valor
+                      semestral de la UR).
+                    </p>
+                  )}
                   {resultado.monedaPrincipal !== 'UYU' && (
                     <p style={{ marginTop: '0.5rem' }}>
                       Equivalente en pesos uruguayos: <strong>$ {resultado.montoPesosFormateado}</strong>
@@ -841,6 +890,9 @@ export default function SimuladorPage() {
                   )}
                 </>
               )}
+              <p className="form-hint" style={{ marginTop: '0.65rem', fontSize: '0.82rem', lineHeight: 1.4 }}>
+                No se incluye en el cálculo los casos de tratamiento diferencial previstos en artículo 20 del Arancel.
+              </p>
             </div>
           )}
 
