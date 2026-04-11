@@ -1,0 +1,489 @@
+/**
+ * Estilos copiados del proyecto «Asuntos y Clientes» (Vite / styles.css),
+ * acotados bajo `.estudio-ac-legacy` para no pisar el resto del sitio.
+ * La fuente Outfit se carga vía `next/font` en `app/layout.tsx` (--font-outfit).
+ */
+
+.estudio-ac-legacy {
+  color-scheme: light;
+  --ac-bg: #f0f4f1;
+  --ac-surface: #ffffff;
+  --ac-surface-elevated: #fafcfb;
+  --ac-text: #14221c;
+  --ac-muted: #4a5f55;
+  --ac-border: rgba(16, 94, 58, 0.12);
+  --ac-shadow: 0 1px 2px rgba(15, 60, 40, 0.04), 0 8px 24px -6px rgba(15, 80, 50, 0.08);
+  --ac-radius: 14px;
+  --ac-heading-green: #0d7a52;
+  --ac-heading-green-soft: #0f9d68;
+  --ac-accent: #059669;
+  --ac-accent-hover: #047857;
+  --ac-accent-soft: rgba(16, 185, 129, 0.14);
+  --ac-accent-ring: rgba(5, 150, 105, 0.35);
+  font-family: var(--font-outfit), system-ui, "Segoe UI", Roboto, Ubuntu, sans-serif;
+  line-height: 1.5;
+}
+
+.estudio-ac-legacy .panel {
+  background: var(--ac-surface);
+  border: 1px solid var(--ac-border);
+  border-radius: var(--ac-radius);
+  box-shadow: var(--ac-shadow);
+}
+
+/** Panel con relleno (alta cliente / asunto), como `.panel` en el proyecto de referencia. */
+.estudio-ac-legacy .panel-alta {
+  background: var(--ac-surface);
+  border: 1px solid var(--ac-border);
+  border-radius: var(--ac-radius);
+  box-shadow: var(--ac-shadow);
+  padding: 1.2rem 1.35rem 1.5rem;
+}
+
+.estudio-ac-legacy .muted a {
+  color: var(--ac-accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.estudio-ac-legacy .muted a:hover {
+  color: var(--ac-accent-hover);
+  text-decoration: underline;
+}
+
+.estudio-ac-legacy .form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 640px;
+}
+
+.estudio-ac-legacy .form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.estudio-ac-legacy .form-row label,
+.estudio-ac-legacy .form-fieldset legend {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ac-muted);
+  letter-spacing: 0.02em;
+}
+
+.estudio-ac-legacy .form-fieldset {
+  margin: 0;
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid var(--ac-border);
+  border-radius: 12px;
+  background: var(--ac-surface-elevated);
+}
+
+.estudio-ac-legacy .form-fieldset legend {
+  padding: 0 0.35rem;
+}
+
+.estudio-ac-legacy .form-row input,
+.estudio-ac-legacy .form-row select,
+.estudio-ac-legacy .form-row textarea {
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--ac-border);
+  border-radius: 10px;
+  background: var(--ac-surface);
+  color: var(--ac-text);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.estudio-ac-legacy .form-row input:focus,
+.estudio-ac-legacy .form-row select:focus,
+.estudio-ac-legacy .form-row textarea:focus {
+  border-color: var(--ac-accent);
+  box-shadow: 0 0 0 3px var(--ac-accent-ring);
+}
+
+.estudio-ac-legacy .form-row textarea {
+  resize: vertical;
+  min-height: 2.75rem;
+}
+
+.estudio-ac-legacy .form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .estudio-ac-legacy .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.estudio-ac-legacy .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+/** Campos del formulario actual (labels con `input-app` anidados), mismo aspecto que `.form-row` del ref. */
+.estudio-ac-legacy .form input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+.estudio-ac-legacy .form select,
+.estudio-ac-legacy .form textarea {
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--ac-border);
+  border-radius: 10px;
+  background: var(--ac-surface);
+  color: var(--ac-text);
+  outline: none;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.estudio-ac-legacy .form input:focus,
+.estudio-ac-legacy .form select:focus,
+.estudio-ac-legacy .form textarea:focus {
+  border-color: var(--ac-accent);
+  box-shadow: 0 0 0 3px var(--ac-accent-ring);
+}
+
+.estudio-ac-legacy .form textarea {
+  resize: vertical;
+  min-height: 2.75rem;
+}
+
+.estudio-ac-legacy .form-stack-section {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ac-border);
+}
+
+.estudio-ac-legacy .page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 0.15rem;
+}
+
+.estudio-ac-legacy .page-toolbar-wide {
+  align-items: flex-start;
+}
+
+.estudio-ac-legacy .page-toolbar-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.75rem 1rem;
+  flex: 1 1 280px;
+}
+
+.estudio-ac-legacy .page-toolbar-end .search-field {
+  flex: 1 1 220px;
+  max-width: min(420px, 100%);
+}
+
+.estudio-ac-legacy .page-toolbar-end .btn {
+  flex: 0 0 auto;
+  align-self: flex-end;
+}
+
+.estudio-ac-legacy h1.page-title,
+.estudio-ac-legacy h2.page-title {
+  margin: 0 0 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  background: linear-gradient(
+    110deg,
+    var(--ac-heading-green) 0%,
+    var(--ac-heading-green-soft) 55%,
+    #34d399 130%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.estudio-ac-legacy h1.page-title {
+  font-size: 1.55rem;
+}
+
+.estudio-ac-legacy h2.page-title {
+  font-size: 1.15rem;
+}
+
+.estudio-ac-legacy .search-field {
+  flex: 1 1 260px;
+  max-width: 440px;
+}
+
+.estudio-ac-legacy .search-field label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ac-muted);
+  margin-bottom: 0.35rem;
+}
+
+.estudio-ac-legacy .search-field-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.estudio-ac-legacy .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--ac-accent);
+  opacity: 0.8;
+  pointer-events: none;
+  display: flex;
+}
+
+.estudio-ac-legacy .search-input {
+  width: 100%;
+  padding: 0.55rem 2.35rem 0.55rem 2.55rem;
+  font: inherit;
+  font-size: 0.92rem;
+  border: 1px solid var(--ac-border);
+  border-radius: 12px;
+  background: var(--ac-surface-elevated);
+  color: var(--ac-text);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.estudio-ac-legacy .search-input::placeholder {
+  color: var(--ac-muted);
+  opacity: 0.75;
+}
+
+.estudio-ac-legacy .search-input:focus {
+  border-color: var(--ac-accent);
+  box-shadow: 0 0 0 3px var(--ac-accent-ring);
+}
+
+.estudio-ac-legacy .search-clear {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--ac-muted);
+  cursor: pointer;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+}
+
+.estudio-ac-legacy .search-clear:hover {
+  background: var(--ac-accent-soft);
+  color: var(--ac-accent-hover);
+}
+
+.estudio-ac-legacy .search-meta {
+  margin: 0 0 0.85rem;
+  font-size: 0.82rem;
+}
+
+.estudio-ac-legacy .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.1rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.estudio-ac-legacy .btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.estudio-ac-legacy .btn-primary {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #f0fdf4;
+  box-shadow: 0 2px 12px -4px rgba(5, 120, 80, 0.45);
+}
+
+.estudio-ac-legacy .btn-primary:hover:not(:disabled) {
+  color: #f0fdf4;
+  text-decoration: none;
+  box-shadow: 0 4px 16px -4px rgba(5, 120, 80, 0.55);
+}
+
+.estudio-ac-legacy .btn-secondary {
+  background: var(--ac-surface);
+  color: var(--ac-text);
+  border-color: var(--ac-border);
+}
+
+.estudio-ac-legacy .btn-secondary:hover {
+  background: var(--ac-accent-soft);
+  border-color: rgba(5, 150, 105, 0.35);
+  text-decoration: none;
+}
+
+.estudio-ac-legacy .btn-sm {
+  padding: 0.38rem 0.75rem;
+  font-size: 0.82rem;
+  border-radius: 8px;
+}
+
+.estudio-ac-legacy table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.estudio-ac-legacy table.data th,
+.estudio-ac-legacy table.data td {
+  text-align: left;
+  padding: 0.55rem 0.45rem;
+  border-bottom: 1px solid var(--ac-border);
+  vertical-align: top;
+}
+
+.estudio-ac-legacy table.data tbody tr:hover {
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.estudio-ac-legacy table.data th {
+  color: var(--ac-muted);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.estudio-ac-legacy .badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.14rem 0.48rem;
+  border-radius: 7px;
+  background: rgba(5, 80, 50, 0.06);
+  color: var(--ac-muted);
+}
+
+.estudio-ac-legacy .badge.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estudio-ac-legacy .badge.warn {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.estudio-ac-legacy .muted {
+  color: var(--ac-muted);
+  font-size: 0.88rem;
+}
+
+.estudio-ac-legacy .error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
+/* —— Ficha de asunto (detalle), alineado con AsuntoPage del proyecto de referencia —— */
+
+.estudio-ac-legacy .section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.estudio-ac-legacy .section-head-title {
+  margin-bottom: 0 !important;
+}
+
+.estudio-ac-legacy .section-head.asunto-title-row {
+  align-items: flex-start;
+}
+
+.estudio-ac-legacy .section-head.asunto-title-row .page-title {
+  margin-bottom: 0;
+}
+
+.estudio-ac-legacy h2.page-title-sub {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  font-size: 1.1rem;
+  background: linear-gradient(
+    110deg,
+    var(--ac-heading-green) 0%,
+    var(--ac-heading-green-soft) 55%,
+    #34d399 130%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.estudio-ac-legacy .dl-grid {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.4rem 0.85rem;
+  font-size: 0.9rem;
+}
+
+.estudio-ac-legacy .dl-grid dt {
+  color: var(--ac-muted);
+  font-weight: 500;
+}
+
+.estudio-ac-legacy .dl-grid dd {
+  margin: 0;
+}
+
+.estudio-ac-legacy .timeline {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  border-left: 2px solid rgba(5, 150, 105, 0.25);
+  margin-left: 0.35rem;
+}
+
+.estudio-ac-legacy .timeline li {
+  padding: 0.55rem 0 0.55rem 1rem;
+  position: relative;
+}
+
+.estudio-ac-legacy .timeline li::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 0.72rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669, #34d399);
+  box-shadow: 0 0 0 2px var(--ac-surface);
+}

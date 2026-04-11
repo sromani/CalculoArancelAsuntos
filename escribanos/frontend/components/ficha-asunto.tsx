@@ -7,13 +7,7 @@ import {
   type PuestoCatalogo,
   ETIQUETA_PUESTO,
 } from "@/lib/profesional-equipo-catalogo";
-import {
-  estudioBtnSecundario,
-  estudioCard,
-  estudioCardPad,
-  estudioLinkBack,
-  estudioSpinnerLg,
-} from "@/lib/estudio-estilos";
+import { estudioSpinnerLg } from "@/lib/estudio-estilos";
 
 type RolMe =
   | "ADMIN"
@@ -60,14 +54,6 @@ type AsuntoFicha = {
     usuarioId: string | null;
   }[];
 };
-
-function puedeFinalizar(rol: RolMe | null): boolean {
-  return rol === "ADMIN" || rol === "SOCIO";
-}
-
-function puedeReabrir(rol: RolMe | null): boolean {
-  return rol === "ADMIN";
-}
 
 function puedeReasignarEquipo(rol: RolMe | null): boolean {
   return rol === "ADMIN" || rol === "SOCIO";
@@ -146,11 +132,8 @@ function etiquetaTipoAsunto(tipo: string): string {
   }
 }
 
-const slLabel = "text-[0.65rem] font-semibold uppercase tracking-wide text-neutral-400";
-const slBox = "rounded-lg border border-neutral-200/75 bg-neutral-100/60 px-3 py-2 text-sm text-neutral-600";
-const slCard = "rounded-2xl border border-neutral-200/80 bg-neutral-50/50 p-5 sm:p-6";
-const editableCard =
-  "rounded-2xl border-2 border-emerald-300/70 bg-white p-5 shadow-[0_6px_28px_-10px_rgba(5,150,105,0.35)] ring-1 ring-emerald-500/15 sm:p-6";
+const editableShell =
+  "panel-alta space-y-4 border-2 border-emerald-300/70 bg-white shadow-[0_6px_28px_-10px_rgba(5,150,105,0.35)] ring-1 ring-emerald-500/15";
 
 export function FichaAsunto({ id }: { id: string }) {
   const router = useRouter();
@@ -244,6 +227,13 @@ export function FichaAsunto({ id }: { id: string }) {
       .catch(() => undefined)
       .finally(() => setCargandoReaCat(false));
   }, [asunto?.estado, rol, id, accionReasignarAbierta]);
+
+  const seguimientosOrdenados = useMemo(() => {
+    if (!asunto) return [];
+    return [...asunto.seguimientos].sort(
+      (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime(),
+    );
+  }, [asunto]);
 
   /** Al abrir otra ficha, las fechas editables vuelven a hoy. */
   useEffect(() => {
@@ -352,14 +342,11 @@ export function FichaAsunto({ id }: { id: string }) {
     if (!asunto) return;
 
     const puedeEditarDescripcion = puedeMovimiento(rol);
-    const puedePasarAFinalizado = asunto.estado === "EN_TRAMITE" && puedeFinalizar(rol);
-    const puedeVolverATramite = asunto.estado === "FINALIZADO" && puedeReabrir(rol);
-    const puedeEditarEstadoSelect = puedePasarAFinalizado || puedeVolverATramite;
 
     const prevDesc = (descripcionSinMarcador(asunto.descripcion) ?? "").trim();
     const nextDesc = descEdit.trim();
     const descCambio = puedeEditarDescripcion && nextDesc !== prevDesc;
-    const estadoCambio = puedeEditarEstadoSelect && estadoEdit !== asunto.estado;
+    const estadoCambio = estadoEdit !== asunto.estado;
 
     if (!descCambio && !estadoCambio) {
       setMensaje("No hay cambios para guardar.");
@@ -430,23 +417,18 @@ export function FichaAsunto({ id }: { id: string }) {
 
   if (cargando) {
     return (
-      <div
-        className={`${estudioCard} flex min-h-[14rem] flex-col items-center justify-center gap-4 px-6 py-14`}
-      >
+      <div className="panel-alta flex min-h-[14rem] flex-col items-center justify-center gap-4 py-14">
         <span className={estudioSpinnerLg} aria-hidden />
-        <p className="text-sm font-medium text-neutral-600">Cargando ficha…</p>
+        <p className="muted">Cargando ficha…</p>
       </div>
     );
   }
 
   if (!asunto) {
     return (
-      <div className={`${estudioCard} ${estudioCardPad}`}>
-        <p className="text-sm font-medium text-red-800">{mensaje || "Asunto no encontrado."}</p>
-        <Link
-          href="/estudio/asuntos"
-          className={`${estudioBtnSecundario} mt-6 !w-auto !min-h-[2.5rem] !max-w-none !px-6`}
-        >
+      <div className="panel-alta">
+        <p className="error">{mensaje || "Asunto no encontrado."}</p>
+        <Link href="/estudio/asuntos" className="btn btn-secondary mt-6 inline-flex">
           Volver al listado
         </Link>
       </div>
@@ -455,63 +437,104 @@ export function FichaAsunto({ id }: { id: string }) {
 
   const enTramite = asunto.estado === "EN_TRAMITE";
   const puedeEditarDescripcion = puedeMovimiento(rol);
-  const puedePasarAFinalizado = enTramite && puedeFinalizar(rol);
-  const puedeVolverATramite = !enTramite && puedeReabrir(rol);
-  const puedeEditarEstadoSelect = puedePasarAFinalizado || puedeVolverATramite;
-  const mostrarTarjetaEditable = puedeEditarDescripcion || puedeEditarEstadoSelect;
+  /** Descripción solo según rol; el estado (combo) está disponible para cualquier usuario con sesión. */
+  const mostrarTarjetaEditable = true;
   const mostrarFechaCierre =
-    puedeEditarEstadoSelect && estadoEdit === "FINALIZADO" && asunto.estado === "EN_TRAMITE";
+    estadoEdit === "FINALIZADO" && asunto.estado === "EN_TRAMITE";
 
-  const panel = `${estudioCard} ${estudioCardPad}`;
+  const descripcionLectura = descripcionSinMarcador(asunto.descripcion);
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6 text-left sm:space-y-8">
-      <div className={estudioCard}>
-        <div className="border-b border-neutral-200/80 bg-neutral-50/70 px-6 py-6 sm:px-8">
-          <div className="flex flex-wrap items-center gap-2">
-            <Link href="/estudio/asuntos" className={estudioLinkBack}>
-              <span aria-hidden>←</span>
-              Listado
-            </Link>
-            <span className="rounded-full bg-neutral-200/80 px-2.5 py-0.5 text-xs font-semibold tabular-nums text-neutral-600 ring-1 ring-neutral-300/60">
-              #{asunto.ordinal}
+    <div className="w-full space-y-6 text-left sm:space-y-8">
+      <div className="panel-alta">
+        <p className="muted mt-0">
+          <Link href="/estudio/asuntos">← Asuntos</Link>
+          {" · "}
+          <Link href={`/estudio/clientes/${asunto.cliente.id}/editar`}>{asunto.cliente.nombre}</Link>
+        </p>
+        <div className="section-head asunto-title-row">
+          <h1 className="page-title">
+            Asunto #{asunto.ordinal}{" "}
+            <span className={`badge ${enTramite ? "warn" : "ok"}`}>
+              {enTramite ? "En trámite" : "Finalizado"}
             </span>
-          </div>
-          <h1 className="mt-4 break-words text-xl font-semibold tracking-tight text-neutral-700 sm:text-2xl">
-            {asunto.catalogo.nombre}
           </h1>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <div>
-              <p className={slLabel}>Cliente</p>
-              <p className={slBox}>
-                {asunto.cliente.nombre}
-                <span className="mt-1 block text-xs text-neutral-500 tabular-nums">{asunto.cliente.documento}</span>
-              </p>
-            </div>
-            <div>
-              <p className={slLabel}>Tipo de asunto</p>
-              <p className={slBox}>{etiquetaTipoAsunto(asunto.tipo)}</p>
-            </div>
-            <div className="sm:col-span-2">
-              <p className={slLabel}>Estado actual</p>
-              <p className={slBox}>
-                {enTramite ? (
-                  <span className="font-medium text-emerald-800">En trámite</span>
-                ) : (
-                  <span className="font-medium text-neutral-700">Finalizado</span>
-                )}
-              </p>
-            </div>
-          </div>
         </div>
+        <p className="muted">
+          {asunto.catalogo.nombre} · {etiquetaTipoAsunto(asunto.tipo)}
+        </p>
+        {mostrarTarjetaEditable && descripcionLectura ? (
+          <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--ac-text)]">{descripcionLectura}</p>
+        ) : null}
+        <dl className="dl-grid mt-4">
+          <dt>Inicio</dt>
+          <dd>{fmtFecha(asunto.fechaInicio)}</dd>
+          <dt>Finalización</dt>
+          <dd>{fmtFecha(asunto.fechaFinalizacion)}</dd>
+          <dt>Alerta venc.</dt>
+          <dd>{fmtFecha(asunto.fechaAlertaVencimiento)}</dd>
+          <dt>Último movimiento</dt>
+          <dd>
+            {fmtFecha(asunto.ultimoMovimientoFecha)}
+            {asunto.ultimoMovimientoTexto ? (
+              <>
+                <br />
+                <span className="muted">{asunto.ultimoMovimientoTexto}</span>
+              </>
+            ) : null}
+          </dd>
+          <dt>Socio referente</dt>
+          <dd>{asunto.socioReferente?.nombre?.trim() ? asunto.socioReferente.nombre : "—"}</dd>
+          <dt>Profesional a cargo</dt>
+          <dd>
+            {asunto.profesionalACargo ? (
+              <>
+                {asunto.profesionalACargo.nombre}
+                <span className="muted">
+                  {" "}
+                  (
+                  {ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
+                    asunto.profesionalACargo.puesto}
+                  {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
+                </span>
+              </>
+            ) : (
+              <span className="muted">{profesionalLibreDesdeDescripcion(asunto.descripcion) ?? "—"}</span>
+            )}
+          </dd>
+          <dt>Colaboradores</dt>
+          <dd>
+            {[asunto.colaboradorACargo?.nombre, asunto.colaboradorACargo2?.nombre].filter(Boolean).join(" · ") || "—"}
+          </dd>
+          <dt>Contador</dt>
+          <dd>{asunto.contadorReferente?.nombre?.trim() ? asunto.contadorReferente.nombre : "—"}</dd>
+          {!puedeEditarDescripcion ? (
+            <>
+              <dt>Descripción</dt>
+              <dd className="whitespace-pre-wrap">{descripcionLectura || "—"}</dd>
+            </>
+          ) : null}
+        </dl>
       </div>
+
+      {enTramite && puedeReasignarEquipo(rol) && !accionReasignarAbierta ? (
+        <div className="panel-alta">
+          <button
+            type="button"
+            className="text-sm font-semibold text-[var(--ac-accent)] underline decoration-[var(--ac-accent)]/35 underline-offset-2 transition hover:text-[var(--ac-accent-hover)]"
+            onClick={() => setAccionReasignarAbierta(true)}
+          >
+            Reasignar equipo…
+          </button>
+        </div>
+      ) : null}
 
       {mensaje ? (
         <p className="rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200/50">{mensaje}</p>
       ) : null}
 
       {mostrarTarjetaEditable ? (
-        <form className={`${editableCard} space-y-4`} onSubmit={(ev) => void guardarDescripcionYEstado(ev)}>
+        <form className={`${editableShell}`} onSubmit={(ev) => void guardarDescripcionYEstado(ev)}>
           <div>
             <h2 className="text-base font-bold text-emerald-900">Descripción y estado</h2>
             <p className="mt-1 text-xs leading-relaxed text-emerald-900/75">
@@ -530,148 +553,49 @@ export function FichaAsunto({ id }: { id: string }) {
             />
           </label>
 
-          {puedeEditarEstadoSelect ? (
-            <div className="space-y-3 rounded-xl border border-emerald-200/60 bg-emerald-50/40 p-4">
+          <div className="space-y-3 rounded-xl border border-emerald-200/60 bg-emerald-50/40 p-4">
+            <label className="block space-y-2">
+              <span className="text-xs font-semibold text-emerald-900">Estado del expediente</span>
+              <select
+                className="input-app font-medium text-neutral-900"
+                value={estadoEdit}
+                onChange={(e) => setEstadoEdit(e.target.value as "EN_TRAMITE" | "FINALIZADO")}
+                aria-label="Estado del expediente"
+              >
+                <option value="EN_TRAMITE">En trámite</option>
+                <option value="FINALIZADO">Finalizado</option>
+              </select>
+            </label>
+            {mostrarFechaCierre ? (
               <label className="block space-y-2">
-                <span className="text-xs font-semibold text-emerald-900">Estado del expediente</span>
-                <select
-                  className="input-app font-medium text-neutral-900"
-                  value={estadoEdit}
-                  onChange={(e) => setEstadoEdit(e.target.value as "EN_TRAMITE" | "FINALIZADO")}
-                >
-                  <option value="EN_TRAMITE">En trámite</option>
-                  <option value="FINALIZADO">Finalizado</option>
-                </select>
+                <span className="text-xs font-semibold text-emerald-900">Fecha de finalización</span>
+                <input
+                  className="input-app max-w-xs"
+                  type="date"
+                  value={fechaCierreEstado}
+                  onChange={(e) => setFechaCierreEstado(e.target.value)}
+                />
               </label>
-              {mostrarFechaCierre ? (
-                <label className="block space-y-2">
-                  <span className="text-xs font-semibold text-emerald-900">Fecha de finalización</span>
-                  <input
-                    className="input-app max-w-xs"
-                    type="date"
-                    value={fechaCierreEstado}
-                    onChange={(e) => setFechaCierreEstado(e.target.value)}
-                  />
-                </label>
-              ) : null}
-            </div>
-          ) : (
-            <p className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-600">
-              Para cambiar el estado (finalizar o reabrir) necesitás permisos de socio o administrador.
-            </p>
-          )}
+            ) : null}
+          </div>
 
-          <button
-            type="submit"
-            className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[var(--verde-principal)] px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--verde-oscuro)] disabled:cursor-not-allowed disabled:opacity-55"
-            disabled={guardandoFicha}
-          >
+          <button type="submit" className="btn btn-primary" disabled={guardandoFicha}>
             {guardandoFicha ? "Guardando…" : "Guardar cambios"}
           </button>
         </form>
       ) : null}
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <div className={`${slCard} space-y-3 text-xs`}>
-          <h2 className={`${slLabel} !text-neutral-500`}>Expediente (solo lectura)</h2>
-          <div>
-            <p className={slLabel}>Inicio</p>
-            <p className={slBox}>{fmtFecha(asunto.fechaInicio)}</p>
-          </div>
-          <div>
-            <p className={slLabel}>Alerta vencimiento</p>
-            <p className={slBox}>{fmtFecha(asunto.fechaAlertaVencimiento)}</p>
-          </div>
-          <div>
-            <p className={slLabel}>Finalización</p>
-            <p className={slBox}>{fmtFecha(asunto.fechaFinalizacion)}</p>
-          </div>
-          <div>
-            <p className={slLabel}>Último movimiento</p>
-            <p className={slBox}>{fmtFecha(asunto.ultimoMovimientoFecha)}</p>
-          </div>
-          {asunto.ultimoMovimientoTexto ? (
-            <div>
-              <p className={slLabel}>Texto último movimiento</p>
-              <p className={`${slBox} whitespace-pre-wrap`}>{asunto.ultimoMovimientoTexto}</p>
-            </div>
-          ) : null}
-          {!puedeEditarDescripcion ? (
-            <div>
-              <p className={slLabel}>Descripción</p>
-              <p className={`${slBox} whitespace-pre-wrap`}>{descripcionSinMarcador(asunto.descripcion) || "—"}</p>
-            </div>
-          ) : null}
-        </div>
-
-        <div className={`${slCard} space-y-3 text-xs`}>
-          <h2 className={`${slLabel} !text-neutral-500`}>Equipo (solo lectura)</h2>
-          <p>
-            <span className="text-[var(--gris-texto)]/90">Socio referente:</span>{" "}
-            {asunto.socioReferente ? (
-              asunto.socioReferente.nombre
-            ) : (
-              <span className="text-neutral-500">Sin asignar</span>
-            )}
-          </p>
-          <p>
-            <span className="text-[var(--gris-texto)]/90">Equipo a cargo:</span>{" "}
-            {asunto.profesionalACargo ? (
-              <>
-                {asunto.profesionalACargo.nombre}
-                <span className="text-[var(--gris-texto)]">
-                  {" "}
-                  ({ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
-                    asunto.profesionalACargo.puesto}
-                  {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
-                </span>
-              </>
-            ) : (
-              <span className="text-neutral-500">
-                {profesionalLibreDesdeDescripcion(asunto.descripcion) ?? "Sin asignar"}
-              </span>
-            )}
-          </p>
-          {asunto.colaboradorACargo ? (
-            <p>
-              <span className="text-[var(--gris-texto)]/90">Colaborador 1:</span> {asunto.colaboradorACargo.nombre}
-            </p>
-          ) : null}
-          {asunto.colaboradorACargo2 ? (
-            <p>
-              <span className="text-[var(--gris-texto)]/90">Colaborador 2:</span> {asunto.colaboradorACargo2.nombre}
-            </p>
-          ) : null}
-          {asunto.contadorReferente ? (
-            <p>
-              <span className="text-[var(--gris-texto)]/90">Contador:</span> {asunto.contadorReferente.nombre}
-            </p>
-          ) : null}
-          {enTramite && puedeReasignarEquipo(rol) && !accionReasignarAbierta ? (
-            <div className="mt-4 border-t border-black/[0.07] pt-3">
-              <button
-                type="button"
-                className="text-sm font-medium text-[var(--gris-texto)]/90 underline decoration-[rgba(0,166,81,0.35)] underline-offset-2 transition-colors hover:text-[var(--verde-titulo)] hover:decoration-[var(--verde-principal)]"
-                onClick={() => setAccionReasignarAbierta(true)}
-              >
-                Reasignar equipo…
-              </button>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
       {enTramite && puedeReasignarEquipo(rol) && accionReasignarAbierta && cargandoReaCat ? (
-        <p className="text-sm text-[var(--gris-texto)]">Cargando catalogos para reasignar…</p>
+        <p className="muted text-sm">Cargando catalogos para reasignar…</p>
       ) : null}
 
       {enTramite &&
       puedeReasignarEquipo(rol) &&
       accionReasignarAbierta &&
       !cargandoReaCat ? (
-        <form className={`${panel} space-y-4`} onSubmit={(ev) => void reasignarEquipo(ev)}>
+        <form className="panel-alta form space-y-4" onSubmit={(ev) => void reasignarEquipo(ev)}>
           <div className="flex flex-wrap items-start justify-between gap-2">
-            <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Reasignar equipo</h2>
+            <h2 className="page-title-sub">Reasignar equipo</h2>
             <button
               type="button"
               className="shrink-0 text-sm font-medium text-[var(--gris-texto)] underline decoration-[rgba(0,166,81,0.35)] underline-offset-2 hover:text-[var(--verde-titulo)]"
@@ -680,7 +604,7 @@ export function FichaAsunto({ id }: { id: string }) {
               Ocultar
             </button>
           </div>
-          <p className="text-sm text-[var(--gris-texto)]">
+          <p className="muted text-sm">
             Solo asuntos EN TRAMITE. Los cambios quedan en historial y auditoria. Ajustá solo lo que deba cambiar
             respecto del cuadro actual.
           </p>
@@ -766,19 +690,15 @@ export function FichaAsunto({ id }: { id: string }) {
               />
             </label>
           </div>
-          <button
-            className="btn-secondary min-h-[2.75rem] px-5 disabled:cursor-not-allowed disabled:opacity-55"
-            type="submit"
-            disabled={guardandoRea}
-          >
+          <button className="btn btn-primary" type="submit" disabled={guardandoRea}>
             {guardandoRea ? "Guardando…" : "Guardar reasignación"}
           </button>
         </form>
       ) : null}
 
       {enTramite && puedeMovimiento(rol) ? (
-        <form className={`${panel} space-y-4`} onSubmit={registrarMovimiento}>
-          <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Nuevo movimiento</h2>
+        <form className="panel-alta form space-y-4" onSubmit={registrarMovimiento}>
+          <h2 className="page-title-sub">Nuevo movimiento</h2>
           <textarea
             className="input-app min-h-24 resize-y"
             placeholder="Descripcion del movimiento"
@@ -794,48 +714,24 @@ export function FichaAsunto({ id }: { id: string }) {
               onChange={(e) => setMovFecha(e.target.value)}
             />
           </label>
-          <button
-            className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[var(--verde-principal)] px-5 text-xs font-semibold text-white shadow-sm transition hover:bg-[var(--verde-oscuro)] disabled:cursor-not-allowed disabled:opacity-55"
-            type="submit"
-            disabled={guardandoMov}
-          >
+          <button className="btn btn-primary" type="submit" disabled={guardandoMov}>
             {guardandoMov ? "Guardando…" : "Registrar movimiento"}
           </button>
         </form>
       ) : enTramite && !puedeMovimiento(rol) ? (
-        <p className="text-sm text-[var(--gris-texto)]">Tu rol no permite registrar movimientos en este asunto.</p>
+        <p className="muted text-sm">Tu rol no permite registrar movimientos en este asunto.</p>
       ) : null}
 
-      <div className={panel}>
-        <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-400">Historial</h2>
-        {asunto.seguimientos.length === 0 ? (
-          <p className="mt-4 text-sm text-neutral-500">No hay movimientos registrados.</p>
+      <div className="panel-alta">
+        <h2 className="page-title-sub">Seguimientos</h2>
+        {seguimientosOrdenados.length === 0 ? (
+          <p className="muted mt-2">Sin movimientos registrados.</p>
         ) : (
-          <ul className="mt-6">
-            {asunto.seguimientos.map((s, i) => (
-              <li key={s.id} className="relative flex gap-4 pb-8 last:pb-0">
-                <div className="relative flex w-5 shrink-0 flex-col items-center">
-                  <span
-                    className="z-10 mt-1 size-3 shrink-0 rounded-full border-2 border-white bg-emerald-500 shadow-sm ring-2 ring-emerald-100"
-                    aria-hidden
-                  />
-                  {i < asunto.seguimientos.length - 1 ? (
-                    <span
-                      className="absolute bottom-0 left-1/2 top-4 w-[3px] -translate-x-1/2 rounded-full bg-emerald-200/95"
-                      aria-hidden
-                    />
-                  ) : null}
-                </div>
-                <div
-                  className={
-                    i < asunto.seguimientos.length - 1 ? "min-w-0 flex-1 border-b border-neutral-100 pb-6" : "min-w-0 flex-1"
-                  }
-                >
-                  <time className="text-xs font-semibold tabular-nums text-emerald-900/75" dateTime={s.fecha}>
-                    {fmtFecha(s.fecha)}
-                  </time>
-                  <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-neutral-800">{s.descripcion}</p>
-                </div>
+          <ul className="timeline">
+            {seguimientosOrdenados.map((s) => (
+              <li key={s.id}>
+                <strong>{fmtFecha(s.fecha)}</strong>
+                <div className="whitespace-pre-wrap">{s.descripcion}</div>
               </li>
             ))}
           </ul>

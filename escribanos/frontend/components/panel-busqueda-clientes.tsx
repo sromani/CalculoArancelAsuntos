@@ -54,6 +54,17 @@ type Props = {
 const linkEditarCliente =
   "font-semibold text-emerald-700 underline decoration-emerald-600/35 underline-offset-2 transition hover:text-emerald-800 hover:decoration-emerald-700 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
 
+const cardPadX = estudioTw.cardPadX;
+
+function SearchIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <circle cx="11" cy="11" r="7" />
+      <path d="M20 20l-3-3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
   const [q, setQ] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -94,75 +105,92 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
   const busquedaActiva = debounced.length > 0;
 
   return (
-    <div className="w-full min-w-0">
-      <div className={cn("overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-md")}>
-        <div className={cn("border-b border-gray-100/90 bg-gradient-to-b from-white to-gray-50/30 py-3 sm:py-4", estudioTw.cardPadX)}>
-          <div className={estudioTw.busquedaCompactOuter}>
-            <div className={estudioTw.busquedaCompactShell}>
-              <span className={estudioTw.busquedaCompactIconWrap} aria-hidden>
-                <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.2-5.2M10 18a8 8 0 110-16 8 8 0 010 16z" />
-                </svg>
-              </span>
-              <input
-                id="busqueda-clientes"
-                type="search"
-                aria-label="Buscar clientes"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Nombre, documento o teléfono…"
-                autoComplete="off"
-                className={estudioTw.busquedaCompactInput}
-              />
-            </div>
+    <div className={cn("w-full min-w-0", estudioTw.listStackY)}>
+      <div className="panel overflow-hidden">
+        <div className={cn("page-toolbar page-toolbar-wide pt-6", cardPadX)}>
+          <div className="min-w-0 shrink-0">
+            <h1 className="page-title">Clientes</h1>
           </div>
-
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium tracking-wide text-gray-400 sm:text-xs sm:tracking-normal">
-            {cargando ? (
-              <span className="inline-flex items-center gap-1.5 text-gray-500">
-                <span
-                  className="size-3 animate-spin rounded-full border border-gray-200 border-t-emerald-600"
-                  aria-hidden
+          <div className="page-toolbar-end">
+            <div className="search-field max-w-full">
+              <label htmlFor="busqueda-clientes">Buscar</label>
+              <div className="search-field-inner">
+                <span className="search-icon" aria-hidden>
+                  <SearchIcon />
+                </span>
+                <input
+                  id="busqueda-clientes"
+                  type="search"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Nombre, documento o teléfono…"
+                  autoComplete="off"
+                  className="search-input"
                 />
-                Actualizando
-              </span>
-            ) : busquedaActiva ? (
-              <span className="text-gray-500">
-                <span className="tabular-nums text-gray-700">{lista.length}</span>
-                {lista.length === 1 ? " coincidencia" : " coincidencias"}
-              </span>
-            ) : (
-              <span className="text-gray-500">
-                <span className="tabular-nums text-gray-700">{lista.length}</span>
-                {lista.length === 1 ? " cliente" : " clientes"}
-                {lista.length >= 500 ? " · máx. mostrados" : ""}
-              </span>
-            )}
+                {q ? (
+                  <button
+                    type="button"
+                    className="search-clear"
+                    aria-label="Limpiar búsqueda"
+                    onClick={() => setQ("")}
+                  >
+                    ×
+                  </button>
+                ) : null}
+              </div>
+            </div>
+            <Link href="/estudio/clientes/nuevo" className="btn btn-primary shrink-0">
+              Nuevo cliente
+            </Link>
           </div>
         </div>
 
-        <div className="mt-6 border-t border-gray-200 bg-gray-50/50 pt-4 sm:mt-8 sm:pt-5">
+        <p className={cn("search-meta muted", cardPadX)}>
+          {cargando ? (
+            <span className="inline-flex items-center gap-2">
+              <span className={estudioTw.listSpinner} aria-hidden />
+              Actualizando
+            </span>
+          ) : busquedaActiva ? (
+            <>
+              <span className="tabular-nums text-neutral-800">{lista.length}</span>
+              {lista.length === 1 ? " coincidencia" : " coincidencias"}
+            </>
+          ) : (
+            <>
+              <span className="tabular-nums text-neutral-800">{lista.length}</span>
+              {lista.length === 1 ? " cliente" : " clientes"}
+              {lista.length >= 500 ? " · máx. mostrados" : ""}
+            </>
+          )}
+        </p>
+
+        <div className={cn("border-t border-neutral-100", cardPadX, "pb-6 pt-4")}>
           {lista.length > 0 ? (
             <>
               <div className="hidden md:block">
-                <div className="overflow-x-auto px-4 pb-3 pt-1.5 sm:px-6">
-                  <table className="w-full min-w-[980px] text-left text-[11px] leading-snug text-gray-700 sm:text-xs">
+                <div className="overflow-x-auto pb-2 pt-2">
+                  <table className="data w-full min-w-[980px] text-left text-neutral-700">
                     <caption className="sr-only">Clientes del estudio</caption>
                     <thead>
-                      <tr className="border-b border-gray-200 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:text-[11px]">
-                        <th className="sticky left-0 z-20 w-[3.5rem] min-w-[3.5rem] border-r border-gray-200 bg-gray-50 px-1.5 py-2 text-left text-emerald-800 shadow-[4px_0_12px_-6px_rgba(15,23,42,0.06)]">
+                      <tr>
+                        <th
+                          className={cn(
+                            "sticky left-0 z-20 w-[3.5rem] min-w-[3.5rem] border-r border-neutral-200 bg-neutral-50 text-left font-semibold text-emerald-800 shadow-[4px_0_12px_-6px_rgba(15,23,42,0.06)]",
+                          )}
+                        >
                           Editar
                         </th>
-                        <th className="px-2 py-2">Cliente</th>
-                        <th className="px-2 py-2">Tipo doc.</th>
-                        <th className="px-2 py-2">Número</th>
-                        <th className="px-2 py-2">Domicilio</th>
-                        <th className="px-2 py-2">Persona</th>
-                        <th className="px-2 py-2">Tipo social</th>
-                        <th className="px-2 py-2">Nacimiento</th>
-                        <th className="px-2 py-2">Estado civil</th>
-                        <th className="px-2 py-2">Teléfono</th>
-                        <th className="px-2 py-2">Email</th>
+                        <th>Cliente</th>
+                        <th>Tipo doc.</th>
+                        <th>Número</th>
+                        <th>Domicilio</th>
+                        <th>Persona</th>
+                        <th>Tipo social</th>
+                        <th>Nacimiento</th>
+                        <th>Estado civil</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -170,49 +198,55 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                         <tr
                           key={c.id}
                           className={cn(
-                            "border-b border-gray-100 transition-colors hover:bg-emerald-50/40",
-                            i % 2 === 1 ? "bg-gray-50/70" : "bg-white",
+                            "transition-colors",
+                            i % 2 === 1 ? "bg-neutral-50/80" : "bg-white",
                           )}
                         >
                           <td
                             className={cn(
-                              "sticky left-0 z-10 border-r border-gray-100 px-1.5 py-2 align-middle shadow-[4px_0_12px_-6px_rgba(15,23,42,0.05)]",
-                              i % 2 === 1 ? "bg-gray-50/95" : "bg-white",
+                              "sticky left-0 z-10 border-r border-neutral-100 align-middle shadow-[4px_0_12px_-6px_rgba(15,23,42,0.05)]",
+                              i % 2 === 1 ? "bg-neutral-50/95" : "bg-white",
                             )}
                           >
                             <Link
                               href={`/estudio/clientes/${c.id}/editar`}
-                              className={cn(linkEditarCliente, "inline-block text-[11px]")}
+                              className={cn(linkEditarCliente, "inline-block text-xs")}
                             >
                               Editar
                             </Link>
                           </td>
-                          <td className="px-2 py-2">
-                            <p className="min-w-0 font-medium text-gray-900">{c.nombre}</p>
+                          <td>
+                            <p className="min-w-0 text-sm font-semibold leading-snug text-neutral-900">{c.nombre}</p>
                           </td>
-                          <td className="whitespace-nowrap px-2 py-2 font-medium text-emerald-700">
+                          <td className="whitespace-nowrap font-medium text-emerald-800">
                             {etiquetaTipoDocumentoCliente(c.tipoDocumento)}
                           </td>
-                          <td className="whitespace-nowrap px-2 py-2 tabular-nums text-gray-800">{c.documento}</td>
-                          <td className="max-w-[10rem] px-2 py-2 text-gray-600" title={c.domicilio?.trim() || undefined}>
+                          <td className="whitespace-nowrap tabular-nums text-neutral-800">{c.documento}</td>
+                          <td className="max-w-[10rem] text-neutral-600" title={c.domicilio?.trim() || undefined}>
                             {c.domicilio?.trim() || "—"}
                           </td>
-                          <td className="whitespace-nowrap px-2 py-2 text-gray-800">
+                          <td className="whitespace-nowrap text-neutral-800">
                             {etiquetaTipoPersonaCliente(c.tipoPersona)}
                           </td>
-                          <td className="max-w-[7rem] truncate px-2 py-2 text-gray-600" title={c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : undefined}>
+                          <td
+                            className="max-w-[7rem] truncate text-neutral-600"
+                            title={c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : undefined}
+                          >
                             {c.tipoPersona === "JURIDICA" && c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : "—"}
                           </td>
-                          <td className="whitespace-nowrap px-2 py-2 tabular-nums text-gray-600">
+                          <td className="whitespace-nowrap tabular-nums text-neutral-600">
                             {c.tipoPersona === "FISICA" ? fmtFechaNac(c.fechaNacimiento) : "—"}
                           </td>
-                          <td className="max-w-[6.5rem] truncate px-2 py-2 text-gray-600" title={c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : undefined}>
+                          <td
+                            className="max-w-[6.5rem] truncate text-neutral-600"
+                            title={c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : undefined}
+                          >
                             {c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : "—"}
                           </td>
-                          <td className="max-w-[6.5rem] truncate px-2 py-2 text-gray-600" title={c.telefono ?? undefined}>
+                          <td className="max-w-[6.5rem] truncate text-neutral-600" title={c.telefono ?? undefined}>
                             {c.telefono?.trim() || "—"}
                           </td>
-                          <td className="max-w-[8rem] truncate px-2 py-2 text-gray-600" title={c.email ?? undefined}>
+                          <td className="max-w-[8rem] truncate text-neutral-600" title={c.email ?? undefined}>
                             {c.email?.trim() || "—"}
                           </td>
                         </tr>
@@ -222,65 +256,62 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                 </div>
               </div>
 
-              <ul className="flex flex-col gap-3 p-3 md:hidden sm:p-4">
+              <ul className={cn("flex flex-col gap-4 py-4 md:hidden", cardPadX)}>
                 {lista.map((c) => (
                   <li
                     key={c.id}
-                    className="rounded-xl border border-gray-200/90 bg-white p-3 shadow-sm ring-1 ring-black/[0.02] sm:p-3.5"
+                    className="rounded-xl border border-neutral-200/90 bg-white p-4 shadow-sm ring-1 ring-black/[0.02]"
                   >
-                    <div className="flex gap-2.5">
-                      <Link
-                        href={`/estudio/clientes/${c.id}/editar`}
-                        className={cn(linkEditarCliente, "shrink-0 self-start pt-0.5 text-[11px]")}
-                      >
+                    <div className="flex gap-4">
+                      <Link href={`/estudio/clientes/${c.id}/editar`} className={cn(linkEditarCliente, "shrink-0 self-start text-xs")}>
                         Editar
                       </Link>
-                      <dl className="min-w-0 flex-1 grid grid-cols-1 gap-x-2 gap-y-1.5 text-[11px] leading-snug sm:grid-cols-2 sm:text-xs">
+                      <dl className="min-w-0 flex-1 grid grid-cols-1 gap-x-4 gap-y-2 text-xs leading-snug sm:grid-cols-2">
                         <div className="sm:col-span-2">
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Nombre</dt>
-                          <dd className="mt-0.5 font-semibold text-gray-900">{c.nombre}</dd>
+                          <dt className={estudioTw.typeListDlDt}>Nombre</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "font-semibold text-neutral-900")}>{c.nombre}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Tipo doc.</dt>
-                          <dd className="mt-0.5 text-emerald-800">{etiquetaTipoDocumentoCliente(c.tipoDocumento)}</dd>
+                          <dt className={estudioTw.typeListDlDt}>Tipo doc.</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "font-medium text-emerald-800")}>{etiquetaTipoDocumentoCliente(c.tipoDocumento)}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Número</dt>
-                          <dd className="mt-0.5 tabular-nums text-gray-800">{c.documento}</dd>
+                          <dt className={estudioTw.typeListDlDt}>Número</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "tabular-nums text-neutral-800")}>{c.documento}</dd>
                         </div>
                         <div className="sm:col-span-2">
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Domicilio</dt>
-                          <dd className="mt-0.5 text-gray-700">{c.domicilio?.trim() || "—"}</dd>
+                          <dt className={estudioTw.typeListDlDt}>Domicilio</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "text-neutral-700")}>{c.domicilio?.trim() || "—"}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Persona</dt>
-                          <dd className="mt-0.5 text-gray-800">{etiquetaTipoPersonaCliente(c.tipoPersona)}</dd>
+                          <dt className={estudioTw.typeListDlDt}>Persona</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "text-neutral-800")}>{etiquetaTipoPersonaCliente(c.tipoPersona)}</dd>
                         </div>
                         <div>
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Tipo social</dt>
-                          <dd className="mt-0.5 text-gray-700">
+                          <dt className={estudioTw.typeListDlDt}>Tipo social</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "text-neutral-700")}>
                             {c.tipoPersona === "JURIDICA" && c.tipoSocial ? etiquetaTipoSocial(c.tipoSocial) : "—"}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Nacimiento</dt>
-                          <dd className="mt-0.5 tabular-nums text-gray-700">
+                          <dt className={estudioTw.typeListDlDt}>Nacimiento</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "tabular-nums text-neutral-700")}>
                             {c.tipoPersona === "FISICA" ? fmtFechaNac(c.fechaNacimiento) : "—"}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Estado civil</dt>
-                          <dd className="mt-0.5 text-gray-700">
+                          <dt className={estudioTw.typeListDlDt}>Estado civil</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "text-neutral-700")}>
                             {c.tipoPersona === "FISICA" ? etiquetaEstadoCivil(c.estadoCivil) : "—"}
                           </dd>
                         </div>
                         <div>
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Teléfono</dt>
-                          <dd className="mt-0.5 text-gray-700">{c.telefono?.trim() || "—"}</dd>
+                          <dt className={estudioTw.typeListDlDt}>Teléfono</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "text-neutral-700")}>{c.telefono?.trim() || "—"}</dd>
                         </div>
                         <div className="sm:col-span-2">
-                          <dt className="font-semibold uppercase tracking-wide text-gray-400">Email</dt>
-                          <dd className="mt-0.5 break-all text-gray-700">{c.email?.trim() || "—"}</dd>
+                          <dt className={estudioTw.typeListDlDt}>Email</dt>
+                          <dd className={cn(estudioTw.typeListDlDd, "break-all text-neutral-700")}>{c.email?.trim() || "—"}</dd>
                         </div>
                       </dl>
                     </div>
@@ -289,12 +320,12 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
               </ul>
             </>
           ) : !cargando ? (
-            <div className="bg-white px-6 py-14 text-center sm:px-8 sm:py-16">
-              <p className="text-base font-bold text-gray-900">Sin resultados</p>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gray-600">
+            <div className={cn("bg-white py-16 text-center sm:py-20", cardPadX)}>
+              <p className={estudioTw.typeListTitle}>Sin resultados</p>
+              <p className={cn(estudioTw.typeListBody, "muted")}>
                 {busquedaActiva
                   ? "Probá con otra palabra, parte del documento o del teléfono."
-                  : "Creá un cliente con Nuevo cliente (arriba a la derecha)."}
+                  : "Creá un cliente con el botón Nuevo cliente."}
               </p>
             </div>
           ) : null}
@@ -303,7 +334,7 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
 
       {mensaje ? (
         <div
-          className="mt-4 rounded-xl border border-amber-200/90 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+          className="rounded-xl border border-amber-200/90 bg-amber-50 px-4 py-3 text-sm text-amber-950"
           role="alert"
         >
           {mensaje}

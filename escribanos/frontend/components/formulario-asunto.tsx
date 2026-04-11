@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { datosPorCapitulo } from "@/lib/arancel/data";
@@ -39,7 +40,12 @@ function hoyIsoDate(): string {
   return `${y}-${m}-${day}`;
 }
 
-export function FormularioAsunto() {
+type FormularioAsuntoProps = {
+  /** Mismo layout visual que «Asuntos y Clientes» (alta de asunto). */
+  legacyAlta?: boolean;
+};
+
+export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) {
   const router = useRouter();
   const [tipo, setTipo] = useState<TipoAsunto>("NOTARIAL");
   const [asuntos, setAsuntos] = useState<AsuntoItem[]>([]);
@@ -218,7 +224,13 @@ export function FormularioAsunto() {
 
   if (cargando) {
     return (
-      <p className="flex items-center gap-3 text-xs text-neutral-500">
+      <p
+        className={
+          legacyAlta
+            ? "muted flex items-center gap-2 text-sm"
+            : "flex items-center gap-3 text-xs text-neutral-500"
+        }
+      >
         <span className={estudioSpinner} aria-hidden />
         Cargando catálogos…
       </p>
@@ -226,7 +238,12 @@ export function FormularioAsunto() {
   }
 
   return (
-    <form className={`${estudioFormShell} space-y-10 text-left`} onSubmit={onSubmit}>
+    <form
+      className={
+        legacyAlta ? "form text-left" : `${estudioFormShell} space-y-10 text-left`
+      }
+      onSubmit={onSubmit}
+    >
       <div>
         <h2 className={estudioSectionTitle}>Cliente y tipo</h2>
         <p className="mt-2 text-xs text-neutral-600">Buscá al cliente y definí si el expediente es notarial o legal.</p>
@@ -322,7 +339,11 @@ export function FormularioAsunto() {
         </label>
       </div>
 
-      <div className={`${estudioSectionRule} space-y-4`}>
+      <div
+        className={
+          legacyAlta ? "form-stack-section space-y-4" : `${estudioSectionRule} space-y-4`
+        }
+      >
         <h2 className={estudioSectionTitle}>Asunto del catálogo</h2>
         <label className="block space-y-1.5">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Selección</span>
@@ -381,7 +402,7 @@ export function FormularioAsunto() {
         />
       </label>
 
-      <div className="space-y-3">
+      <div className={legacyAlta ? "form-stack-section space-y-3" : "space-y-3"}>
         <h2 className={estudioSectionTitle}>Fechas</h2>
         <div className="grid gap-6 md:grid-cols-2">
         <label className="space-y-1.5">
@@ -405,13 +426,28 @@ export function FormularioAsunto() {
         </div>
       </div>
 
-      <div className={`${estudioSectionRule} flex flex-wrap gap-3`}>
-        <button className={estudioBtnPrimario} disabled={guardando} type="submit">
-          {guardando ? "Guardando..." : "Crear asunto"}
+      <div
+        className={
+          legacyAlta ? "form-actions" : `${estudioSectionRule} flex flex-wrap gap-3`
+        }
+      >
+        <button
+          className={legacyAlta ? "btn btn-primary" : estudioBtnPrimario}
+          disabled={guardando}
+          type="submit"
+        >
+          {guardando ? "Guardando…" : "Guardar asunto"}
         </button>
+        {legacyAlta ? (
+          <Link href="/estudio/asuntos" className="btn btn-secondary">
+            Cancelar
+          </Link>
+        ) : null}
       </div>
 
-      {mensaje ? <p className={estudioAlertInfo}>{mensaje}</p> : null}
+      {mensaje ? (
+        <p className={legacyAlta ? "error" : estudioAlertInfo}>{mensaje}</p>
+      ) : null}
     </form>
   );
 }

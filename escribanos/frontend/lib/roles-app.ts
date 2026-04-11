@@ -29,12 +29,12 @@ export function puedeGestionarMaestrosEstudio(rol: RolSesion): boolean {
   return rol === "ADMIN" || rol === "SOCIO";
 }
 
-/** Puede finalizar asuntos (RF: Socio o Administrador) */
+/** Reasignación de equipo y operaciones administrativas que siguen restringidas a socio/admin. */
 export function puedeFinalizarAsunto(rol: RolSesion): boolean {
   return rol === "ADMIN" || rol === "SOCIO";
 }
 
-/** Puede reabrir asunto FINALIZADO (solo admin por RF) */
+/** Reservado; finalizar/reabrir asunto en API ya no depende del rol (cualquier sesión válida). */
 export function puedeReabrirAsunto(rol: RolSesion): boolean {
   return rol === "ADMIN";
 }

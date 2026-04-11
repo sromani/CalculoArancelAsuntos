@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./estudio-plain.css";
 import Navbar from "./components/layout/Navbar";
-import { Raleway } from "next/font/google";
+import { Outfit, Raleway } from "next/font/google";
 import { AuthProvider } from "./context/AuthContext";
   // todo (navbar, pages, ...) puede acceder a saber si hay un usuario logueado.
 
@@ -10,6 +10,12 @@ const raleway = Raleway({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-raleway",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-outfit",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +30,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${raleway.variable} antialiased`} style={{ fontFamily: 'var(--font-raleway)' }}>
+      <body
+        className={`${raleway.variable} ${outfit.variable} antialiased`}
+        style={{ fontFamily: "var(--font-raleway)" }}
+      >
         <AuthProvider>
           <Navbar />
           {children}

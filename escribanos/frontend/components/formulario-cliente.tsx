@@ -54,6 +54,8 @@ type Props = {
   clienteId?: string;
   onClienteCreado?: () => void;
   onClienteActualizado?: () => void;
+  /** Listado / alta / edición: layout tipo «Asuntos y Clientes» (panel + `.form` + botones). */
+  legacyLayout?: boolean;
 };
 
 function parsearNombreCompleto(valor: string): { apellidos: string; nombres: string } {
@@ -134,7 +136,12 @@ function aplicarClienteAlFormulario(
   setters.setDomicilioAclaraciones(dom.aclaraciones);
 }
 
-export function FormularioCliente({ clienteId, onClienteCreado, onClienteActualizado }: Props) {
+export function FormularioCliente({
+  clienteId,
+  onClienteCreado,
+  onClienteActualizado,
+  legacyLayout = false,
+}: Props) {
   const router = useRouter();
   const [tipoDocumento, setTipoDocumento] = useState<TipoDocumentoCliente>("CI");
   const [tipoPersona, setTipoPersona] = useState<TipoPersonaCliente>("FISICA");
@@ -520,28 +527,38 @@ export function FormularioCliente({ clienteId, onClienteCreado, onClienteActuali
 
   const altaBloqueadaPorCi = !esEdicion && tipoDocumento === "CI" && ciExistente !== null;
 
+  const useLegacyLayout = Boolean(legacyLayout);
+  const sectionRuleClass = useLegacyLayout ? "form-stack-section" : estudioSectionRule;
+
   const hintDocumento =
     documento.trim() !== "" ? mensajeValidacionDocumentoCliente(tipoDocumento, documento) : null;
 
   if (esEdicion && cargandoCliente) {
     return (
       <div
-        className={`${estudioFormShell} flex min-h-[12rem] flex-col items-center justify-center gap-3 text-center`}
+        className={
+          useLegacyLayout
+            ? "flex min-h-[12rem] flex-col items-center justify-center gap-3 text-center"
+            : `${estudioFormShell} flex min-h-[12rem] flex-col items-center justify-center gap-3 text-center`
+        }
       >
         <span
           className="size-8 shrink-0 animate-spin rounded-full border-2 border-neutral-200 border-t-emerald-600"
           aria-hidden
         />
-        <p className="text-sm text-neutral-600">Cargando datos del cliente…</p>
+        <p className={useLegacyLayout ? "muted" : "text-sm text-neutral-600"}>Cargando datos del cliente…</p>
       </div>
     );
   }
 
   if (esEdicion && errorCarga) {
     return (
-      <div className={`${estudioFormShell} space-y-4 text-left`}>
-        <p className="text-sm font-medium text-red-800">{errorCarga}</p>
-        <Link href="/estudio/clientes" className={estudioLinkBack}>
+      <div className={useLegacyLayout ? "space-y-4 text-left" : `${estudioFormShell} space-y-4 text-left`}>
+        <p className={useLegacyLayout ? "error" : "text-sm font-medium text-red-800"}>{errorCarga}</p>
+        <Link
+          href="/estudio/clientes"
+          className={useLegacyLayout ? "btn btn-secondary inline-flex" : estudioLinkBack}
+        >
           <span aria-hidden>←</span>
           Volver a clientes
         </Link>
@@ -550,8 +567,11 @@ export function FormularioCliente({ clienteId, onClienteCreado, onClienteActuali
   }
 
   return (
-    <form className={`${estudioFormShell} space-y-0 text-left`} onSubmit={onSubmit}>
-      {esEdicion ? (
+    <form
+      className={useLegacyLayout ? "form text-left" : `${estudioFormShell} space-y-0 text-left`}
+      onSubmit={onSubmit}
+    >
+      {esEdicion && !useLegacyLayout ? (
         <div className="mb-8 space-y-3">
           <Link href="/estudio/clientes" className={estudioLinkBack}>
             <span aria-hidden>←</span>
@@ -562,6 +582,11 @@ export function FormularioCliente({ clienteId, onClienteCreado, onClienteActuali
             Mismos campos que en el alta. Los cambios quedan registrados en el directorio.
           </p>
         </div>
+      ) : null}
+      {esEdicion && useLegacyLayout ? (
+        <p className="muted mb-6 max-w-2xl text-sm">
+          Mismos campos que en el alta. Los cambios quedan registrados en el directorio.
+        </p>
       ) : null}
       <div className="mb-6">
         <h2 className={estudioSectionTitle}>Identificación</h2>
@@ -666,7 +691,7 @@ export function FormularioCliente({ clienteId, onClienteCreado, onClienteActuali
         </div>
       ) : null}
 
-      <div className={estudioSectionRule}>
+      <div className={sectionRuleClass}>
         <h2 className={estudioSectionTitle}>Datos del cliente y domicilio</h2>
         <p className="mt-2 max-w-2xl text-sm text-neutral-600">
           Completá nombres o razón social, domicilio y vías de contacto.
@@ -895,19 +920,37 @@ export function FormularioCliente({ clienteId, onClienteCreado, onClienteActuali
         </div>
       </div>
 
-      <div className={`${estudioSectionRule} flex flex-wrap items-center gap-3`}>
-        <button className={estudioBtnPrimario} disabled={guardando || altaBloqueadaPorCi} type="submit">
+      <div
+        className={
+          useLegacyLayout ? "form-actions" : `${estudioSectionRule} flex flex-wrap items-center gap-3`
+        }
+      >
+        <button
+          className={useLegacyLayout ? "btn btn-primary" : estudioBtnPrimario}
+          disabled={guardando || altaBloqueadaPorCi}
+          type="submit"
+        >
           {guardando ? "Guardando…" : esEdicion ? "Guardar cambios" : "Guardar cliente"}
         </button>
         {esEdicion ? (
-          <Link href="/estudio/clientes" className={estudioBtnSecundario}>
+          <Link href="/estudio/clientes" className={useLegacyLayout ? "btn btn-secondary" : estudioBtnSecundario}>
+            Cancelar
+          </Link>
+        ) : useLegacyLayout ? (
+          <Link href="/estudio/clientes" className="btn btn-secondary">
             Cancelar
           </Link>
         ) : null}
       </div>
 
       {esEdicion && clienteId ? (
-        <div className="mt-10 rounded-xl border border-red-200/90 bg-red-50/50 px-4 py-5 sm:px-5">
+        <div
+          className={
+            useLegacyLayout
+              ? "form-stack-section mt-2 rounded-xl border border-red-200/90 bg-red-50/50 px-4 py-5 sm:px-5"
+              : "mt-10 rounded-xl border border-red-200/90 bg-red-50/50 px-4 py-5 sm:px-5"
+          }
+        >
           <h3 className="text-sm font-semibold text-red-900">Eliminar cliente</h3>
           <p className="mt-1 text-xs leading-relaxed text-neutral-700">
             Para borrar del directorio tenés que usar esta acción aquí (no está en el listado). Solo se permite si no
@@ -924,7 +967,9 @@ export function FormularioCliente({ clienteId, onClienteCreado, onClienteActuali
         </div>
       ) : null}
 
-      {mensaje ? <p className={`mt-6 ${estudioAlertInfo}`}>{mensaje}</p> : null}
+      {mensaje ? (
+        <p className={useLegacyLayout ? "muted mt-6 text-sm" : `mt-6 ${estudioAlertInfo}`}>{mensaje}</p>
+      ) : null}
     </form>
   );
 }

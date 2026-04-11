@@ -3,6 +3,7 @@
  * Las utilidades (`flex`, `rounded-xl`, `text-[var(--verde-titulo)]`, etc.) se usan en los `.tsx`.
  */
 @import "tailwindcss";
+@import "./estudio/ac-list-legacy.css";
 
 :root {
   /* Verdes principales */

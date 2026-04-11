@@ -5,7 +5,7 @@ import { mensajeErrorValidacionEquipoAsunto } from "@/lib/asunto-equipo-validar"
 import { registrarAuditoria } from "@/lib/auditoria";
 import { obtenerErrorConfiguracionDb } from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
-import { puedeFinalizarAsunto, puedeReabrirAsunto } from "@/lib/roles-app";
+import { puedeFinalizarAsunto } from "@/lib/roles-app";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -88,9 +88,6 @@ export async function PATCH(request: Request, context: Params) {
     }
 
     if (accion === "finalizar") {
-      if (!puedeFinalizarAsunto(auth.sesion.rol)) {
-        return NextResponse.json({ error: "No autorizado a finalizar asuntos." }, { status: 403 });
-      }
       if (actual.estado !== EstadoAsunto.EN_TRAMITE) {
         return NextResponse.json({ error: "Solo se pueden finalizar asuntos EN TRAMITE." }, { status: 400 });
       }
@@ -146,9 +143,6 @@ export async function PATCH(request: Request, context: Params) {
     }
 
     if (accion === "reabrir") {
-      if (!puedeReabrirAsunto(auth.sesion.rol)) {
-        return NextResponse.json({ error: "Solo un administrador puede reabrir asuntos." }, { status: 403 });
-      }
       if (actual.estado !== EstadoAsunto.FINALIZADO) {
         return NextResponse.json({ error: "Solo se pueden reabrir asuntos FINALIZADOS." }, { status: 400 });
       }
