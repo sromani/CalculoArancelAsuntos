@@ -5,7 +5,7 @@ import { mensajeErrorValidacionEquipoAsunto } from "@/lib/asunto-equipo-validar"
 import { registrarAuditoria } from "@/lib/auditoria";
 import { obtenerErrorConfiguracionDb } from "@/lib/api-db";
 import { prisma } from "@/lib/prisma";
-import { puedeFinalizarAsunto, puedeRegistrarMovimiento } from "@/lib/roles-app";
+import { puedeRegistrarMovimiento } from "@/lib/roles-app";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -222,9 +222,9 @@ export async function PATCH(request: Request, context: Params) {
     }
 
     if (accion === "reasignar") {
-      if (!puedeFinalizarAsunto(auth.sesion.rol)) {
+      if (!puedeRegistrarMovimiento(auth.sesion.rol)) {
         return NextResponse.json(
-          { error: "Solo administradores o socios pueden reasignar el equipo del asunto." },
+          { error: "Tu rol no permite actualizar el equipo ni la alerta de este asunto." },
           { status: 403 },
         );
       }
@@ -262,6 +262,26 @@ export async function PATCH(request: Request, context: Params) {
           ? parseOptProfFk(body.contadorReferenteId)
           : actual.contadorReferenteId;
 
+      let fechaAlertaVencimiento: Date | null | undefined;
+      if (body?.fechaAlertaVencimiento !== undefined) {
+        const raw = body.fechaAlertaVencimiento;
+        if (raw === null || raw === "") {
+          fechaAlertaVencimiento = null;
+        } else {
+          const parsed = parseFechaIso(raw);
+          if (!parsed) {
+            return NextResponse.json({ error: "Fecha de alerta de vencimiento invalida." }, { status: 400 });
+          }
+          if (parsed < actual.fechaInicio) {
+            return NextResponse.json(
+              { error: "La alerta de vencimiento no puede ser anterior a la fecha de inicio." },
+              { status: 400 },
+            );
+          }
+          fechaAlertaVencimiento = parsed;
+        }
+      }
+
       const errVal = await mensajeErrorValidacionEquipoAsunto(prisma, {
         socioReferenteId,
         profesionalACargoId,
@@ -284,6 +304,9 @@ export async function PATCH(request: Request, context: Params) {
             colaboradorACargoId,
             colaboradorACargo2Id,
             contadorReferenteId,
+            ...(fechaAlertaVencimiento !== undefined
+              ? { fechaAlertaVencimiento }
+              : {}),
             ultimoMovimientoFecha: new Date(),
             ultimoMovimientoTexto: nota,
           },
@@ -319,6 +342,12 @@ export async function PATCH(request: Request, context: Params) {
           colaboradorACargoId,
           colaboradorACargo2Id,
           contadorReferenteId,
+          ...(fechaAlertaVencimiento !== undefined
+            ? {
+                fechaAlertaVencimiento:
+                  fechaAlertaVencimiento === null ? null : fechaAlertaVencimiento.toISOString(),
+              }
+            : {}),
         },
       });
 

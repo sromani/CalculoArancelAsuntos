@@ -8,22 +8,6 @@ import { esSoloLectura, puedeRegistrarMovimiento } from "@/lib/roles-app";
 
 type Params = { params: Promise<{ id: string }> };
 
-function parseFechaMov(s: unknown): Date {
-  if (s === undefined || s === null || s === "") {
-    return new Date();
-  }
-  const raw = String(s).trim();
-  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
-    // Si llega solo fecha (input date), usar la hora actual para no clavar 12:00.
-    const hoyHora = new Date();
-    const d = new Date(`${raw}T00:00:00`);
-    d.setHours(hoyHora.getHours(), hoyHora.getMinutes(), hoyHora.getSeconds(), 0);
-    return d;
-  }
-  const d = new Date(raw);
-  return Number.isNaN(d.getTime()) ? new Date() : d;
-}
-
 export async function POST(request: Request, context: Params) {
   const auth = await requiereApiSesion();
   if (!auth.ok) {
@@ -44,7 +28,8 @@ export async function POST(request: Request, context: Params) {
   try {
     const body = await request.json();
     const descripcion = String(body?.descripcion ?? "").trim();
-    const fecha = parseFechaMov(body?.fecha);
+    /** Siempre fecha/hora del servidor: no se permite postergar ni adelantar movimientos desde el cliente. */
+    const fecha = new Date();
 
     if (!descripcion) {
       return NextResponse.json({ error: "La descripcion del movimiento es obligatoria." }, { status: 400 });

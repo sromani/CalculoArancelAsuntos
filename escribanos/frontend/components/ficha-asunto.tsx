@@ -8,6 +8,7 @@ import {
   ETIQUETA_PUESTO,
 } from "@/lib/profesional-equipo-catalogo";
 import { estudioSpinnerLg } from "@/lib/estudio-estilos";
+import { EstudioListaBuscableSelect } from "@/components/estudio-lista-buscable-select";
 
 type RolMe =
   | "ADMIN"
@@ -54,10 +55,6 @@ type AsuntoFicha = {
     usuarioId: string | null;
   }[];
 };
-
-function puedeReasignarEquipo(rol: RolMe | null): boolean {
-  return rol === "ADMIN" || rol === "SOCIO";
-}
 
 function puedeMovimiento(rol: RolMe | null): boolean {
   if (!rol || rol === "SOLO_LECTURA" || rol === "CONTADOR") return false;
@@ -119,6 +116,17 @@ function fechaAsuntoADateInput(iso: string | null | undefined): string {
   return `${y}-${m}-${day}`;
 }
 
+/** Valor para input type="date" cuando la fecha es opcional (sin valor = cadena vacía). */
+function fechaIsoADateInputOptional(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function etiquetaTipoAsunto(tipo: string): string {
   switch (tipo) {
     case "NOTARIAL":
@@ -142,7 +150,6 @@ export function FichaAsunto({ id }: { id: string }) {
   const [cargando, setCargando] = useState(true);
   const [mensaje, setMensaje] = useState("");
   const [movTexto, setMovTexto] = useState("");
-  const [movFecha, setMovFecha] = useState(() => hoyIsoDate());
   const [guardandoMov, setGuardandoMov] = useState(false);
   const [profesionalesCat, setProfesionalesCat] = useState<ProfesionalItem[]>([]);
   const [sociosCat, setSociosCat] = useState<SocioItem[]>([]);
@@ -151,11 +158,9 @@ export function FichaAsunto({ id }: { id: string }) {
   const [reaCol1, setReaCol1] = useState("");
   const [reaCol2, setReaCol2] = useState("");
   const [reaCont, setReaCont] = useState("");
-  const [reaNota, setReaNota] = useState("Reasignacion de equipo del asunto.");
-  const [guardandoRea, setGuardandoRea] = useState(false);
+  const [reaAlerta, setReaAlerta] = useState("");
+  const [reaNota, setReaNota] = useState("Actualizacion de equipo o alerta del asunto.");
   const [cargandoReaCat, setCargandoReaCat] = useState(false);
-  /** Formulario de reasignación: no visible hasta que el usuario elija la acción. */
-  const [accionReasignarAbierta, setAccionReasignarAbierta] = useState(false);
 
   const [descEdit, setDescEdit] = useState("");
   const [estadoEdit, setEstadoEdit] = useState<"EN_TRAMITE" | "FINALIZADO">("EN_TRAMITE");
@@ -183,6 +188,7 @@ export function FichaAsunto({ id }: { id: string }) {
       setReaCol1(ficha.colaboradorACargo?.id ?? "");
       setReaCol2(ficha.colaboradorACargo2?.id ?? "");
       setReaCont(ficha.contadorReferente?.id ?? "");
+      setReaAlerta(fechaIsoADateInputOptional(ficha.fechaAlertaVencimiento));
 
       if (rMe.ok) {
         const me = await rMe.json();
@@ -201,15 +207,7 @@ export function FichaAsunto({ id }: { id: string }) {
   }, [cargar]);
 
   useEffect(() => {
-    setAccionReasignarAbierta(false);
-  }, [id]);
-
-  useEffect(() => {
-    if (
-      asunto?.estado !== "EN_TRAMITE" ||
-      !puedeReasignarEquipo(rol) ||
-      !accionReasignarAbierta
-    ) {
+    if (asunto?.estado !== "EN_TRAMITE" || !puedeMovimiento(rol)) {
       setCargandoReaCat(false);
       return;
     }
@@ -226,7 +224,7 @@ export function FichaAsunto({ id }: { id: string }) {
       })
       .catch(() => undefined)
       .finally(() => setCargandoReaCat(false));
-  }, [asunto?.estado, rol, id, accionReasignarAbierta]);
+  }, [asunto?.estado, rol, asunto?.id]);
 
   const seguimientosOrdenados = useMemo(() => {
     if (!asunto) return [];
@@ -234,11 +232,6 @@ export function FichaAsunto({ id }: { id: string }) {
       (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime(),
     );
   }, [asunto]);
-
-  /** Al abrir otra ficha, las fechas editables vuelven a hoy. */
-  useEffect(() => {
-    setMovFecha(hoyIsoDate());
-  }, [id]);
 
   useEffect(() => {
     if (!asunto) return;
@@ -260,8 +253,7 @@ export function FichaAsunto({ id }: { id: string }) {
     setGuardandoMov(true);
     setMensaje("");
     try {
-      const body: { descripcion: string; fecha?: string } = { descripcion: movTexto.trim() };
-      if (movFecha) body.fecha = movFecha;
+      const body = { descripcion: movTexto.trim() };
       const response = await fetch(`/api/asuntos/${id}/movimientos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -273,7 +265,6 @@ export function FichaAsunto({ id }: { id: string }) {
         return;
       }
       setMovTexto("");
-      setMovFecha(hoyIsoDate());
       await cargar();
       router.refresh();
     } catch {
@@ -304,51 +295,58 @@ export function FichaAsunto({ id }: { id: string }) {
     [elegiblesCol1, reaCol1],
   );
 
-  async function reasignarEquipo(e: React.FormEvent) {
-    e.preventDefault();
-    setGuardandoRea(true);
-    setMensaje("");
-    try {
-      const response = await fetch(`/api/asuntos/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accion: "reasignar",
-          socioReferenteId: reaSocioId.trim() === "" ? null : reaSocioId,
-          profesionalACargoId: reaProfId.trim() === "" ? null : reaProfId,
-          colaboradorACargoId: reaCol1.trim() === "" ? null : reaCol1,
-          colaboradorACargo2Id: reaCol2.trim() === "" ? null : reaCol2,
-          contadorReferenteId: reaCont.trim() === "" ? null : reaCont,
-          notaSeguimiento: reaNota.trim() || "Reasignacion de equipo del asunto.",
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setMensaje(data?.error ?? "No se pudo reasignar.");
-        return;
-      }
-      setAccionReasignarAbierta(false);
-      await cargar();
-      router.refresh();
-    } catch {
-      setMensaje("Error de conexion.");
-    } finally {
-      setGuardandoRea(false);
-    }
-  }
+  const opcionesSocio = useMemo(
+    () => sociosCat.map((s) => ({ value: s.id, label: s.nombre })),
+    [sociosCat],
+  );
+  const opcionesLegalACargo = useMemo(
+    () =>
+      legalACargo.map((p) => ({
+        value: p.id,
+        label: `${p.nombre} (${ETIQUETA_PUESTO[p.puesto as PuestoCatalogo] ?? p.puesto})`,
+      })),
+    [legalACargo],
+  );
+  const opcionesColaborador1 = useMemo(
+    () => elegiblesCol1.map((p) => ({ value: p.id, label: p.nombre })),
+    [elegiblesCol1],
+  );
+  const opcionesColaborador2 = useMemo(
+    () => elegiblesCol2.map((p) => ({ value: p.id, label: p.nombre })),
+    [elegiblesCol2],
+  );
+  const opcionesContador = useMemo(
+    () => contadoresLista.map((p) => ({ value: p.id, label: p.nombre })),
+    [contadoresLista],
+  );
 
   async function guardarDescripcionYEstado(e: React.FormEvent) {
     e.preventDefault();
     if (!asunto) return;
 
     const puedeEditarDescripcion = puedeMovimiento(rol);
+    const enTramiteLocal = asunto.estado === "EN_TRAMITE";
+    const puedeEditarEquipoYAlerta = enTramiteLocal && puedeEditarDescripcion;
 
     const prevDesc = (descripcionSinMarcador(asunto.descripcion) ?? "").trim();
     const nextDesc = descEdit.trim();
     const descCambio = puedeEditarDescripcion && nextDesc !== prevDesc;
     const estadoCambio = estadoEdit !== asunto.estado;
 
-    if (!descCambio && !estadoCambio) {
+    const alertActualStr = fechaIsoADateInputOptional(asunto.fechaAlertaVencimiento);
+    const alertNuevaStr = reaAlerta.trim();
+    const alertCambio = alertNuevaStr !== alertActualStr;
+
+    const equipoCambio =
+      (reaSocioId || "") !== (asunto.socioReferente?.id ?? "") ||
+      (reaProfId || "") !== (asunto.profesionalACargo?.id ?? "") ||
+      (reaCol1 || "") !== (asunto.colaboradorACargo?.id ?? "") ||
+      (reaCol2 || "") !== (asunto.colaboradorACargo2?.id ?? "") ||
+      (reaCont || "") !== (asunto.contadorReferente?.id ?? "");
+
+    const equipoOAlertaCambio = puedeEditarEquipoYAlerta && (equipoCambio || alertCambio);
+
+    if (!descCambio && !estadoCambio && !equipoOAlertaCambio) {
       setMensaje("No hay cambios para guardar.");
       return;
     }
@@ -356,6 +354,28 @@ export function FichaAsunto({ id }: { id: string }) {
     setGuardandoFicha(true);
     setMensaje("");
     try {
+      if (equipoOAlertaCambio) {
+        const response = await fetch(`/api/asuntos/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            accion: "reasignar",
+            socioReferenteId: reaSocioId.trim() === "" ? null : reaSocioId,
+            profesionalACargoId: reaProfId.trim() === "" ? null : reaProfId,
+            colaboradorACargoId: reaCol1.trim() === "" ? null : reaCol1,
+            colaboradorACargo2Id: reaCol2.trim() === "" ? null : reaCol2,
+            contadorReferenteId: reaCont.trim() === "" ? null : reaCont,
+            fechaAlertaVencimiento: alertNuevaStr === "" ? null : alertNuevaStr,
+            notaSeguimiento: reaNota.trim() || "Actualizacion de equipo o alerta del asunto.",
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          setMensaje(data?.error ?? "No se pudo guardar equipo o alerta.");
+          return;
+        }
+      }
+
       if (descCambio) {
         const r = await fetch(`/api/asuntos/${id}`, {
           method: "PATCH",
@@ -437,6 +457,7 @@ export function FichaAsunto({ id }: { id: string }) {
 
   const enTramite = asunto.estado === "EN_TRAMITE";
   const puedeEditarDescripcion = puedeMovimiento(rol);
+  const editarEquipoEnFicha = enTramite && puedeEditarDescripcion;
   /** Descripción solo según rol; el estado (combo) está disponible para cualquier usuario con sesión. */
   const mostrarTarjetaEditable = true;
   const mostrarFechaCierre =
@@ -463,7 +484,7 @@ export function FichaAsunto({ id }: { id: string }) {
         <p className="muted">
           {asunto.catalogo.nombre} · {etiquetaTipoAsunto(asunto.tipo)}
         </p>
-        {mostrarTarjetaEditable && descripcionLectura ? (
+        {mostrarTarjetaEditable && descripcionLectura && !puedeEditarDescripcion ? (
           <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--ac-text)]">{descripcionLectura}</p>
         ) : null}
         <dl className="dl-grid mt-4">
@@ -471,8 +492,12 @@ export function FichaAsunto({ id }: { id: string }) {
           <dd>{fmtFecha(asunto.fechaInicio)}</dd>
           <dt>Finalización</dt>
           <dd>{fmtFecha(asunto.fechaFinalizacion)}</dd>
-          <dt>Alerta venc.</dt>
-          <dd>{fmtFecha(asunto.fechaAlertaVencimiento)}</dd>
+          {!editarEquipoEnFicha ? (
+            <>
+              <dt>Alerta venc.</dt>
+              <dd>{fmtFecha(asunto.fechaAlertaVencimiento)}</dd>
+            </>
+          ) : null}
           <dt>Último movimiento</dt>
           <dd>
             {fmtFecha(asunto.ultimoMovimientoFecha)}
@@ -483,31 +508,36 @@ export function FichaAsunto({ id }: { id: string }) {
               </>
             ) : null}
           </dd>
-          <dt>Socio referente</dt>
-          <dd>{asunto.socioReferente?.nombre?.trim() ? asunto.socioReferente.nombre : "—"}</dd>
-          <dt>Profesional a cargo</dt>
-          <dd>
-            {asunto.profesionalACargo ? (
-              <>
-                {asunto.profesionalACargo.nombre}
-                <span className="muted">
-                  {" "}
-                  (
-                  {ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
-                    asunto.profesionalACargo.puesto}
-                  {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
-                </span>
-              </>
-            ) : (
-              <span className="muted">{profesionalLibreDesdeDescripcion(asunto.descripcion) ?? "—"}</span>
-            )}
-          </dd>
-          <dt>Colaboradores</dt>
-          <dd>
-            {[asunto.colaboradorACargo?.nombre, asunto.colaboradorACargo2?.nombre].filter(Boolean).join(" · ") || "—"}
-          </dd>
-          <dt>Contador</dt>
-          <dd>{asunto.contadorReferente?.nombre?.trim() ? asunto.contadorReferente.nombre : "—"}</dd>
+          {!editarEquipoEnFicha ? (
+            <>
+              <dt>Socio referente</dt>
+              <dd>{asunto.socioReferente?.nombre?.trim() ? asunto.socioReferente.nombre : "—"}</dd>
+              <dt>Profesional a cargo</dt>
+              <dd>
+                {asunto.profesionalACargo ? (
+                  <>
+                    {asunto.profesionalACargo.nombre}
+                    <span className="muted">
+                      {" "}
+                      (
+                      {ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
+                        asunto.profesionalACargo.puesto}
+                      {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
+                    </span>
+                  </>
+                ) : (
+                  <span className="muted">{profesionalLibreDesdeDescripcion(asunto.descripcion) ?? "—"}</span>
+                )}
+              </dd>
+              <dt>Colaboradores</dt>
+              <dd>
+                {[asunto.colaboradorACargo?.nombre, asunto.colaboradorACargo2?.nombre].filter(Boolean).join(" · ") ||
+                  "—"}
+              </dd>
+              <dt>Contador</dt>
+              <dd>{asunto.contadorReferente?.nombre?.trim() ? asunto.contadorReferente.nombre : "—"}</dd>
+            </>
+          ) : null}
           {!puedeEditarDescripcion ? (
             <>
               <dt>Descripción</dt>
@@ -517,18 +547,6 @@ export function FichaAsunto({ id }: { id: string }) {
         </dl>
       </div>
 
-      {enTramite && puedeReasignarEquipo(rol) && !accionReasignarAbierta ? (
-        <div className="panel-alta">
-          <button
-            type="button"
-            className="text-sm font-semibold text-[var(--ac-accent)] underline decoration-[var(--ac-accent)]/35 underline-offset-2 transition hover:text-[var(--ac-accent-hover)]"
-            onClick={() => setAccionReasignarAbierta(true)}
-          >
-            Reasignar equipo…
-          </button>
-        </div>
-      ) : null}
-
       {mensaje ? (
         <p className="rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200/50">{mensaje}</p>
       ) : null}
@@ -536,9 +554,10 @@ export function FichaAsunto({ id }: { id: string }) {
       {mostrarTarjetaEditable ? (
         <form className={`${editableShell}`} onSubmit={(ev) => void guardarDescripcionYEstado(ev)}>
           <div>
-            <h2 className="text-base font-bold text-emerald-900">Descripción y estado</h2>
+            <h2 className="text-base font-bold text-emerald-900">Datos del expediente</h2>
             <p className="mt-1 text-xs leading-relaxed text-emerald-900/75">
-              Los campos editables están en este recuadro. El resto del expediente es solo referencia.
+              Editá descripción, estado, equipo y alerta desde aquí. La fecha de inicio y las fechas de los movimientos
+              del historial no se modifican.
             </p>
           </div>
 
@@ -579,119 +598,84 @@ export function FichaAsunto({ id }: { id: string }) {
             ) : null}
           </div>
 
+          {editarEquipoEnFicha ? (
+            <div className="space-y-3 rounded-xl border border-emerald-200/60 bg-emerald-50/40 p-4">
+              <h3 className="text-sm font-bold text-emerald-900">Equipo y alerta de vencimiento</h3>
+              {cargandoReaCat ? (
+                <p className="text-xs text-emerald-900/80">Cargando catálogos…</p>
+              ) : (
+                <div className="grid gap-3 md:grid-cols-2">
+                  <EstudioListaBuscableSelect
+                    id="ficha-asunto-socio"
+                    label="Socio referente (opcional)"
+                    opciones={opcionesSocio}
+                    value={reaSocioId}
+                    onChange={setReaSocioId}
+                  />
+                  <EstudioListaBuscableSelect
+                    id="ficha-asunto-legal"
+                    label="Profesional a cargo (opcional)"
+                    opciones={opcionesLegalACargo}
+                    value={reaProfId}
+                    onChange={setReaProfId}
+                  />
+                  <EstudioListaBuscableSelect
+                    id="ficha-asunto-col1"
+                    label="Colaborador 1 (opcional)"
+                    opciones={opcionesColaborador1}
+                    value={reaCol1}
+                    onChange={setReaCol1}
+                    vacioLabel="—"
+                    placeholder="Escribí para filtrar colaboradores…"
+                  />
+                  <EstudioListaBuscableSelect
+                    id="ficha-asunto-col2"
+                    label="Colaborador 2 (opcional)"
+                    opciones={opcionesColaborador2}
+                    value={reaCol2}
+                    onChange={setReaCol2}
+                    vacioLabel="—"
+                    placeholder="Escribí para filtrar colaboradores…"
+                  />
+                  <div className="md:col-span-2">
+                    <EstudioListaBuscableSelect
+                      id="ficha-asunto-contador"
+                      label="Contador referente (opcional)"
+                      opciones={opcionesContador}
+                      value={reaCont}
+                      onChange={setReaCont}
+                      vacioLabel="—"
+                      placeholder="Escribí para filtrar contadores…"
+                    />
+                  </div>
+                  <label className="space-y-1 md:col-span-2">
+                    <span className="text-xs font-semibold text-emerald-900">Alerta de vencimiento (opcional)</span>
+                    <input
+                      className="input-app max-w-xs"
+                      type="date"
+                      value={reaAlerta}
+                      onChange={(e) => setReaAlerta(e.target.value)}
+                    />
+                    <span className="block text-[0.7rem] text-emerald-900/70">
+                      No puede ser anterior a la fecha de inicio del asunto.
+                    </span>
+                  </label>
+                  <label className="space-y-1 md:col-span-2">
+                    <span className="text-xs font-semibold text-emerald-900">Nota en historial (al guardar equipo o alerta)</span>
+                    <input
+                      className="input-app"
+                      value={reaNota}
+                      onChange={(e) => setReaNota(e.target.value)}
+                      placeholder="Texto del movimiento registrado en el historial"
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
+          ) : null}
+
           <button type="submit" className="btn btn-primary" disabled={guardandoFicha}>
             {guardandoFicha ? "Guardando…" : "Guardar cambios"}
-          </button>
-        </form>
-      ) : null}
-
-      {enTramite && puedeReasignarEquipo(rol) && accionReasignarAbierta && cargandoReaCat ? (
-        <p className="muted text-sm">Cargando catalogos para reasignar…</p>
-      ) : null}
-
-      {enTramite &&
-      puedeReasignarEquipo(rol) &&
-      accionReasignarAbierta &&
-      !cargandoReaCat ? (
-        <form className="panel-alta form space-y-4" onSubmit={(ev) => void reasignarEquipo(ev)}>
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <h2 className="page-title-sub">Reasignar equipo</h2>
-            <button
-              type="button"
-              className="shrink-0 text-sm font-medium text-[var(--gris-texto)] underline decoration-[rgba(0,166,81,0.35)] underline-offset-2 hover:text-[var(--verde-titulo)]"
-              onClick={() => setAccionReasignarAbierta(false)}
-            >
-              Ocultar
-            </button>
-          </div>
-          <p className="muted text-sm">
-            Solo asuntos EN TRAMITE. Los cambios quedan en historial y auditoria. Ajustá solo lo que deba cambiar
-            respecto del cuadro actual.
-          </p>
-          <div className="grid gap-3 md:grid-cols-2">
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-[var(--verde-titulo)]">Socio referente (opcional)</span>
-              <select
-                className="input-app"
-                value={reaSocioId}
-                onChange={(e) => setReaSocioId(e.target.value)}
-              >
-                <option value="">— Sin asignar</option>
-                {sociosCat.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-[var(--verde-titulo)]">Equipo a cargo (legal / notarial, opcional)</span>
-              <select
-                className="input-app"
-                value={reaProfId}
-                onChange={(e) => setReaProfId(e.target.value)}
-              >
-                <option value="">— Sin asignar</option>
-                {legalACargo.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nombre} ({ETIQUETA_PUESTO[p.puesto as PuestoCatalogo] ?? p.puesto})
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-[var(--verde-titulo)]">Colaborador 1 (opcional)</span>
-              <select
-                className="input-app"
-                value={reaCol1}
-                onChange={(e) => setReaCol1(e.target.value)}
-              >
-                <option value="">—</option>
-                {elegiblesCol1.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-1">
-              <span className="text-xs font-medium text-[var(--verde-titulo)]">Colaborador 2 (opcional)</span>
-              <select
-                className="input-app"
-                value={reaCol2}
-                onChange={(e) => setReaCol2(e.target.value)}
-              >
-                <option value="">—</option>
-                {elegiblesCol2.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-1 md:col-span-2">
-              <span className="text-xs font-medium text-[var(--verde-titulo)]">Contador referente (opcional)</span>
-              <select className="input-app" value={reaCont} onChange={(e) => setReaCont(e.target.value)}>
-                <option value="">—</option>
-                {contadoresLista.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nombre}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-1 md:col-span-2">
-              <span className="text-xs font-medium text-[var(--verde-titulo)]">Nota en historial</span>
-              <input
-                className="input-app"
-                value={reaNota}
-                onChange={(e) => setReaNota(e.target.value)}
-                placeholder="Texto del movimiento registrado"
-              />
-            </label>
-          </div>
-          <button className="btn btn-primary" type="submit" disabled={guardandoRea}>
-            {guardandoRea ? "Guardando…" : "Guardar reasignación"}
           </button>
         </form>
       ) : null}
@@ -705,15 +689,9 @@ export function FichaAsunto({ id }: { id: string }) {
             value={movTexto}
             onChange={(e) => setMovTexto(e.target.value)}
           />
-          <label className="block space-y-1">
-            <span className="text-xs font-medium text-[var(--verde-titulo)]">Fecha (por defecto hoy; podés cambiarla)</span>
-            <input
-              className="input-app w-full max-w-full sm:max-w-xs"
-              type="date"
-              value={movFecha}
-              onChange={(e) => setMovFecha(e.target.value)}
-            />
-          </label>
+          <p className="text-xs text-[var(--gris-texto)]">
+            La fecha y hora del movimiento son las del momento en que lo registrás (no se puede editar).
+          </p>
           <button className="btn btn-primary" type="submit" disabled={guardandoMov}>
             {guardandoMov ? "Guardando…" : "Registrar movimiento"}
           </button>

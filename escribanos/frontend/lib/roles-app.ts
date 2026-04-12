@@ -29,7 +29,7 @@ export function puedeGestionarMaestrosEstudio(rol: RolSesion): boolean {
   return rol === "ADMIN" || rol === "SOCIO";
 }
 
-/** Reasignación de equipo y operaciones administrativas que siguen restringidas a socio/admin. */
+/** Operaciones masivas / administrativas restringidas a socio o administrador (p. ej. reasignación masiva). */
 export function puedeFinalizarAsunto(rol: RolSesion): boolean {
   return rol === "ADMIN" || rol === "SOCIO";
 }
