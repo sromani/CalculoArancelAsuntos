@@ -492,12 +492,8 @@ export function FichaAsunto({ id }: { id: string }) {
           <dd>{fmtFecha(asunto.fechaInicio)}</dd>
           <dt>Finalización</dt>
           <dd>{fmtFecha(asunto.fechaFinalizacion)}</dd>
-          {!editarEquipoEnFicha ? (
-            <>
-              <dt>Alerta venc.</dt>
-              <dd>{fmtFecha(asunto.fechaAlertaVencimiento)}</dd>
-            </>
-          ) : null}
+          <dt>Alerta venc.</dt>
+          <dd>{fmtFecha(asunto.fechaAlertaVencimiento)}</dd>
           <dt>Último movimiento</dt>
           <dd>
             {fmtFecha(asunto.ultimoMovimientoFecha)}
@@ -508,36 +504,31 @@ export function FichaAsunto({ id }: { id: string }) {
               </>
             ) : null}
           </dd>
-          {!editarEquipoEnFicha ? (
-            <>
-              <dt>Socio referente</dt>
-              <dd>{asunto.socioReferente?.nombre?.trim() ? asunto.socioReferente.nombre : "—"}</dd>
-              <dt>Profesional a cargo</dt>
-              <dd>
-                {asunto.profesionalACargo ? (
-                  <>
-                    {asunto.profesionalACargo.nombre}
-                    <span className="muted">
-                      {" "}
-                      (
-                      {ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
-                        asunto.profesionalACargo.puesto}
-                      {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
-                    </span>
-                  </>
-                ) : (
-                  <span className="muted">{profesionalLibreDesdeDescripcion(asunto.descripcion) ?? "—"}</span>
-                )}
-              </dd>
-              <dt>Colaboradores</dt>
-              <dd>
-                {[asunto.colaboradorACargo?.nombre, asunto.colaboradorACargo2?.nombre].filter(Boolean).join(" · ") ||
-                  "—"}
-              </dd>
-              <dt>Contador</dt>
-              <dd>{asunto.contadorReferente?.nombre?.trim() ? asunto.contadorReferente.nombre : "—"}</dd>
-            </>
-          ) : null}
+          <dt>Socio referente</dt>
+          <dd>{asunto.socioReferente?.nombre?.trim() ? asunto.socioReferente.nombre : "—"}</dd>
+          <dt>Profesional a cargo</dt>
+          <dd>
+            {asunto.profesionalACargo ? (
+              <>
+                {asunto.profesionalACargo.nombre}
+                <span className="muted">
+                  {" "}
+                  (
+                  {ETIQUETA_PUESTO[asunto.profesionalACargo.puesto as PuestoCatalogo] ??
+                    asunto.profesionalACargo.puesto}
+                  {asunto.profesionalACargo.funcion ? ` — ${asunto.profesionalACargo.funcion}` : ""})
+                </span>
+              </>
+            ) : (
+              <span className="muted">{profesionalLibreDesdeDescripcion(asunto.descripcion) ?? "—"}</span>
+            )}
+          </dd>
+          <dt>Colaboradores</dt>
+          <dd>
+            {[asunto.colaboradorACargo?.nombre, asunto.colaboradorACargo2?.nombre].filter(Boolean).join(" · ") || "—"}
+          </dd>
+          <dt>Contador</dt>
+          <dd>{asunto.contadorReferente?.nombre?.trim() ? asunto.contadorReferente.nombre : "—"}</dd>
           {!puedeEditarDescripcion ? (
             <>
               <dt>Descripción</dt>
@@ -556,8 +547,9 @@ export function FichaAsunto({ id }: { id: string }) {
           <div>
             <h2 className="text-base font-bold text-emerald-900">Datos del expediente</h2>
             <p className="mt-1 text-xs leading-relaxed text-emerald-900/75">
-              Editá descripción, estado, equipo y alerta desde aquí. La fecha de inicio y las fechas de los movimientos
-              del historial no se modifican.
+              Arriba tenés el mismo resumen del expediente que en asuntos finalizados. Desde aquí podés editar
+              descripción y estado; en trámite también equipo y alerta. La fecha de inicio y las fechas del historial
+              no se modifican.
             </p>
           </div>
 
