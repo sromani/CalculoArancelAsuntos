@@ -173,13 +173,24 @@ function LimiteRow({
 
 export default function PlanesPage() {
   const [planCalc, setPlanCalc] = useState<PlanId>('basico')
-  const [modulosHasta, setModulosHasta] = useState(2)
+  const [modulosSeleccionados, setModulosSeleccionados] = useState<Set<number>>(
+    () => new Set([1, 2]),
+  )
 
   const planSeleccionado = PLANES.find((p) => p.id === planCalc)!
 
+  const toggleModulo = (numero: number) => {
+    setModulosSeleccionados((prev) => {
+      const next = new Set(prev)
+      if (next.has(numero)) next.delete(numero)
+      else next.add(numero)
+      return next
+    })
+  }
+
   const { totalMensual, detalleFormula } = useMemo(() => {
     const p = planSeleccionado.precioPorModulo
-    const n = modulosHasta
+    const n = modulosSeleccionados.size
     if (p === 0) {
       return {
         totalMensual: 0,
@@ -187,12 +198,20 @@ export default function PlanesPage() {
           'En el plan Free el precio por módulo es $0; los límites del plan siguen los valores indicados arriba.',
       }
     }
+    if (n === 0) {
+      return {
+        totalMensual: 0,
+        detalleFormula:
+          'Sin módulos marcados: $0 de contratación de módulos (los límites del plan siguen los de la tarjeta).',
+      }
+    }
     const total = p * n
+    const lista = [...modulosSeleccionados].sort((a, b) => a - b).join(', ')
     return {
       totalMensual: total,
-      detalleFormula: `$${p.toLocaleString('es-UY')} × ${n} ${n === 1 ? 'módulo' : 'módulos'} = $${total.toLocaleString('es-UY')}`,
+      detalleFormula: `Módulos ${lista}. $${p.toLocaleString('es-UY')} × ${n} ${n === 1 ? 'módulo' : 'módulos'} = $${total.toLocaleString('es-UY')}`,
     }
-  }, [planSeleccionado, modulosHasta])
+  }, [planSeleccionado, modulosSeleccionados])
 
   return (
     <div className="planes-page">
@@ -200,9 +219,8 @@ export default function PlanesPage() {
         <h1>Planes</h1>
         <p className="planes-lead">
           ¿Cómo funciona? Elegís un <strong>plan</strong> (Free, Básico, Pro, Plus o Enterprise) según los límites que necesitás.
-          Después contratás <strong>módulos del 1 al 6</strong>: son <strong>acumulativos</strong> — si querés el
-          módulo 3, incluye siempre el 1 y el 2. El precio mensual por módulo es el mismo para todos los módulos
-          dentro de cada plan.
+          Después contratás <strong>módulos del 1 al 6</strong> de forma <strong>independiente</strong>: podés sumar solo los
+          que uses (por ejemplo el 2 sin el 1). El precio mensual por módulo es el mismo para cada uno dentro de cada plan.
         </p>
       </div>
 
@@ -260,9 +278,10 @@ export default function PlanesPage() {
       <section className="planes-calculadora" aria-labelledby="calc-titulo">
         <h2 id="calc-titulo">Probá tu costo mensual</h2>
         <p className="planes-calculadora-intro">
-          Elegí el plan y hasta qué módulo querés llegar. El total es el precio por módulo de ese plan multiplicado
-          por la cantidad de módulos (porque son acumulativos). Ejemplo: plan <strong>Básico</strong> hasta el{' '}
-          <strong>módulo 2</strong> → $199 + $199 = <strong>$398 / mes</strong>.
+          Elegí el plan y marcá los módulos que querés. El total es el precio por módulo de ese plan multiplicado por la
+          cantidad elegida (cada módulo se paga por separado). Ejemplo: plan <strong>Básico</strong> con los módulos{' '}
+          <strong>1 y 2</strong> → $199 + $199 = <strong>$398 / mes</strong>; solo el <strong>módulo 4</strong> →{' '}
+          <strong>$199 / mes</strong>.
         </p>
 
         <div className="planes-calculadora-grid">
@@ -284,31 +303,40 @@ export default function PlanesPage() {
             </div>
           </fieldset>
 
-          <div className="planes-calc-modulos">
-            <label htmlFor="modulos-hasta" className="planes-calc-legend">
-              Contratar hasta el módulo (incluye los anteriores)
-            </label>
-            <input
-              id="modulos-hasta"
-              type="range"
-              min={1}
-              max={6}
-              step={1}
-              value={modulosHasta}
-              onChange={(e) => setModulosHasta(Number(e.target.value))}
-              className="planes-calc-range"
-            />
-            <div className="planes-calc-range-marks" aria-hidden>
-              {[1, 2, 3, 4, 5, 6].map((n) => (
-                <span key={n} className={n === modulosHasta ? 'activo' : ''}>
-                  {n}
-                </span>
+          <fieldset className="planes-calc-modulos-fieldset">
+            <legend className="planes-calc-legend">Módulos a contratar</legend>
+            <p className="planes-calc-modulos-ayuda">
+              Marcá solo los que necesités; no hay orden obligatorio ni dependencias entre números.
+            </p>
+            <div className="planes-calc-checkbox-grid" role="group" aria-label="Seleccionar módulos">
+              {MODULOS_DETALLE.map((m) => (
+                <label key={m.numero} className="planes-calc-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={modulosSeleccionados.has(m.numero)}
+                    onChange={() => toggleModulo(m.numero)}
+                  />
+                  <span className="planes-calc-checkbox-texto">
+                    <span className="planes-calc-checkbox-num">Módulo {m.numero}</span>
+                    <span className="planes-calc-checkbox-titulo">{m.titulo}</span>
+                  </span>
+                </label>
               ))}
             </div>
             <p className="planes-calc-modulos-valor" aria-live="polite">
-              Módulos <strong>1</strong> a <strong>{modulosHasta}</strong>
+              {modulosSeleccionados.size === 0 ? (
+                <>
+                  Ningún módulo seleccionado — el estimado de módulos es <strong>$0</strong>
+                </>
+              ) : (
+                <>
+                  {modulosSeleccionados.size} {modulosSeleccionados.size === 1 ? 'módulo' : 'módulos'} seleccionado
+                  {modulosSeleccionados.size === 1 ? '' : 's'}:{' '}
+                  <strong>{[...modulosSeleccionados].sort((a, b) => a - b).join(', ')}</strong>
+                </>
+              )}
             </p>
-          </div>
+          </fieldset>
 
           <div className="planes-calc-resultado" aria-live="polite">
             <p className="planes-calc-resultado-label">Total estimado</p>
@@ -324,7 +352,7 @@ export default function PlanesPage() {
       <section className="planes-modulos-detalle" aria-labelledby="modulos-titulo">
         <h2 id="modulos-titulo">Qué incluye cada módulo</h2>
         <p className="planes-modulos-sub">
-          Los módulos se contratan en orden: el número 3 siempre lleva el 1 y el 2.
+          Cada módulo se contrata por separado; elegís la combinación que prefieras.
         </p>
         <ol className="planes-modulos-lista">
           {MODULOS_DETALLE.map((m) => (
@@ -346,11 +374,10 @@ export default function PlanesPage() {
         <h3>Preguntas frecuentes</h3>
         <div className="info-grid">
           <div className="info-item">
-            <h4>¿Por qué son acumulativos?</h4>
+            <h4>¿Los módulos son obligatorios en orden?</h4>
             <p>
-              Cada módulo se apoya en los anteriores. Si contratás hasta el módulo 3, estás habilitando el 1, el 2 y
-              el 3, y el costo es la suma de los tres precios unitarios del plan (tres veces el mismo valor por
-              módulo).
+              No. Son independientes: podés contratar el módulo que necesites sin tener que sumar los anteriores. El
+              costo mensual de módulos es el precio por módulo del plan multiplicado por cuántos módulos elegiste.
             </p>
           </div>
           <div className="info-item">

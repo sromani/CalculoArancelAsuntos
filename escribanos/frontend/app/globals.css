@@ -1635,32 +1635,76 @@ body {
   accent-color: var(--verde-principal);
 }
 
-.planes-calc-modulos {
-  padding-top: 0.25rem;
+.planes-calc-modulos-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0.25rem 0 0;
+  min-width: 0;
 }
 
-.planes-calc-range {
-  width: 100%;
-  margin: 0.75rem 0 0.35rem;
-  accent-color: var(--verde-principal);
-  height: 0.45rem;
-}
-
-.planes-calc-range-marks {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 0.15rem;
-  font-size: 0.75rem;
+.planes-calc-modulos-ayuda {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
   color: var(--gris-texto);
+  line-height: 1.45;
 }
 
-.planes-calc-range-marks .activo {
-  color: var(--verde-principal);
-  font-weight: 700;
+.planes-calc-checkbox-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+@media (min-width: 520px) {
+  .planes-calc-checkbox-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.planes-calc-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 166, 81, 0.22);
+  background: var(--fondo-blanco);
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--gris-oscuro);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.planes-calc-checkbox-label:has(input:checked) {
+  background: rgba(0, 166, 81, 0.1);
+  border-color: var(--verde-principal);
+}
+
+.planes-calc-checkbox-label input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  accent-color: var(--verde-principal);
+}
+
+.planes-calc-checkbox-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.planes-calc-checkbox-num {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--verde-subtitulo);
+}
+
+.planes-calc-checkbox-titulo {
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
 
 .planes-calc-modulos-valor {
-  margin: 0.5rem 0 0;
+  margin: 0.85rem 0 0;
   font-size: 0.95rem;
   color: var(--gris-texto);
 }
