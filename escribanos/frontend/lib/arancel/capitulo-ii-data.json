@@ -36,7 +36,7 @@
     },
     {
       "posDoc": 6,
-      "nombre": "CERTIFICACIÓN DE FIRMAS NO PREVISTAS EN ESTE ARTICULO",
+      "nombre": "CERTIFICACIÓN DE FIRMAS",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
@@ -48,7 +48,7 @@
     },
     {
       "posDoc": 8,
-      "nombre": "SOCIEDADES COOPERATIVAS - ESTATUTOS o MODIFICACION",
+      "nombre": "SOCIEDAD COOPERATIVA ESTATUTOS o MODIFICACION",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
@@ -78,144 +78,132 @@
     },
     {
       "posDoc": 13,
-      "nombre": "SOCIEDADES ANONIMAS CAPITAL MAYOR UR 2854 - ESTATUTOS",
+      "nombre": "SOCIEDAD ANONIMA ESTATUTOS CONSTITUCION CAPITAL MAYOR UR 2854",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 14,
-      "nombre": "SOCIEDADES DE RESPONSABILIDAD LIMITADA CAPITAL MAYOR UR 2854 - CONTRATOS",
+      "nombre": "SOCIEDAD DE RESPONSABILIDAD LIMITADA CONSTITUCION CAPITAL MAYOR UR 2854",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 15,
-      "nombre": "SOCIEDADES POR ACCIONES SIMPLIFICADAS CAPITAL MAYOR UR 2854 - ESTATUTOS",
+      "nombre": "SOCIEDAD POR ACCIONES SIMPLIFICADAS CONSTITUCION CAPITAL MAYOR UR 2854",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 16,
-      "nombre": "SOCIEDADES ANONIMAS - MODIFICACION CON AUMENTO DE CAPITAL",
+      "nombre": "SOCIEDAD ANONIMA MODIFICACION CON AUMENTO DE CAPITAL",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 17,
-      "nombre": "SOCIEDADES DE RESPONSABILIDAD LIMITADA - MODIFICACION CON AUMENTO DE CAPITAL",
+      "nombre": "SOCIEDAD DE RESPONSABILIDAD LIMITADA MODIFICACION CON AUMENTO DE CAPITAL (CAPITAL INICIAL MAYOR A UR 2854)",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 18,
-      "nombre": "SOCIEDADES POR ACCIONES SIMPLIFICADAS - MODIFICACION CON AUMENTO DE CAPITAL",
+      "nombre": "SOCIEDAD POR ACCIONES SIMPLIFICADAS MODIFICACION CON AUMENTO DE CAPITAL (CAPITAL INICIAL MAYOR A UR 2854)",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 19,
-      "nombre": "SOCIEDADES ANONIMAS - MODIFICACION SIN AUMENTO DE CAPITAL",
+      "nombre": "SOCIEDAD ANONIMA MODIFICACION SIN AUMENTO DE CAPITAL",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 20,
-      "nombre": "SOCIEDADES DE RESPONSABILIDAD LIMITADA - MODIFICACION SIN AUMENTO DE CAPITAL",
-      "tieneSeleccionBien": false,
-      "opcionesBien": []
-    },
-    {
-      "posDoc": 21,
-      "nombre": "SOCIEDADES POR ACCIONES SIMPLIFICADAS - MODIFICACION SIN AUMENTO DE CAPITAL",
-      "tieneSeleccionBien": false,
-      "opcionesBien": []
-    },
-    {
-      "posDoc": 22,
       "nombre": "HOLDING - CONSTITUCION",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 23,
+      "posDoc": 21,
       "nombre": "HOLDING - MODIFICACION CON AUMENTO DE CAPITAL",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 24,
+      "posDoc": 22,
       "nombre": "HOLDING - MODIFICACION SIN AUMENTO DE CAPITAL",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 25,
-      "nombre": "SOCIEDADES ANONIMAS SIN AUMENTO DE CAPITAL DENTRO DE 120 DE CONSTITUCION",
+      "posDoc": 23,
+      "nombre": "SOCIEDAD ANONIMA MODIFICACION SIN AUMENTO DE CAPITAL DENTRO DE 120 DE CONSTITUCION",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 26,
+      "posDoc": 24,
       "nombre": "HOLDING SIN AUMENTO DE CAPITAL DENTRO DE 120 DE CONSTITUCION",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
+      "posDoc": 25,
+      "nombre": "SOCIEDAD COOPERATIVA TRANSFORMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 26,
+      "nombre": "SOCIEDAD ANONIMA TRANSFORMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
       "posDoc": 27,
-      "nombre": "SOCIEDADES COOPERATIVAS - TRANSFORMACION",
-      "tieneSeleccionBien": false,
-      "opcionesBien": []
-    },
-    {
-      "posDoc": 28,
-      "nombre": "SOCIEDADES ANONIMAS - TRANSFORMACION",
-      "tieneSeleccionBien": false,
-      "opcionesBien": []
-    },
-    {
-      "posDoc": 29,
       "nombre": "HOLDING - TRANSFORMACION",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 30,
+      "posDoc": 28,
       "nombre": "EMISION DE VALORES ESCRITURALES",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 31,
-      "nombre": "SOCIEDADES COOPERATIVAS QUE NO TENGAN CAPITAL DETERMINADO",
+      "posDoc": 29,
+      "nombre": "SOCIEDAD COOPERATIVA QUE NO TENGAN CAPITAL DETERMINADO",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 32,
+      "posDoc": 30,
       "nombre": "ASOCIACIONES NO COMERCIALES QUE NO TENGAN CAPITAL DETERMINADO",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 33,
+      "posDoc": 31,
       "nombre": "FUNDACIONES QUE SE OTORGUEN DENTRO DE LOS 150 DIAS DE SU CONSTITUCION",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 34,
-      "nombre": "SOCIEDADES EXTRANJERAS",
+      "posDoc": 32,
+      "nombre": "SOCIEDAD EXTRANJERA",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 35,
+      "posDoc": 33,
       "nombre": "TESTIMONIOS POR EXHIBICION",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
-      "posDoc": 36,
+      "posDoc": 34,
       "nombre": "SEGUNDAS O ULTERIORES COPIAS Y TESTIMONIOS",
       "tieneSeleccionBien": false,
       "opcionesBien": []
@@ -489,68 +477,68 @@
       }
     },
     "20": {
-      "articulo": "7 B)",
+      "articulo": "7 C)",
       "honorarioParsed": {
-        "tipo": "ur_fijo",
-        "ur": 40,
-        "periodo": "semestral",
-        "raw": "40 UR semestral"
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 1,
+        "minUr": 40,
+        "raw": "1o/oo y nunca menos de 40UR"
       },
       "detalleValorBase": "",
       "detalleSpec": {
-        "kind": "fijo_sin_entrada",
-        "textoOriginal": ""
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
       }
     },
     "21": {
-      "articulo": "7 B)",
+      "articulo": "7 C)",
       "honorarioParsed": {
-        "tipo": "ur_fijo",
-        "ur": 40,
-        "periodo": "semestral",
-        "raw": "40 UR semestral"
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 1,
+        "minUr": 40,
+        "raw": "1o/oo y nunca menos de 40UR"
       },
       "detalleValorBase": "",
       "detalleSpec": {
-        "kind": "fijo_sin_entrada",
-        "textoOriginal": ""
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
       }
     },
     "22": {
       "articulo": "7 C)",
       "honorarioParsed": {
-        "tipo": "por_mil_con_min_ur",
-        "porMil": 1,
-        "minUr": 40,
-        "raw": "1o/oo y nunca menos de 40UR"
-      },
-      "detalleValorBase": "",
-      "detalleSpec": {
-        "kind": "capital_social",
-        "textoOriginal": "Capital social (aplicable al honorario)"
-      }
-    },
-    "23": {
-      "articulo": "7 C)",
-      "honorarioParsed": {
-        "tipo": "por_mil_con_min_ur",
-        "porMil": 1,
-        "minUr": 40,
-        "raw": "1o/oo y nunca menos de 40UR"
-      },
-      "detalleValorBase": "",
-      "detalleSpec": {
-        "kind": "capital_social",
-        "textoOriginal": "Capital social (aplicable al honorario)"
-      }
-    },
-    "24": {
-      "articulo": "7 C)",
-      "honorarioParsed": {
         "tipo": "ur_fijo",
         "ur": 40,
         "periodo": "semestral",
         "raw": "40 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "23": {
+      "articulo": "7 D)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 6,
+        "periodo": "semestral",
+        "raw": "6  UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "24": {
+      "articulo": "7 D)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 6,
+        "periodo": "semestral",
+        "raw": "6  UR semestral"
       },
       "detalleValorBase": "",
       "detalleSpec": {
@@ -559,34 +547,6 @@
       }
     },
     "25": {
-      "articulo": "7 D)",
-      "honorarioParsed": {
-        "tipo": "ur_fijo",
-        "ur": 6,
-        "periodo": "semestral",
-        "raw": "6  UR semestral"
-      },
-      "detalleValorBase": "",
-      "detalleSpec": {
-        "kind": "fijo_sin_entrada",
-        "textoOriginal": ""
-      }
-    },
-    "26": {
-      "articulo": "7 D)",
-      "honorarioParsed": {
-        "tipo": "ur_fijo",
-        "ur": 6,
-        "periodo": "semestral",
-        "raw": "6  UR semestral"
-      },
-      "detalleValorBase": "",
-      "detalleSpec": {
-        "kind": "fijo_sin_entrada",
-        "textoOriginal": ""
-      }
-    },
-    "27": {
       "articulo": "7 E)",
       "honorarioParsed": {
         "tipo": "ur_fijo",
@@ -600,7 +560,7 @@
         "textoOriginal": ""
       }
     },
-    "28": {
+    "26": {
       "articulo": "7 E)",
       "honorarioParsed": {
         "tipo": "por_mil_con_min_ur",
@@ -614,7 +574,7 @@
         "textoOriginal": "Capital social (aplicable al honorario)"
       }
     },
-    "29": {
+    "27": {
       "articulo": "7 E)",
       "honorarioParsed": {
         "tipo": "por_mil_con_min_ur",
@@ -628,7 +588,7 @@
         "textoOriginal": "Capital social (aplicable al honorario)"
       }
     },
-    "30": {
+    "28": {
       "articulo": "7 F)",
       "honorarioParsed": {
         "tipo": "por_mil_con_max_ur",
@@ -640,6 +600,34 @@
       "detalleSpec": {
         "kind": "capital_social",
         "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "29": {
+      "articulo": "7 G)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "30": {
+      "articulo": "7 G)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
       }
     },
     "31": {
@@ -657,34 +645,6 @@
       }
     },
     "32": {
-      "articulo": "7 G)",
-      "honorarioParsed": {
-        "tipo": "ur_fijo",
-        "ur": 12,
-        "periodo": "semestral",
-        "raw": "12 UR semestral"
-      },
-      "detalleValorBase": "",
-      "detalleSpec": {
-        "kind": "fijo_sin_entrada",
-        "textoOriginal": ""
-      }
-    },
-    "33": {
-      "articulo": "7 G)",
-      "honorarioParsed": {
-        "tipo": "ur_fijo",
-        "ur": 12,
-        "periodo": "semestral",
-        "raw": "12 UR semestral"
-      },
-      "detalleValorBase": "",
-      "detalleSpec": {
-        "kind": "fijo_sin_entrada",
-        "textoOriginal": ""
-      }
-    },
-    "34": {
       "articulo": "7 H)",
       "honorarioParsed": {
         "tipo": "ur_fijo",
@@ -698,7 +658,7 @@
         "textoOriginal": ""
       }
     },
-    "35": {
+    "33": {
       "articulo": "8)",
       "honorarioParsed": {
         "tipo": "ur_por_fojas",
@@ -713,7 +673,7 @@
         "textoOriginal": "Número de fojas"
       }
     },
-    "36": {
+    "34": {
       "articulo": "9)",
       "honorarioParsed": {
         "tipo": "ur_fijo",

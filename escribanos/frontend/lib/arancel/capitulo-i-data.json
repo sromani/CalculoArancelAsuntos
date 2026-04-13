@@ -713,43 +713,43 @@
     },
     {
       "posDoc": 25,
-      "nombre": "SOCIEDAD ESCISION",
+      "nombre": "SOCIEDAD ESCISION excepto art. 7 literales A, B y E",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 26,
-      "nombre": "SOCIEDAD FUSION",
+      "nombre": "SOCIEDAD FUSION excepto art. 7 literales A, B y E",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 27,
-      "nombre": "SOCIEDAD MODIFICACION AUMENTO DE CAPITAL",
+      "nombre": "SOCIEDAD MODIFICACION CON AUMENTO DE CAPITAL excepto art. 7 literales A, B y E",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 28,
-      "nombre": "SOCIEDAD MODIFICACION QUE NO IMPLIQUE AUMENTO DE CAPITAL",
+      "nombre": "SOCIEDAD MODIFICACION SIN AUMENTO DE CAPITAL excepto art. 7 literales A, B y E",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 29,
-      "nombre": "SOCIEDAD REGULARIZACION",
+      "nombre": "SOCIEDAD REGULARIZACION excepto art. 7 literales A, B y E",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 30,
-      "nombre": "SOCIEDAD TRANSFORMACION",
+      "nombre": "SOCIEDAD TRANSFORMACION excepto art. 7 literales A, B y E",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
     {
       "posDoc": 31,
-      "nombre": "SOCIEDAD TRANSMISION PARTES, CUOTAS, ACCIONES",
+      "nombre": "SOCIEDAD TRANSMISION PARTES SOCIALES, CUOTAS, ACCIONES",
       "tieneSeleccionBien": false,
       "opcionesBien": []
     },
