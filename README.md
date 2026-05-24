@@ -43,6 +43,10 @@ npm run dev
 
 Abrir **http://localhost:3002**. Tras login, usá **Gestión estudio** en la barra o **http://localhost:3002/estudio**.
 
+## Despliegue en VPS (Ubuntu)
+
+Para pruebas o staging en un solo servidor: ver **[deploy/README.md](deploy/README.md)** (Docker Compose: Postgres + API + Next + Caddy).
+
 ## Flujo de auth
 
 1. Login en `/login` → Nest devuelve JWT (guardado en `localStorage`).

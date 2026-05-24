@@ -1,0 +1,90 @@
+# VPS Ubuntu: Postgres + API + Next + Caddy (HTTP/HTTPS)
+# Uso: cd deploy && cp .env.example .env && nano .env && docker compose up -d --build
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: escribanos_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../escribanos/backend
+      dockerfile: Dockerfile.prod
+    container_name: escribanos_api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: "3001"
+      NODE_ENV: production
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+
+  web:
+    build:
+      context: ../escribanos/frontend
+      dockerfile: Dockerfile.prod
+    container_name: escribanos_web
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/sistema_escribanos_estudio?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SECRET: ${AUTH_SECRET}
+      NEST_INTERNAL_URL: http://api:3001
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+    networks:
+      - internal
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: escribanos_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:-}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  internal:
+    driver: bridge

@@ -1,0 +1,12 @@
+# HTTP por IP o dominio sin certificado (pruebas).
+:80 {
+	reverse_proxy web:3000
+}
+
+# Si definís DOMAIN y ACME_EMAIL en .env, descomentá el bloque siguiente
+# y comentá el bloque :80 de arriba (solo un sitio en :80/:443).
+#
+# {$DOMAIN} {
+# 	email {$ACME_EMAIL}
+# 	reverse_proxy web:3000
+# }
