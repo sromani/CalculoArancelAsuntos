@@ -25,6 +25,8 @@ services:
     build:
       context: ../escribanos/backend
       dockerfile: Dockerfile.prod
+      cache_from:
+        - deploy-api:latest
     container_name: escribanos_api
     restart: unless-stopped
     environment:
@@ -43,6 +45,8 @@ services:
     build:
       context: ../escribanos/frontend
       dockerfile: Dockerfile.prod
+      cache_from:
+        - deploy-web:latest
     container_name: escribanos_web
     restart: unless-stopped
     environment:
@@ -60,6 +64,23 @@ services:
         condition: service_started
     networks:
       - internal
+
+  # Solo para setup-db.sh (Prisma completo con OpenSSL; no arranca en producción).
+  migrate-web:
+    build:
+      context: ../escribanos/frontend
+      dockerfile: Dockerfile.prod
+      target: builder
+    profiles: ["tools"]
+    restart: "no"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/sistema_escribanos_estudio?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+    entrypoint: ["npx", "prisma", "migrate", "deploy", "--schema", "./prisma/schema.prisma"]
 
   caddy:
     image: caddy:2-alpine

@@ -80,6 +80,30 @@ docker compose logs -f web api
 
 ## Actualizar después de un `git pull`
 
+**Rebuild rápido** (usa cache; la 2.ª vez tarda mucho menos):
+
+```bash
+cd deploy
+chmod +x update.sh
+./update.sh          # api + web
+./update.sh web      # solo front
+./update.sh api      # solo API
+```
+
+Equivalente manual:
+
+```bash
+export DOCKER_BUILDKIT=1
+docker compose build
+docker compose up -d
+```
+
+**No uses `--no-cache`** salvo que el build falle o cambies dependencias de npm.
+
+La **primera** build en un VPS chico puede tardar **15–25 min**. Las siguientes, si solo cambiás código: **2–8 min** (web) o **1–3 min** (api).
+
+## Actualizar (comando largo, primera vez o cambio grande)
+
 ```bash
 cd ~/CalculoArancelAsuntos
 git pull
