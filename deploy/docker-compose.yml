@@ -47,6 +47,8 @@ services:
       dockerfile: Dockerfile.prod
       cache_from:
         - deploy-web:latest
+      args:
+        NEST_INTERNAL_URL: http://api:3001
     container_name: escribanos_web
     restart: unless-stopped
     environment:
