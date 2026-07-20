@@ -29,6 +29,14 @@ docker compose run --rm --no-deps --entrypoint "" api npx prisma db push --schem
 echo "==> Esquema estudio (Next)"
 docker compose --profile tools run --rm --no-deps migrate-web
 
+echo "==> Estado migraciones estudio"
+docker compose --profile tools run --rm --no-deps --entrypoint "" migrate-web \
+  npx prisma migrate status --schema ./prisma/schema.prisma
+
+echo "==> Tablas clave (Cliente, Asunto, Usuario)"
+docker compose exec -T postgres psql -U "$USER" -d sistema_escribanos_estudio -c \
+  "SELECT tablename FROM pg_tables WHERE schemaname='public' AND tablename IN ('Cliente','Asunto','Usuario','Profesional','Socio') ORDER BY 1;"
+
 echo "==> Listo. Reiniciando api y web..."
 docker compose up -d api web
 docker compose ps

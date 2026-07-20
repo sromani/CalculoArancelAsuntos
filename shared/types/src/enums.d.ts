@@ -1,0 +1,14 @@
+export type PlanType = "GRATIS" | "PRO" | "PLUS";
+export type RolSesion = "ADMIN" | "USUARIO" | "SOCIO" | "PROFESIONAL" | "COLABORADOR" | "CONTADOR" | "SOLO_LECTURA";
+export type MonedaGasto = "PESOS" | "DOLARES" | "UR" | "UI";
+export type CategoriaGasto = "REGISTRO" | "TRIBUTOS" | "CERTIFICACIONES" | "CORREO" | "ARCHIVO" | "GESTIONES" | "OTROS";
+export type EstadoGasto = "PENDIENTE" | "PAGO_REALIZADO" | "VENCIDO";
+export type EstadoPresupuesto = "BORRADOR" | "EMITIDO" | "ACEPTADO" | "RECHAZADO" | "ANULADO";
+export declare const ESTADOS_PRESUPUESTO: EstadoPresupuesto[];
+export type TipoNotificacion = "GASTO_VENCIDO" | "PRESUPUESTO_ESTADO" | "SISTEMA" | "RECORDATORIO";
+export declare const CATEGORIAS_GASTO: CategoriaGasto[];
+export declare const ESTADOS_GASTO: EstadoGasto[];
+export declare const MONEDAS_GASTO: MonedaGasto[];
+export declare const ETIQUETA_CATEGORIA: Record<CategoriaGasto, string>;
+export declare const ETIQUETA_ESTADO_GASTO: Record<EstadoGasto, string>;
+export declare const ETIQUETA_MONEDA: Record<MonedaGasto, string>;

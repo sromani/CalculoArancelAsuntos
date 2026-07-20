@@ -52,6 +52,45 @@ enum EstadoAsunto {
   FINALIZADO
 }
 
+enum MonedaGasto {
+  PESOS
+  DOLARES
+  UR
+  UI
+}
+
+enum CategoriaGasto {
+  REGISTRO
+  TRIBUTOS
+  CERTIFICACIONES
+  CORREO
+  ARCHIVO
+  GESTIONES
+  OTROS
+}
+
+enum EstadoGasto {
+  PENDIENTE
+  PAGO_REALIZADO
+  VENCIDO
+}
+
+enum EstadoPresupuesto {
+  BORRADOR
+  EMITIDO
+  ACEPTADO
+  RECHAZADO
+  ANULADO
+}
+
+enum TipoNotificacion {
+  GASTO_VENCIMIENTO
+  GASTO_PROXIMO_VENCER
+  ASUNTO_VENCIMIENTO
+  PRESUPUESTO_PENDIENTE
+  PAGO_PENDIENTE
+}
+
 /// Perfiles de aplicacion (RF-08). USUARIO se mantiene por compatibilidad con datos viejos.
 enum RolApp {
   ADMIN
@@ -72,8 +111,11 @@ model Usuario {
   activo        Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  seguimientos  Seguimiento[]
-  auditorias    AuditoriaLog[]
+  seguimientos       Seguimiento[]
+  auditorias         AuditoriaLog[]
+  notificaciones     Notificacion[]
+  presupuestosCreados PresupuestoNotarial[] @relation("PresupuestoCreador")
+  presupuestoHistorial PresupuestoHistorial[]
 }
 
 model Cliente {
@@ -93,7 +135,9 @@ model Cliente {
   domicilio        String?
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
-  asuntos          Asunto[]
+  asuntos     Asunto[]
+  gastos      Gasto[]
+  presupuestos PresupuestoNotarial[]
 }
 
 model AsuntoCatalogo {
@@ -158,6 +202,8 @@ model Asunto {
   colaboradorACargo2 Profesional?   @relation("AsuntoColaborador2", fields: [colaboradorACargo2Id], references: [id])
   contadorReferente  Profesional?   @relation("AsuntoContador", fields: [contadorReferenteId], references: [id])
   seguimientos       Seguimiento[]
+  gastos             Gasto[]
+  presupuestos       PresupuestoNotarial[]
 }
 
 model Seguimiento {
@@ -182,5 +228,144 @@ model AuditoriaLog {
   usuario   Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
+  @@index([entidad, entidadId])
+}
+
+model GastoCatalogoItem {
+  id              String         @id @default(cuid())
+  nombre          String
+  categoria       CategoriaGasto
+  oficinaPublica  String?
+  descripcion     String?
+  importeSugerido Float?
+  moneda          MonedaGasto    @default(PESOS)
+  activo          Boolean        @default(true)
+  orden           Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  gastos          Gasto[]
+
+  @@index([activo, orden])
+}
+
+model Gasto {
+  id               String         @id @default(cuid())
+  nombre           String
+  categoria        CategoriaGasto
+  oficinaPublica   String?
+  descripcion      String?
+  fecha            DateTime
+  fechaVencimiento DateTime?
+  importe          Float
+  moneda           MonedaGasto    @default(PESOS)
+  estado           EstadoGasto    @default(PENDIENTE)
+  observaciones    String?
+  comprobantePath  String?
+  catalogoItemId   String?
+  clienteId        String?
+  asuntoId         String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  catalogoItem     GastoCatalogoItem?      @relation(fields: [catalogoItemId], references: [id], onDelete: SetNull)
+  cliente          Cliente?                @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  asunto           Asunto?                 @relation(fields: [asuntoId], references: [id], onDelete: SetNull)
+  lineasPresupuesto PresupuestoGastoLinea[]
+
+  @@index([fecha])
+  @@index([fechaVencimiento])
+  @@index([estado])
+  @@index([clienteId])
+  @@index([asuntoId])
+  @@index([categoria])
+}
+
+model PresupuestoNotarial {
+  id                   String            @id @default(cuid())
+  numero               Int               @unique @default(autoincrement())
+  clienteId            String
+  asuntoId             String?
+  estado               EstadoPresupuesto @default(BORRADOR)
+  titulo               String?
+  actoCapituloId       String?
+  actoPosDoc           Int?
+  actoPosBien          Int?
+  actoDescripcion      String?
+  actoSnapshot         Json?
+  monedaHonorario      String            @default("UYU")
+  honorarioArancel     Float             @default(0)
+  honorarioACobrar     Float             @default(0)
+  fonasaPct            Float             @default(6)
+  irpfPct              Float             @default(15)
+  desgloseArancel      Json?
+  desglosePresupuesto  Json?
+  totalGastos          Float             @default(0)
+  totalPresupuesto     Float             @default(0)
+  fechaCotizacion      DateTime?
+  cotizacionesSnapshot Json?
+  notas                String?
+  duplicadoDeId        String?
+  createdById          String?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  cliente      Cliente                 @relation(fields: [clienteId], references: [id])
+  asunto       Asunto?                 @relation(fields: [asuntoId], references: [id], onDelete: SetNull)
+  creador      Usuario?                @relation("PresupuestoCreador", fields: [createdById], references: [id], onDelete: SetNull)
+  lineasGastos PresupuestoGastoLinea[]
+  historial    PresupuestoHistorial[]
+
+  @@index([clienteId])
+  @@index([asuntoId])
+  @@index([estado])
+  @@index([createdAt])
+}
+
+model PresupuestoGastoLinea {
+  id            String      @id @default(cuid())
+  presupuestoId String
+  gastoId       String
+  importe       Float
+  moneda        MonedaGasto
+  incluido      Boolean     @default(true)
+  orden         Int         @default(0)
+  createdAt     DateTime    @default(now())
+
+  presupuesto PresupuestoNotarial @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+  gasto       Gasto               @relation(fields: [gastoId], references: [id], onDelete: Cascade)
+
+  @@unique([presupuestoId, gastoId])
+  @@index([presupuestoId])
+}
+
+model PresupuestoHistorial {
+  id            String   @id @default(cuid())
+  presupuestoId String
+  usuarioId     String?
+  accion        String
+  detalle       Json?
+  createdAt     DateTime @default(now())
+
+  presupuesto PresupuestoNotarial @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+  usuario     Usuario?            @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+
+  @@index([presupuestoId, createdAt])
+}
+
+model Notificacion {
+  id        String           @id @default(cuid())
+  usuarioId String?
+  tipo      TipoNotificacion
+  titulo    String
+  mensaje   String
+  enlace    String?
+  leida     Boolean          @default(false)
+  entidad   String?
+  entidadId String?
+  createdAt DateTime         @default(now())
+
+  usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId, leida, createdAt])
   @@index([entidad, entidadId])
 }

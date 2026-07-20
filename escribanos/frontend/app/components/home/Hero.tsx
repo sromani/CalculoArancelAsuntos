@@ -13,7 +13,7 @@ export default function Hero() {
       </div>
       <div className="hero-image">
         <img
-          src="/logo.jpg"
+          src="/logo.png"
           alt="Estudio notarial"
           className="hero-logo"
         />

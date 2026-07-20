@@ -557,7 +557,7 @@ export function FormularioCliente({
         <p className={useLegacyLayout ? "error" : "text-sm font-medium text-red-800"}>{errorCarga}</p>
         <Link
           href="/estudio/clientes"
-          className={useLegacyLayout ? "btn btn-secondary inline-flex" : estudioLinkBack}
+          className={estudioLinkBack}
         >
           <span aria-hidden>←</span>
           Volver a clientes
@@ -925,19 +925,11 @@ export function FormularioCliente({
           useLegacyLayout ? "form-actions" : `${estudioSectionRule} flex flex-wrap items-center gap-3`
         }
       >
-        <button
-          className={useLegacyLayout ? "btn btn-primary" : estudioBtnPrimario}
-          disabled={guardando || altaBloqueadaPorCi}
-          type="submit"
-        >
+        <button className={estudioBtnPrimario} disabled={guardando || altaBloqueadaPorCi} type="submit">
           {guardando ? "Guardando…" : esEdicion ? "Guardar cambios" : "Guardar cliente"}
         </button>
-        {esEdicion ? (
-          <Link href="/estudio/clientes" className={useLegacyLayout ? "btn btn-secondary" : estudioBtnSecundario}>
-            Cancelar
-          </Link>
-        ) : useLegacyLayout ? (
-          <Link href="/estudio/clientes" className="btn btn-secondary">
+        {esEdicion || useLegacyLayout ? (
+          <Link href="/estudio/clientes" className={estudioBtnSecundario}>
             Cancelar
           </Link>
         ) : null}

@@ -1,12 +1,6 @@
-# HTTP por IP o dominio sin certificado (pruebas).
+# Caddyfile generado en runtime por generate-caddyfile.sh (ver DOMAINS en .env).
+# Este archivo es referencia; el contenedor caddy no lo monta directamente.
+
 :80 {
 	reverse_proxy web:3000
 }
-
-# Si definís DOMAIN y ACME_EMAIL en .env, descomentá el bloque siguiente
-# y comentá el bloque :80 de arriba (solo un sitio en :80/:443).
-#
-# {$DOMAIN} {
-# 	email {$ACME_EMAIL}
-# 	reverse_proxy web:3000
-# }

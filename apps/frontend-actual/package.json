@@ -1,0 +1,12 @@
+{
+  "name": "frontend-actual",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Wrapper del frontend legacy (código en escribanos/frontend)",
+  "scripts": {
+    "dev": "npm run dev -w escribanos-frontend",
+    "build": "npm run build -w escribanos-frontend",
+    "start": "npm run start -w escribanos-frontend",
+    "lint": "npm run lint -w escribanos-frontend"
+  }
+}

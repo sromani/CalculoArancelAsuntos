@@ -7,6 +7,7 @@ import { datosPorCapitulo } from "@/lib/arancel/data";
 import {
   estudioAlertInfo,
   estudioBtnPrimario,
+  estudioBtnSecundario,
   estudioFormShell,
   estudioSectionRule,
   estudioSectionTitle,
@@ -431,18 +432,12 @@ export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) 
           legacyAlta ? "form-actions" : `${estudioSectionRule} flex flex-wrap gap-3`
         }
       >
-        <button
-          className={legacyAlta ? "btn btn-primary" : estudioBtnPrimario}
-          disabled={guardando}
-          type="submit"
-        >
+        <button className={estudioBtnPrimario} disabled={guardando} type="submit">
           {guardando ? "Guardando…" : "Guardar asunto"}
         </button>
-        {legacyAlta ? (
-          <Link href="/estudio/asuntos" className="btn btn-secondary">
-            Cancelar
-          </Link>
-        ) : null}
+        <Link href="/estudio/asuntos" className={estudioBtnSecundario}>
+          Cancelar
+        </Link>
       </div>
 
       {mensaje ? (

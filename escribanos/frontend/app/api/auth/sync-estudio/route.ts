@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       }
     }
     const body: { error: string; code: string; detalle?: string } = { error, code: "DB" };
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "development" || process.env.DETALLE_ERRORES_DB === "1") {
       body.detalle = e instanceof Error ? e.message : String(e);
     }
     return NextResponse.json(body, { status: 500 });

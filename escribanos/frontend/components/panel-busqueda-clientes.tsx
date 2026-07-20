@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EstudioLinkButton } from "@/components/ui/estudio-button";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { estudioTw } from "@/lib/estudio-tw";
@@ -139,9 +140,9 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                 ) : null}
               </div>
             </div>
-            <Link href="/estudio/clientes/nuevo" className="btn btn-primary shrink-0">
+            <EstudioLinkButton href="/estudio/clientes/nuevo" variant="listNuevo" className="shrink-0">
               Nuevo cliente
-            </Link>
+            </EstudioLinkButton>
           </div>
         </div>
 

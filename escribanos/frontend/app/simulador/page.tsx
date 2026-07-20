@@ -33,7 +33,7 @@ import {
 import type { CapituloIData } from '@/lib/arancel/types';
 import {
   calcularDesgloseLiquido,
-  calcularDesgloseLiquidoConAportesArancel,
+  calcularDesglosePresupuestoHonario,
   formatearMontoEnMoneda,
   honorarioEnPrincipal,
   parseHonorarioACobrarInput,
@@ -460,19 +460,15 @@ export default function SimuladorPage() {
     ) {
       return null;
     }
-    return calcularDesgloseLiquidoConAportesArancel(
+    const desglose = calcularDesglosePresupuestoHonario(
+      lineasArancelColumna.honorario,
       honorarioAltValor,
-      {
-        montepio: lineasArancelColumna.montepio,
-        fondoGremial: lineasArancelColumna.fondoGremial,
-        fondoReconversionLaboral: lineasArancelColumna.fondoReconversionLaboral,
-        totalAportes: lineasArancelColumna.totalAportes,
-      },
       resultado.monedaPrincipal,
       tasasCalculo,
       fonasaPctNum,
       irpfPctNum
     );
+    return desglose?.lineasPresupuesto ?? null;
   }, [
     resultado,
     tasasCalculo,
@@ -995,6 +991,27 @@ export default function SimuladorPage() {
                         Ingresá el honorario a cobrar para ver el desglose.
                       </p>
                     ) : null}
+                    {lineasArancelColumna && honorarioAltValor !== null && pctOk ? (
+                      <button
+                        type="button"
+                        className="btn btn-secondary mt-2 w-full"
+                        onClick={() => {
+                          sessionStorage.setItem(
+                            'presupuesto_desde_simulador',
+                            JSON.stringify({
+                              honorarioArancel: lineasArancelColumna.honorario,
+                              honorarioACobrar: honorarioAltValor,
+                              fonasaPct: fonasaPctNum,
+                              irpfPct: irpfPctNum,
+                              actoDescripcion: regla?.articulo ?? '',
+                            })
+                          );
+                          window.location.href = '/estudio/presupuestos/nuevo';
+                        }}
+                      >
+                        Usar en presupuesto al cliente
+                      </button>
+                    ) : null}
                   </div>
                   <div className="simulador-desglose-sync-row simulador-desglose-sync-row--factura-y-aportes">
                     <div className="simulador-desglose-stack">
@@ -1012,8 +1029,8 @@ export default function SimuladorPage() {
                         ) : null}
                       </div>
                       <div className="simulador-desglose-seccion">
-                        {lineasAltColumna && lineasArancelColumna ? (
-                          bloqueAportesDesglose(lineasArancelColumna, resultado.monedaPrincipal)
+                        {lineasAltColumna ? (
+                          bloqueAportesDesglose(lineasAltColumna, resultado.monedaPrincipal)
                         ) : null}
                       </div>
                     </div>

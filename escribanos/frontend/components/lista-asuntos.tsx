@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EstudioButton, EstudioLinkButton } from "@/components/ui/estudio-button";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -411,18 +412,19 @@ export function ListaAsuntos() {
                 ) : null}
               </div>
             </div>
-            <Link href="/estudio/asuntos/nuevo" className="btn btn-primary shrink-0">
+            <EstudioLinkButton href="/estudio/asuntos/nuevo" variant="listNuevo" className="shrink-0">
               Nuevo asunto
-            </Link>
-            <button
+            </EstudioLinkButton>
+            <EstudioButton
               type="button"
-              className="btn btn-secondary btn-sm shrink-0 self-end"
+              variant="secondarySm"
+              className="shrink-0 self-end"
               aria-expanded={busquedaAvanzada}
               onClick={() => setBusquedaAvanzada((v) => !v)}
             >
               <span className="hidden sm:inline">{busquedaAvanzada ? "Ocultar filtros" : "Más filtros"}</span>
               <span className="sm:hidden">{busquedaAvanzada ? "Ocultar" : "Filtros"}</span>
-            </button>
+            </EstudioButton>
           </div>
         </div>
 

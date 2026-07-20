@@ -8,6 +8,7 @@ import {
   ETIQUETA_PUESTO,
 } from "@/lib/profesional-equipo-catalogo";
 import { estudioSpinnerLg } from "@/lib/estudio-estilos";
+import { EstudioButton, EstudioLinkButton } from "@/components/ui/estudio-button";
 import { EstudioListaBuscableSelect } from "@/components/estudio-lista-buscable-select";
 
 type RolMe =
@@ -448,9 +449,9 @@ export function FichaAsunto({ id }: { id: string }) {
     return (
       <div className="panel-alta">
         <p className="error">{mensaje || "Asunto no encontrado."}</p>
-        <Link href="/estudio/asuntos" className="btn btn-secondary mt-6 inline-flex">
+        <EstudioLinkButton href="/estudio/asuntos" variant="secondary" className="mt-6">
           Volver al listado
-        </Link>
+        </EstudioLinkButton>
       </div>
     );
   }
@@ -483,6 +484,17 @@ export function FichaAsunto({ id }: { id: string }) {
         </div>
         <p className="muted">
           {asunto.catalogo.nombre} · {etiquetaTipoAsunto(asunto.tipo)}
+        </p>
+        <p className="mt-2 flex flex-wrap gap-3 text-sm">
+          <Link href={`/estudio/gastos?asuntoId=${asunto.id}`} className="text-emerald-800 underline">
+            Gastos del asunto
+          </Link>
+          <Link
+            href={`/estudio/presupuestos/nuevo?clienteId=${asunto.cliente.id}&asuntoId=${asunto.id}`}
+            className="text-emerald-800 underline"
+          >
+            Nuevo presupuesto
+          </Link>
         </p>
         {mostrarTarjetaEditable && descripcionLectura && !puedeEditarDescripcion ? (
           <p className="mt-2 text-[0.95rem] leading-relaxed text-[var(--ac-text)]">{descripcionLectura}</p>
@@ -666,9 +678,9 @@ export function FichaAsunto({ id }: { id: string }) {
             </div>
           ) : null}
 
-          <button type="submit" className="btn btn-primary" disabled={guardandoFicha}>
+          <EstudioButton type="submit" variant="primary" disabled={guardandoFicha}>
             {guardandoFicha ? "Guardando…" : "Guardar cambios"}
-          </button>
+          </EstudioButton>
         </form>
       ) : null}
 
@@ -684,9 +696,9 @@ export function FichaAsunto({ id }: { id: string }) {
           <p className="text-xs text-[var(--gris-texto)]">
             La fecha y hora del movimiento son las del momento en que lo registrás (no se puede editar).
           </p>
-          <button className="btn btn-primary" type="submit" disabled={guardandoMov}>
+          <EstudioButton variant="primary" type="submit" disabled={guardandoMov}>
             {guardandoMov ? "Guardando…" : "Registrar movimiento"}
-          </button>
+          </EstudioButton>
         </form>
       ) : enTramite && !puedeMovimiento(rol) ? (
         <p className="muted text-sm">Tu rol no permite registrar movimientos en este asunto.</p>

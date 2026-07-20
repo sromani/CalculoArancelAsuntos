@@ -1,5 +1,5 @@
 /**
- * Rutas de auth van por /nest-api (rewrite en next.config → API Nest).
+ * Rutas de auth van por /nest-api (proxy → backend unificado /api/v1).
  * Así el navegador solo habla con el front (mismo origen) y no hay CORS.
  */
 const NEST_PREFIX = process.env.NEXT_PUBLIC_NEST_API_PREFIX?.trim() || "/nest-api";
@@ -9,7 +9,7 @@ function authUrl(path: string): string {
   return `${NEST_PREFIX}${p}`;
 }
 
-/** Cuando Nest (3001) está apagado, Next suele responder 500 con cuerpo plano "Internal Server Error". */
+/** Cuando el API (4000) está apagado, Next suele responder 500 con cuerpo plano "Internal Server Error". */
 function mensajeSiApiNestCaido(status: number, text: string): string | null {
   const t = text.trim();
   if (status !== 500 && status !== 502 && status !== 503 && status !== 504) {
@@ -21,10 +21,10 @@ function mensajeSiApiNestCaido(status: number, text: string): string | null {
     /^gateway timeout$/i.test(t) ||
     (status === 500 && /internal server error/i.test(text) && text.length < 2000)
   ) {
-    return "El API Nest no está en marcha (puerto 3001). Desde la raíz del monorepo: npm run dev:escribanos-api — o npm run dev:escribanos para web y API juntas.";
+    return "El backend API no está en marcha (puerto 4000). Desde la raíz: npm run dev:backend — o npm run dev:escribanos para los tres servicios.";
   }
   if (status >= 502 && text.length < 80) {
-    return "El servicio de cuentas no responde. Comprobá que el API Nest esté corriendo en el puerto 3001 y que PostgreSQL esté disponible.";
+    return "El servicio de cuentas no responde. Comprobá que el backend esté corriendo en el puerto 4000 y que PostgreSQL esté disponible.";
   }
   return null;
 }
@@ -44,7 +44,7 @@ async function readErrorMessage(response: Response): Promise<string> {
     /* no es JSON */
   }
   if (response.status === 502 || response.status === 503 || response.status === 504) {
-    return "El servicio de cuentas no está disponible. ¿Está corriendo el API en el puerto 3001 y PostgreSQL?";
+    return "El servicio de cuentas no está disponible. ¿Está corriendo el API en el puerto 4000 y PostgreSQL?";
   }
   if (text && text.length < 400) return text;
   return `Error ${response.status}`;
@@ -68,7 +68,7 @@ export async function register(data: {
     });
   } catch {
     throw new Error(
-      "No se pudo conectar. Iniciá el API Nest (puerto 3001) y la base de datos; en la raíz del monorepo: npm run dev:escribanos",
+      "No se pudo conectar. Iniciá el backend API (puerto 4000) y la base de datos; en la raíz: npm run dev:escribanos-web",
     );
   }
 
@@ -91,7 +91,7 @@ export async function login(data: { email: string; password: string }) {
     });
   } catch {
     throw new Error(
-      "No se pudo conectar. Iniciá el API Nest (puerto 3001) y la base de datos.",
+      "No se pudo conectar. Iniciá el backend API (puerto 4000) y la base de datos.",
     );
   }
 

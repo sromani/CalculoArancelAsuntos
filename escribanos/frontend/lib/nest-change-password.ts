@@ -1,13 +1,14 @@
 /**
- * Cambia la contraseña en la cuenta del API Nest (misma que el login con email del sitio).
+ * Cambia la contraseña en la cuenta del API de cuentas (misma que el login con email del sitio).
  */
+import { backendApiUrl } from "@/lib/backend-api-url";
+
 export async function nestChangePassword(
   accessToken: string,
   currentPassword: string,
   newPassword: string,
 ): Promise<{ ok: true } | { ok: false; message: string }> {
-  const base = (process.env.NEST_INTERNAL_URL?.trim() || "http://127.0.0.1:3001").replace(/\/$/, "");
-  const url = `${base}/auth/change-password`;
+  const url = backendApiUrl("auth/change-password");
   try {
     const r = await fetch(url, {
       method: "POST",
@@ -44,7 +45,7 @@ export async function nestChangePassword(
     if (esRed) {
       return {
         ok: false,
-        message: `No se pudo conectar con el API en ${url}. Revisá que el backend Nest esté en marcha (NEST_INTERNAL_URL).`,
+        message: `No se pudo conectar con el API en ${url}. Revisá que el backend esté en marcha (BACKEND_API_URL, puerto 4000).`,
       };
     }
     return { ok: false, message: msg || "Error al cambiar la contraseña en el API." };

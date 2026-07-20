@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-function nestBase(): string {
-  return (process.env.NEST_INTERNAL_URL?.trim() || "http://127.0.0.1:3001").replace(/\/$/, "");
-}
+import { backendApiBaseUrl } from "@/lib/backend-api-url";
 
 async function proxy(
   request: NextRequest,
@@ -10,11 +7,24 @@ async function proxy(
 ): Promise<NextResponse> {
   const { path } = await context.params;
   const segment = path?.join("/") ?? "";
-  const target = `${nestBase()}/${segment}${request.nextUrl.search}`;
+  const target = `${backendApiBaseUrl()}/${segment}${request.nextUrl.search}`;
 
   const headers = new Headers(request.headers);
-  headers.delete("host");
-  headers.delete("connection");
+  for (const name of [
+    "host",
+    "connection",
+    "keep-alive",
+    "transfer-encoding",
+    "upgrade",
+    "expect",
+    "proxy-connection",
+    "proxy-authenticate",
+    "proxy-authorization",
+    "te",
+    "trailer",
+  ]) {
+    headers.delete(name);
+  }
 
   const init: RequestInit = {
     method: request.method,

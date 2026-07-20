@@ -1,7 +1,8 @@
 /**
- * Valida el access token del API Nest llamando a GET /auth/me (misma fuente que el login).
- * Así no hace falta duplicar JWT_SECRET en el .env del front: Nest es quien verifica la firma.
+ * Valida el access token del API de cuentas llamando a GET /auth/me.
  */
+import { backendApiBaseUrl, backendApiUrl } from "@/lib/backend-api-url";
+
 export type NestMeProfile = { id: string; email: string };
 
 export type FetchNestMeResult =
@@ -9,8 +10,8 @@ export type FetchNestMeResult =
   | { ok: false; message: string };
 
 export async function fetchNestMeProfile(accessToken: string): Promise<FetchNestMeResult> {
-  const base = (process.env.NEST_INTERNAL_URL?.trim() || "http://127.0.0.1:3001").replace(/\/$/, "");
-  const url = `${base}/auth/me`;
+  const base = backendApiBaseUrl();
+  const url = backendApiUrl("auth/me");
   try {
     const r = await fetch(url, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -27,14 +28,14 @@ export async function fetchNestMeProfile(accessToken: string): Promise<FetchNest
     if (!r.ok) {
       return {
         ok: false,
-        message: `El API Nest respondió ${r.status}. Comprobá que esté en marcha: ${base} (variable NEST_INTERNAL_URL).`,
+        message: `El API de cuentas respondió ${r.status}. Comprobá que el backend esté en marcha: ${base} (variable BACKEND_API_URL).`,
       };
     }
     const user = (await r.json()) as { id?: unknown; email?: unknown };
     if (typeof user.id !== "string" || typeof user.email !== "string") {
       return {
         ok: false,
-        message: "El API Nest devolvió un perfil incompleto (faltan id o email).",
+        message: "El API devolvió un perfil incompleto (faltan id o email).",
       };
     }
     return { ok: true, profile: { id: user.id, email: user.email.toLowerCase() } };
@@ -50,10 +51,10 @@ export async function fetchNestMeProfile(accessToken: string): Promise<FetchNest
     if (esRed) {
       return {
         ok: false,
-        message: `No se pudo conectar con el API Nest en ${url}. Iniciá el backend (puerto 3001) y revisá NEST_INTERNAL_URL en .env.local.`,
+        message: `No se pudo conectar con el API de cuentas en ${url}. Iniciá el backend (puerto 4000): npm run dev:backend — y revisá BACKEND_API_URL en .env.local.`,
       };
     }
     console.error("[fetchNestMeProfile]", e);
-    return { ok: false, message: msg || "Error al contactar el API Nest." };
+    return { ok: false, message: msg || "Error al contactar el API de cuentas." };
   }
 }

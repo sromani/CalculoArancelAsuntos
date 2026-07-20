@@ -1,0 +1,691 @@
+{
+  "version": 1,
+  "capituloId": "certificaciones",
+  "capituloLabel": "Certificaciones",
+  "capituloCsv": "CAPITULO II - CERTIFICACIONES",
+  "documentos": [
+    {
+      "posDoc": 1,
+      "nombre": "CERTIFICACIÓN DE FIRMAS DE VALE, CONFORME, PAGARE, O CUALQUIER DOCUMENTO DE CREDITO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 2,
+      "nombre": "CERTIFICACIÓN DE FIRMAS DE CARTA PODER PARA INSTITUCIONES DE PREVISION SOCIAL, ADM PUBLICA EN GENERAL, INSTITUCIONES BANCARIAS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 3,
+      "nombre": "CERTIFICACIÓN DE FIRMAS DE CONTRATO DE CESION DE USO DE SERVICIO TELEFONICO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 4,
+      "nombre": "CERTIFICACIÓN DE SITUACIONES JURIDICAS O CIRCUNSTANCIAS INHERENTES A BIENES O PERSONAS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 5,
+      "nombre": "CERTIFICACIÓN DE FIRMAS DE CARTA PODER CON INSTITUCIONES PRIVADAS PARA TRAMITES O GESTIONES Y CON UN PLAZO DE 180 DIAS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 6,
+      "nombre": "CERTIFICACIÓN DE FIRMAS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 7,
+      "nombre": "CERTIFICACIÓN DE FIRMAS DE FORMULARIOS PARA REGISTRO DE ESTADO CIVIL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 8,
+      "nombre": "SOCIEDAD COOPERATIVA ESTATUTOS o MODIFICACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 9,
+      "nombre": "ASOCIACIONES NO COMERCIALES - ESTATUTOS o MODIFICACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 10,
+      "nombre": "CONSORCIO DE EMPRESAS - CONTRATOS o MODIFICACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 11,
+      "nombre": "GRUPOS DE INTERES ECONOMICO - CONTRATOS o MODIFICACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 12,
+      "nombre": "FUNDACIONES - ESTATUTOS o MODIFICACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 13,
+      "nombre": "SOCIEDAD ANONIMA ESTATUTOS CONSTITUCION CAPITAL MAYOR UR 2854",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 14,
+      "nombre": "SOCIEDAD DE RESPONSABILIDAD LIMITADA CONSTITUCION CAPITAL MAYOR UR 2854",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 15,
+      "nombre": "SOCIEDAD POR ACCIONES SIMPLIFICADAS CONSTITUCION CAPITAL MAYOR UR 2854",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 16,
+      "nombre": "SOCIEDAD ANONIMA MODIFICACION CON AUMENTO DE CAPITAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 17,
+      "nombre": "SOCIEDAD DE RESPONSABILIDAD LIMITADA MODIFICACION CON AUMENTO DE CAPITAL (CAPITAL INICIAL MAYOR A UR 2854)",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 18,
+      "nombre": "SOCIEDAD POR ACCIONES SIMPLIFICADAS MODIFICACION CON AUMENTO DE CAPITAL (CAPITAL INICIAL MAYOR A UR 2854)",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 19,
+      "nombre": "SOCIEDAD ANONIMA MODIFICACION SIN AUMENTO DE CAPITAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 20,
+      "nombre": "HOLDING - CONSTITUCION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 21,
+      "nombre": "HOLDING - MODIFICACION CON AUMENTO DE CAPITAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 22,
+      "nombre": "HOLDING - MODIFICACION SIN AUMENTO DE CAPITAL",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 23,
+      "nombre": "SOCIEDAD ANONIMA MODIFICACION SIN AUMENTO DE CAPITAL DENTRO DE 120 DE CONSTITUCION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 24,
+      "nombre": "HOLDING SIN AUMENTO DE CAPITAL DENTRO DE 120 DE CONSTITUCION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 25,
+      "nombre": "SOCIEDAD COOPERATIVA TRANSFORMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 26,
+      "nombre": "SOCIEDAD ANONIMA TRANSFORMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 27,
+      "nombre": "HOLDING - TRANSFORMACION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 28,
+      "nombre": "EMISION DE VALORES ESCRITURALES",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 29,
+      "nombre": "SOCIEDAD COOPERATIVA QUE NO TENGAN CAPITAL DETERMINADO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 30,
+      "nombre": "ASOCIACIONES NO COMERCIALES QUE NO TENGAN CAPITAL DETERMINADO",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 31,
+      "nombre": "FUNDACIONES QUE SE OTORGUEN DENTRO DE LOS 150 DIAS DE SU CONSTITUCION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 32,
+      "nombre": "SOCIEDAD EXTRANJERA",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 33,
+      "nombre": "TESTIMONIOS POR EXHIBICION",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    },
+    {
+      "posDoc": 34,
+      "nombre": "SEGUNDAS O ULTERIORES COPIAS Y TESTIMONIOS",
+      "tieneSeleccionBien": false,
+      "opcionesBien": []
+    }
+  ],
+  "reglas": {
+    "1": {
+      "articulo": "6 a)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 3,
+        "periodo": "semestral",
+        "raw": "3 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "2": {
+      "articulo": "6 b)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 1,
+        "periodo": "semestral",
+        "raw": "1 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "3": {
+      "articulo": "6 c)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 2,
+        "periodo": "semestral",
+        "raw": "2 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "4": {
+      "articulo": "6 d)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 2,
+        "periodo": "semestral",
+        "raw": "2 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "5": {
+      "articulo": "6 e)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 1,
+        "periodo": "semestral",
+        "raw": "1 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "6": {
+      "articulo": "6 f)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 2,
+        "periodo": "semestral",
+        "raw": "2 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "7": {
+      "articulo": "6 h)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 1,
+        "periodo": "semestral",
+        "raw": "1 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "8": {
+      "articulo": "7 A)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 20,
+        "periodo": "semestral",
+        "raw": "20 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "9": {
+      "articulo": "7 A)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 20,
+        "periodo": "semestral",
+        "raw": "20 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "10": {
+      "articulo": "7 A)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 20,
+        "periodo": "semestral",
+        "raw": "20 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "11": {
+      "articulo": "7 A)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 20,
+        "periodo": "semestral",
+        "raw": "20 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "12": {
+      "articulo": "7 A)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 20,
+        "periodo": "semestral",
+        "raw": "20 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "13": {
+      "articulo": "7 B)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 5,
+        "minUr": 40,
+        "raw": "5o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "14": {
+      "articulo": "7 B)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 5,
+        "minUr": 40,
+        "raw": "5o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "15": {
+      "articulo": "7 B)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 5,
+        "minUr": 40,
+        "raw": "5o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "16": {
+      "articulo": "7 B)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 5,
+        "minUr": 40,
+        "raw": "5o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "17": {
+      "articulo": "7 B)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 5,
+        "minUr": 40,
+        "raw": "5o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "18": {
+      "articulo": "7 B)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 5,
+        "minUr": 40,
+        "raw": "5o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "19": {
+      "articulo": "7 B)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 40,
+        "periodo": "semestral",
+        "raw": "40 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "20": {
+      "articulo": "7 C)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 1,
+        "minUr": 40,
+        "raw": "1o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "21": {
+      "articulo": "7 C)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 1,
+        "minUr": 40,
+        "raw": "1o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "22": {
+      "articulo": "7 C)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 40,
+        "periodo": "semestral",
+        "raw": "40 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "23": {
+      "articulo": "7 D)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 6,
+        "periodo": "semestral",
+        "raw": "6  UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "24": {
+      "articulo": "7 D)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 6,
+        "periodo": "semestral",
+        "raw": "6  UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "25": {
+      "articulo": "7 E)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 20,
+        "periodo": "semestral",
+        "raw": "20 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "26": {
+      "articulo": "7 E)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 5,
+        "minUr": 40,
+        "raw": "5o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "27": {
+      "articulo": "7 E)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_min_ur",
+        "porMil": 1,
+        "minUr": 40,
+        "raw": "1o/oo y nunca menos de 40UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "28": {
+      "articulo": "7 F)",
+      "honorarioParsed": {
+        "tipo": "por_mil_con_max_ur",
+        "porMil": 1,
+        "maxUr": 200,
+        "raw": "1o/oo  con monto maximo de 200 UR"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "capital_social",
+        "textoOriginal": "Capital social (aplicable al honorario)"
+      }
+    },
+    "29": {
+      "articulo": "7 G)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "30": {
+      "articulo": "7 G)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "31": {
+      "articulo": "7 G)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 12,
+        "periodo": "semestral",
+        "raw": "12 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "32": {
+      "articulo": "7 H)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 40,
+        "periodo": "semestral",
+        "raw": "40 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    },
+    "33": {
+      "articulo": "8)",
+      "honorarioParsed": {
+        "tipo": "ur_por_fojas",
+        "urPlana": 0.5,
+        "fojasIncluidas": 2,
+        "urPorFojaExtra": 0.1,
+        "raw": "0,5 UR HASTA 2 FOJAS MAS 0,1 POR CADA FOJA"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "testimonio_fojas",
+        "textoOriginal": "Número de fojas"
+      }
+    },
+    "34": {
+      "articulo": "9)",
+      "honorarioParsed": {
+        "tipo": "ur_fijo",
+        "ur": 8,
+        "periodo": "semestral",
+        "raw": "8 UR semestral"
+      },
+      "detalleValorBase": "",
+      "detalleSpec": {
+        "kind": "fijo_sin_entrada",
+        "textoOriginal": ""
+      }
+    }
+  }
+}

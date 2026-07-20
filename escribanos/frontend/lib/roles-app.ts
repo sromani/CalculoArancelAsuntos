@@ -54,3 +54,20 @@ export function puedeRegistrarMovimiento(rol: RolSesion): boolean {
 export function esSoloLectura(rol: RolSesion): boolean {
   return rol === "SOLO_LECTURA";
 }
+
+/** Alta/edición/eliminación de gastos y presupuestos */
+export function puedeGestionarGastos(rol: RolSesion): boolean {
+  return (
+    rol === "ADMIN" ||
+    rol === "SOCIO" ||
+    rol === "PROFESIONAL" ||
+    rol === "COLABORADOR" ||
+    rol === "CONTADOR" ||
+    rol === "USUARIO"
+  );
+}
+
+/** @deprecated use puedeGestionarGastos */
+export function puedeGestionarGastosNotariales(rol: RolSesion): boolean {
+  return puedeGestionarGastos(rol);
+}

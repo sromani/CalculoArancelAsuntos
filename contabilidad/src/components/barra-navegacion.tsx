@@ -98,6 +98,13 @@ export function BarraNavegacion() {
       <header className="login-plain-header border-b border-blue-950/20 bg-gradient-to-r from-blue-950 via-blue-900 to-blue-800 shadow-lg shadow-blue-950/20">
         <nav className="login-plain-header-inner nav-barra-oneline max-w-5xl">
           <div className="flex min-w-0 flex-nowrap items-center gap-x-3">
+            <img
+              src="/logo.png"
+              alt=""
+              width={36}
+              height={36}
+              className="h-9 w-9 shrink-0 rounded-md object-contain"
+            />
             <span className="login-plain-header-title whitespace-nowrap text-base font-bold leading-none tracking-tight text-white sm:text-lg">
               Departamento Legal y Notarial{" "}
               <span className="font-semibold text-blue-100">— Acceso</span>
@@ -115,10 +122,17 @@ export function BarraNavegacion() {
     <header className="login-plain-header border-b border-blue-950/20 bg-gradient-to-r from-blue-950 via-blue-900 to-blue-800 shadow-lg shadow-blue-950/20">
       <nav className="login-plain-header-inner nav-barra-oneline flex w-full max-w-5xl flex-nowrap items-center gap-x-2 overflow-x-auto overflow-y-hidden md:gap-x-3">
         <Link
-          className="login-plain-brand min-w-0 shrink-0 font-bold leading-tight tracking-tight text-white sm:whitespace-nowrap sm:leading-none md:text-base"
+          className="login-plain-brand flex min-w-0 shrink-0 items-center gap-2.5 font-bold leading-tight tracking-tight text-white sm:whitespace-nowrap sm:leading-none md:text-base"
           href="/"
           title="Departamento Legal y Notarial"
         >
+          <img
+            src="/logo.png"
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 rounded-md object-contain"
+          />
           <span className="block max-w-[11rem] truncate text-xs sm:hidden">
             Dpto. Legal y Notarial
           </span>

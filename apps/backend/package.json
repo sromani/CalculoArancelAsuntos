@@ -1,0 +1,51 @@
+{
+  "name": "backend-api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "API unificada — auth, estudio, cálculos notariales",
+  "scripts": {
+    "sync:estudio-schema": "node scripts/sync-estudio-schema.mjs",
+    "prisma:generate:auth": "dotenv -e .env --override -- prisma generate --schema ./prisma/schema-auth.prisma",
+    "prisma:generate:estudio": "npm run sync:estudio-schema && dotenv -e .env --override -- prisma generate --schema ./prisma/schema-estudio.prisma",
+    "prisma:generate": "npm run prisma:generate:auth && npm run prisma:generate:estudio",
+    "db:push:auth": "dotenv -e .env --override -- prisma db push --schema ./prisma/schema-auth.prisma",
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main",
+    "postinstall": "npm run prisma:generate:auth || true"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.3",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/platform-express": "^11.0.1",
+    "@shared/schemas": "*",
+    "@shared/types": "*",
+    "@shared/utils": "*",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.3",
+    "dotenv": "^17.3.1",
+    "jose": "^5.9.6",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "^6.5.0",
+    "typescript": "^5.7.3"
+  }
+}

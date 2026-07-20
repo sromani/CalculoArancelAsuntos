@@ -59,6 +59,7 @@ services:
       NODE_ENV: production
       PORT: "3000"
       HOSTNAME: 0.0.0.0
+      DETALLE_ERRORES_DB: "1"
     depends_on:
       postgres:
         condition: service_healthy
@@ -92,16 +93,19 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      DOMAIN: ${DOMAIN:-}
+      DOMAINS: ${DOMAINS:-}
       ACME_EMAIL: ${ACME_EMAIL:-}
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./generate-caddyfile.sh:/etc/caddy/generate-caddyfile.sh:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
       - web
     networks:
       - internal
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - "/bin/sh /etc/caddy/generate-caddyfile.sh && caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"
 
 volumes:
   postgres_data:

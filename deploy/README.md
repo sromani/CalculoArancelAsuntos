@@ -70,13 +70,49 @@ docker compose logs -f
 docker compose logs -f web api
 ```
 
-## HTTPS con dominio
+## HTTPS con uno o varios dominios
 
-1. Apuntá el DNS `A` de tu dominio a la IP del VPS.
-2. En `.env`: `DOMAIN=app.tudominio.com` y `ACME_EMAIL=tu@email.com`
-3. En `Caddyfile`: comentá el bloque `:80` y descomentá el bloque `{$DOMAIN}`.
-4. `FRONTEND_ORIGIN=https://app.tudominio.com`
-5. `docker compose up -d`
+1. Apuntá el registro **A** de cada dominio a la IP del VPS.
+2. En `.env`:
+
+```env
+DOMAINS=app.tudominio.com,www.app.tudominio.com,otro.tudominio.com
+ACME_EMAIL=admin@tudominio.com
+FRONTEND_ORIGIN=https://app.tudominio.com
+```
+
+3. `docker compose up -d` (Caddy pide certificados Let's Encrypt automáticamente).
+
+Puertos **80** y **443** deben estar abiertos en el firewall del proveedor y en UFW.
+
+## Modo rescue del proveedor
+
+Si el VPS está en **rescue**, SSH suele usar otra clave o el disco no tiene Ubuntu instalado.
+
+1. Entrá al panel del proveedor (Contabo, OVH, etc.).
+2. **Salí del modo rescue** y **reinstalá Ubuntu 22.04 o 24.04** en el disco principal.
+3. Definí la contraseña **root** (o usuario `ubuntu` + clave SSH).
+4. Conectate: `ssh root@IP`
+5. Ejecutá: `sudo bash bootstrap-vps.sh` (desde el repo clonado) o seguí los pasos de abajo.
+
+## Instalación automática (VPS ya con Ubuntu)
+
+```bash
+ssh root@TU_IP
+apt-get update && apt-get install -y git
+git clone https://github.com/sromani/CalculoArancelAsuntos.git
+cd CalculoArancelAsuntos/deploy
+cp .env.example .env
+nano .env
+sudo bash ../deploy/bootstrap-vps.sh
+```
+
+O solo Docker + firewall:
+
+```bash
+sudo bash setup-vps.sh
+```
+
 
 ## Actualizar después de un `git pull`
 

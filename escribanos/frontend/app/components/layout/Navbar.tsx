@@ -3,45 +3,41 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext'
-
-/** Estilo “módulo” solo en la ruta actual; si no, mismo aspecto que el resto del menú. */
-function navPrimaryClass(active: boolean) {
-  return active ? 'active navbar-link-primary' : ''
-}
+import { CentroNotificaciones } from '@/components/notificaciones/centro-notificaciones'
 
 export default function Navbar() {
   const pathname = usePathname()
   const { user, logout, isAuthenticated, loading } = useAuth()
 
-  const enClientes = Boolean(pathname?.startsWith('/estudio/clientes'))
-  const enAsuntos = Boolean(pathname?.startsWith('/estudio/asuntos'))
+  const enEstudio = Boolean(pathname?.startsWith('/estudio'))
+  const enSimulador = pathname === '/simulador'
+  const enInicio = pathname === '/'
 
   return (
-    <nav className="navbar" aria-label="Navegación principal">
+    <nav className="navbar sticky top-0 z-50" aria-label="Navegación principal">
       <div className="navbar-inner">
         <div className="navbar-logo">
           <Link href="/" aria-label="Inicio">
-            <img src="/logo.jpg" alt="" />
+            <img src="/logo.png" alt="Escribanos Estudio" width={44} height={44} />
           </Link>
         </div>
 
         <div className="navbar-links">
-          <Link href="/" className={pathname === '/' ? 'active' : ''}>
+          <Link href="/" className={enInicio ? 'active' : ''}>
             Inicio
           </Link>
-          {isAuthenticated && !loading ? (
-            <>
-              <Link href="/estudio/clientes" className={navPrimaryClass(enClientes)}>
-                Clientes
-              </Link>
-              <Link href="/estudio/asuntos" className={navPrimaryClass(enAsuntos)}>
-                Asuntos
-              </Link>
-            </>
+          {isAuthenticated && !loading && !enEstudio ? (
+            <Link
+              href="/estudio/clientes"
+              className="navbar-link-primary"
+              title="Gestión del estudio"
+            >
+              Gestión
+            </Link>
           ) : null}
           <Link
             href="/simulador"
-            className={pathname === '/simulador' ? 'active' : ''}
+            className={enSimulador ? 'active' : ''}
             title="Simulador de Arancel Notarial"
           >
             <span className="navbar-link-short">Simulador</span>
@@ -51,13 +47,17 @@ export default function Navbar() {
             <span className="navbar-link-short">Nosotros</span>
             <span className="navbar-link-full">Sobre Nosotros</span>
           </Link>
+          <Link href="/planes" className={pathname === '/planes' ? 'active' : ''}>
+            Planes
+          </Link>
         </div>
 
         <div className="navbar-auth">
           {isAuthenticated ? (
             <>
+              {enEstudio ? <CentroNotificaciones /> : null}
               <Link href="/perfil" className="navbar-perfil" title={user?.nombre}>
-                👤 <span className="navbar-perfil-nombre">{user?.nombre}</span>
+                <span className="navbar-perfil-nombre">{user?.nombre}</span>
               </Link>
               <button type="button" onClick={logout} className="navbar-logout">
                 Cerrar sesión
