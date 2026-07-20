@@ -175,7 +175,7 @@ body {
 .navbar-links .navbar-link-full {
   display: inline;
 }
-@media (max-width: 1040px) {
+@media (max-width: 1280px) {
   .navbar-links .navbar-link-short {
     display: inline;
   }
@@ -804,14 +804,17 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Login Page */
+/* Login Page — full bleed (mismo criterio que simulador; sin franjas blancas laterales) */
 .login-page {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--navbar-app-height));
+  width: 100%;
+  max-width: none;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   background: linear-gradient(135deg, var(--fondo-verde-muy-claro) 0%, var(--fondo-verde-claro) 100%);
-  padding: 3rem 2rem;
+  padding: 3rem 1rem;
+  box-sizing: border-box;
 }
 
 .login-container {
@@ -1289,6 +1292,85 @@ body {
   background: var(--verde-oscuro);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 166, 81, 0.4);
+}
+
+/* Hub de módulos (Clientes / Asuntos): misma línea que el simulador */
+.modulo-hub {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem 0 2rem;
+}
+
+.modulo-hub .simulador-header h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+}
+
+.modulo-hub-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .modulo-hub-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.modulo-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  background: var(--fondo-blanco);
+  padding: 1.75rem 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: inherit;
+  border: 2px solid transparent;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  min-height: 11rem;
+}
+
+.modulo-hub-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 44px rgba(0, 166, 81, 0.18);
+  border-color: rgba(0, 166, 81, 0.35);
+}
+
+.modulo-hub-card h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--verde-titulo);
+}
+
+.modulo-hub-card p {
+  margin: 0;
+  flex: 1;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  color: var(--gris-texto);
+}
+
+.modulo-hub-card-cta {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--verde-principal);
+}
+
+.seccion-proximamente {
+  text-align: center;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.seccion-proximamente-msg {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--gris-texto);
 }
 
 .btn-outline {
@@ -2470,44 +2552,40 @@ body {
   background: transparent;
 }
 
-/* Fondo del módulo estudio: misma familia que simulador / home (sin slate aparte) */
+/* Fondo del módulo estudio: mismo gradiente que el simulador */
 .estudio-shell {
   min-height: calc(100vh - var(--navbar-app-height) - var(--estudio-barra-height));
-  background: linear-gradient(160deg, #fafafa 0%, #f4f4f5 45%, #ecfdf5 100%);
+  background: linear-gradient(135deg, var(--fondo-blanco) 0%, var(--fondo-verde-muy-claro) 100%);
+  width: 100%;
 }
 
 /**
- * Área de página bajo el navbar: mismo max-width y paddings horizontales que `.navbar-inner`
- * (72rem), centrada. Flujo en bloque — sin `items-center` ni `text-center` heredados.
+ * Columna centrada bajo el navbar — misma idea que `.simulador-content` (max 1000px).
  */
 .estudio-page-wrap {
   box-sizing: border-box;
   width: 100%;
-  max-width: 72rem;
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  padding-top: 1.25rem;
-  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
 }
 
 @media (min-width: 640px) {
   .estudio-page-wrap {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
-    padding-top: 1.5rem;
-    padding-bottom: 2.5rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
 }
 
-@media (min-width: 1024px) {
-  .estudio-page-wrap {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-  }
+/** Listados anchos (directorio / asuntos): un poco más de aire horizontal */
+.estudio-page-wrap:has(.estudio-listado-ancho) {
+  max-width: 1100px;
 }
 
 /* Texto principal del área estudio: mismo contraste que el sitio público */

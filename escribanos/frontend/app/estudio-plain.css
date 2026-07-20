@@ -76,12 +76,23 @@
 }
 
 /* Layout principal si las utilidades de Tailwind no se generan (no pisar gestión estudio) */
-body > main:not(.estudio-main) {
+body > main:not(.estudio-main):not(.login-page) {
   box-sizing: border-box;
   margin-left: auto;
   margin-right: auto;
   max-width: 64rem;
   padding: 2rem 1rem;
+}
+
+/* Login a todo el ancho: sin franjas blancas laterales sobre el fondo del body */
+body > main.login-page,
+main.login-page {
+  max-width: none !important;
+  width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .login-plain-card-head {

@@ -11,10 +11,13 @@ function navPrimaryClass(active: boolean) {
 
 export default function Navbar() {
   const pathname = usePathname()
-  const { user, logout, isAuthenticated, loading } = useAuth()
+  const { user, logout, isAuthenticated } = useAuth()
 
   const enClientes = Boolean(pathname?.startsWith('/estudio/clientes'))
   const enAsuntos = Boolean(pathname?.startsWith('/estudio/asuntos'))
+  const enGastos = pathname === '/gastos'
+  const enPresupuesto = pathname === '/presupuesto-cliente'
+  const enPagos = pathname === '/pagos'
 
   return (
     <nav className="navbar" aria-label="Navegación principal">
@@ -29,16 +32,12 @@ export default function Navbar() {
           <Link href="/" className={pathname === '/' ? 'active' : ''}>
             Inicio
           </Link>
-          {isAuthenticated && !loading ? (
-            <>
-              <Link href="/estudio/clientes" className={navPrimaryClass(enClientes)}>
-                Clientes
-              </Link>
-              <Link href="/estudio/asuntos" className={navPrimaryClass(enAsuntos)}>
-                Asuntos
-              </Link>
-            </>
-          ) : null}
+          <Link href="/estudio/clientes" className={navPrimaryClass(enClientes)}>
+            Clientes
+          </Link>
+          <Link href="/estudio/asuntos" className={navPrimaryClass(enAsuntos)}>
+            Asuntos
+          </Link>
           <Link
             href="/simulador"
             className={pathname === '/simulador' ? 'active' : ''}
@@ -47,9 +46,19 @@ export default function Navbar() {
             <span className="navbar-link-short">Simulador</span>
             <span className="navbar-link-full">Simulador de Arancel</span>
           </Link>
-          <Link href="/sobre-nosotros" className={pathname === '/sobre-nosotros' ? 'active' : ''}>
-            <span className="navbar-link-short">Nosotros</span>
-            <span className="navbar-link-full">Sobre Nosotros</span>
+          <Link href="/gastos" className={navPrimaryClass(enGastos)} title="Gastos">
+            Gastos
+          </Link>
+          <Link
+            href="/presupuesto-cliente"
+            className={navPrimaryClass(enPresupuesto)}
+            title="Presupuesto al Cliente"
+          >
+            <span className="navbar-link-short">Presupuesto</span>
+            <span className="navbar-link-full">Presupuesto al Cliente</span>
+          </Link>
+          <Link href="/pagos" className={navPrimaryClass(enPagos)} title="Pagos">
+            Pagos
           </Link>
         </div>
 

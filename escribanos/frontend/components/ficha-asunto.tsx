@@ -448,7 +448,7 @@ export function FichaAsunto({ id }: { id: string }) {
     return (
       <div className="panel-alta">
         <p className="error">{mensaje || "Asunto no encontrado."}</p>
-        <Link href="/estudio/asuntos" className="btn btn-secondary mt-6 inline-flex">
+        <Link href="/estudio/asuntos/listado" className="btn btn-secondary mt-6 inline-flex">
           Volver al listado
         </Link>
       </div>
@@ -469,7 +469,7 @@ export function FichaAsunto({ id }: { id: string }) {
     <div className="w-full space-y-6 text-left sm:space-y-8">
       <div className="panel-alta">
         <p className="muted mt-0">
-          <Link href="/estudio/asuntos">← Asuntos</Link>
+          <Link href="/estudio/asuntos/listado">← Listado de Asuntos</Link>
           {" · "}
           <Link href={`/estudio/clientes/${asunto.cliente.id}/editar`}>{asunto.cliente.nombre}</Link>
         </p>

@@ -54,8 +54,6 @@ type Props = {
 const linkEditarCliente =
   "font-semibold text-emerald-700 underline decoration-emerald-600/35 underline-offset-2 transition hover:text-emerald-800 hover:decoration-emerald-700 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600";
 
-const cardPadX = estudioTw.cardPadX;
-
 function SearchIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -107,9 +105,9 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
   return (
     <div className={cn("w-full min-w-0", estudioTw.listStackY)}>
       <div className="panel overflow-hidden">
-        <div className={cn("page-toolbar page-toolbar-wide pt-6", cardPadX)}>
+        <div className="page-toolbar page-toolbar-wide">
           <div className="min-w-0 shrink-0">
-            <h1 className="page-title">Clientes</h1>
+            <h1 className="page-title">Directorio de Clientes</h1>
           </div>
           <div className="page-toolbar-end">
             <div className="search-field max-w-full">
@@ -139,13 +137,10 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                 ) : null}
               </div>
             </div>
-            <Link href="/estudio/clientes/nuevo" className="btn btn-primary shrink-0">
-              Nuevo cliente
-            </Link>
           </div>
         </div>
 
-        <p className={cn("search-meta muted", cardPadX)}>
+        <p className="search-meta muted">
           {cargando ? (
             <span className="inline-flex items-center gap-2">
               <span className={estudioTw.listSpinner} aria-hidden />
@@ -165,7 +160,7 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
           )}
         </p>
 
-        <div className={cn("border-t border-neutral-100", cardPadX, "pb-6 pt-4")}>
+        <div className="border-t border-neutral-100 pb-2 pt-4">
           {lista.length > 0 ? (
             <>
               <div className="hidden md:block">
@@ -256,7 +251,7 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
                 </div>
               </div>
 
-              <ul className={cn("flex flex-col gap-4 py-4 md:hidden", cardPadX)}>
+              <ul className="flex flex-col gap-4 py-4 md:hidden">
                 {lista.map((c) => (
                   <li
                     key={c.id}
@@ -320,12 +315,12 @@ export function PanelBusquedaClientes({ refreshKey = 0 }: Props) {
               </ul>
             </>
           ) : !cargando ? (
-            <div className={cn("bg-white py-16 text-center sm:py-20", cardPadX)}>
+            <div className="bg-white py-12 text-center sm:py-16">
               <p className={estudioTw.typeListTitle}>Sin resultados</p>
-              <p className={cn(estudioTw.typeListBody, "muted")}>
+              <p className={cn(estudioTw.typeListBody, "muted mx-auto max-w-md")}>
                 {busquedaActiva
                   ? "Probá con otra palabra, parte del documento o del teléfono."
-                  : "Creá un cliente con el botón Nuevo cliente."}
+                  : "Todavía no hay clientes, o usá Nuevo Cliente desde el menú de Clientes."}
               </p>
             </div>
           ) : null}
