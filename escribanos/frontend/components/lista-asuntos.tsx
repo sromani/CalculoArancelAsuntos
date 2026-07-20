@@ -1,17 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { EstudioButton, EstudioLinkButton } from "@/components/ui/estudio-button";
+import { EstudioButton } from "@/components/ui/estudio-button";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
 
 import { estudioTw } from "@/lib/estudio-tw";
 import { cn } from "@/lib/cn";
 
-const cardPadX = estudioTw.cardPadX;
 const inputBase = estudioTw.inputSm;
-const btnPrimary = estudioTw.btnPrimarySm;
-const btnSecondary = estudioTw.btnSecondarySm;
 const btnGhost = estudioTw.btnGhost;
 
 /** Enlace de acción: texto verde y subrayado (más marcado al hover / foco). */
@@ -79,14 +75,6 @@ type SocioFiltro = {
   nombre: string;
 };
 
-function EtiquetaCampo({ children, size = "sm" }: { children: ReactNode; size?: "sm" | "lg" }) {
-  const sizeClass =
-    size === "lg"
-      ? "text-base font-semibold tracking-tight text-neutral-900 sm:text-[1.0625rem]"
-      : "text-sm font-semibold text-neutral-700";
-  return <span className={cn("mb-2 block", sizeClass)}>{children}</span>;
-}
-
 function etiquetaTipo(tipo: string): string {
   switch (tipo) {
     case "TODOS":
@@ -118,18 +106,6 @@ function textoColaboradores(a: AsuntoRow): string {
   return parts.length ? parts.join(" · ") : "—";
 }
 
-function ChevronDown({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-      <path
-        fillRule="evenodd"
-        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.94a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
 function SearchIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -138,54 +114,6 @@ function SearchIcon() {
     </svg>
   );
 }
-
-function FiltroAccordion({
-  sectionId,
-  title,
-  helpText,
-  open,
-  onToggle,
-  children,
-}: {
-  sectionId: string;
-  title: string;
-  helpText?: string;
-  open: boolean;
-  onToggle: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <div className="border-b border-neutral-100 last:border-b-0">
-      <button
-        type="button"
-        className="flex w-full items-center justify-between gap-4 rounded-lg py-4 text-left transition-colors hover:bg-neutral-50/90"
-        aria-expanded={open}
-        aria-controls={`${sectionId}-panel`}
-        id={`${sectionId}-btn`}
-        onClick={onToggle}
-      >
-        <span className="text-sm font-semibold text-neutral-900">{title}</span>
-        <ChevronDown
-          className={cn("size-5 shrink-0 text-neutral-500 transition-transform duration-200", open ? "rotate-180" : "")}
-        />
-      </button>
-      <div
-        id={`${sectionId}-panel`}
-        role="region"
-        aria-labelledby={`${sectionId}-btn`}
-        hidden={!open}
-        className={cn(!open && "hidden")}
-      >
-        {helpText ? (
-          <p className="mb-4 max-w-3xl text-xs leading-relaxed text-neutral-600">{helpText}</p>
-        ) : null}
-        {children}
-      </div>
-    </div>
-  );
-}
-
-type FiltroAccKey = "criterios" | "equipo" | "pendientes" | "fechas";
 
 export function ListaAsuntos() {
   const [estado, setEstado] = useState<string>("");
@@ -207,16 +135,6 @@ export function ListaAsuntos() {
   const [cargando, setCargando] = useState(true);
   const [mensaje, setMensaje] = useState("");
   const [busquedaAvanzada, setBusquedaAvanzada] = useState(false);
-  const [filtroAcc, setFiltroAcc] = useState<Record<FiltroAccKey, boolean>>({
-    criterios: true,
-    equipo: false,
-    pendientes: false,
-    fechas: false,
-  });
-
-  const toggleFiltroAcc = useCallback((k: FiltroAccKey) => {
-    setFiltroAcc((prev) => ({ ...prev, [k]: !prev[k] }));
-  }, []);
 
   const hayFiltrosActivos = useMemo(
     () =>
@@ -380,9 +298,9 @@ export function ListaAsuntos() {
   return (
     <div className={cn("flex w-full min-w-0 flex-col text-left", estudioTw.listStackY)}>
       <div className="panel overflow-hidden">
-        <div className={cn("page-toolbar page-toolbar-wide pt-6", cardPadX)}>
+        <div className="page-toolbar page-toolbar-wide">
           <div className="min-w-0 shrink-0">
-            <h1 className="page-title">Asuntos</h1>
+            <h1 className="page-title">Listado de Asuntos</h1>
           </div>
           <div className="page-toolbar-end">
             <div className="search-field max-w-full">
@@ -412,9 +330,6 @@ export function ListaAsuntos() {
                 ) : null}
               </div>
             </div>
-            <EstudioLinkButton href="/estudio/asuntos/nuevo" variant="listNuevo" className="shrink-0">
-              Nuevo asunto
-            </EstudioLinkButton>
             <EstudioButton
               type="button"
               variant="secondarySm"
@@ -428,7 +343,7 @@ export function ListaAsuntos() {
           </div>
         </div>
 
-        <div className={cn("space-y-3 border-b border-neutral-100 pb-4", cardPadX)}>
+        <div className="asuntos-meta-bar">
           {filtrosActivosCount > 0 ? (
             <div className={estudioTw.listBannerFiltros}>
               <span className="font-semibold text-neutral-900">Filtros activos:</span>{" "}
@@ -437,206 +352,194 @@ export function ListaAsuntos() {
             </div>
           ) : null}
 
-          {cargando || hayFiltrosActivos ? (
-            <div className={estudioTw.listToolbarFooter}>
-              {cargando ? (
-                <span className="muted inline-flex items-center gap-2 text-sm font-medium">
-                  <span className={estudioTw.listSpinner} aria-hidden />
-                  Actualizando
-                </span>
-              ) : null}
-              {hayFiltrosActivos ? (
-                <button type="button" className={btnGhost} onClick={limpiarFiltros}>
-                  Limpiar filtros
-                </button>
-              ) : null}
-            </div>
+          {cargando ? (
+            <span className="muted inline-flex items-center gap-2 text-sm font-medium">
+              <span className={estudioTw.listSpinner} aria-hidden />
+              Actualizando
+            </span>
+          ) : null}
+
+          {hayFiltrosActivos ? (
+            <button type="button" className={btnGhost} onClick={limpiarFiltros}>
+              Limpiar filtros
+            </button>
           ) : null}
         </div>
 
         {busquedaAvanzada ? (
-          <div className="border-t border-neutral-100 bg-neutral-50/50">
-            <div className={cardPadX}>
-              <p className="py-4 text-sm font-medium text-neutral-500">
-                Desplegá cada bloque para afinar el listado. Los valores se mantienen al cerrar.
-              </p>
-              <FiltroAccordion
-                sectionId="filtro-criterios"
-                title="Criterios del asunto"
-                helpText="Filtrá por situación del expediente y por tipo de actuación."
-                open={filtroAcc.criterios}
-                onToggle={() => toggleFiltroAcc("criterios")}
-              >
-                <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                  <label>
-                    <EtiquetaCampo>Estado</EtiquetaCampo>
-                    <select className={inputBase} value={estado} onChange={(e) => setEstado(e.target.value)}>
-                      <option value="">Todos</option>
-                      <option value="EN_TRAMITE">En trámite</option>
-                      <option value="FINALIZADO">Finalizado</option>
-                    </select>
-                  </label>
-                  <label>
-                    <EtiquetaCampo>Tipo</EtiquetaCampo>
-                    <select className={inputBase} value={tipo} onChange={(e) => setTipo(e.target.value)}>
-                      <option value="">Todos</option>
-                      <option value="TODOS">Todos (catálogo)</option>
-                      <option value="NOTARIAL">Notarial</option>
-                      <option value="LEGAL">Legal</option>
-                    </select>
-                  </label>
-                </div>
-              </FiltroAccordion>
+          <div className="asuntos-filtros">
+            <p className="asuntos-filtros-intro">
+              Afina el listado por estado, equipo, pendientes o fechas. Los valores se mantienen al cerrar el panel.
+            </p>
 
-              <FiltroAccordion
-                sectionId="filtro-equipo"
-                title="Equipo"
-                helpText="Legal a cargo: profesional del estudio asignado al expediente. Socio referente: socio vinculado al asunto (puede quedar sin asignar)."
-                open={filtroAcc.equipo}
-                onToggle={() => toggleFiltroAcc("equipo")}
-              >
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="min-w-0">
-                    <EtiquetaCampo>Legal a cargo</EtiquetaCampo>
-                    <select
-                      className={inputBase}
-                      value={profesionalACargoId}
-                      onChange={(e) => setProfesionalACargoId(e.target.value)}
-                    >
-                      <option value="">Todos</option>
-                      {profesionales.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="min-w-0">
-                    <EtiquetaCampo>Socio referente</EtiquetaCampo>
-                    <select
-                      className={inputBase}
-                      value={socioReferenteId}
-                      onChange={(e) => setSocioReferenteId(e.target.value)}
-                    >
-                      <option value="">Todos</option>
-                      {socios.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+            <div className="asuntos-filtro-bloque">
+              <h3>Criterios del asunto</h3>
+              <p>Situación del expediente y tipo de actuación.</p>
+              <div className="asuntos-filtro-grid">
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-estado">Estado</label>
+                  <select
+                    id="filtro-estado"
+                    className={inputBase}
+                    value={estado}
+                    onChange={(e) => setEstado(e.target.value)}
+                  >
+                    <option value="">Todos</option>
+                    <option value="EN_TRAMITE">En trámite</option>
+                    <option value="FINALIZADO">Finalizado</option>
+                  </select>
                 </div>
-              </FiltroAccordion>
-
-              <FiltroAccordion
-                sectionId="filtro-pendientes"
-                title="Pendientes"
-                helpText="Listá solo expedientes sin colaboradores (ni en colab. 1 ni en 2) o sin contador referente."
-                open={filtroAcc.pendientes}
-                onToggle={() => toggleFiltroAcc("pendientes")}
-              >
-                <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
-                  <div className="flex items-center gap-4 rounded-xl border border-neutral-200 bg-white px-4 py-4 shadow-sm">
-                    <ToggleSwitch
-                      id="filtro-sin-equipo"
-                      ariaLabel="Filtrar asuntos sin colaboradores"
-                      checked={sinEquipo}
-                      onChange={setSinEquipo}
-                    />
-                    <span className="text-sm font-medium text-neutral-900">Sin colaboradores</span>
-                  </div>
-                  <div className="flex items-center gap-4 rounded-xl border border-neutral-200 bg-white px-4 py-4 shadow-sm">
-                    <ToggleSwitch
-                      id="filtro-sin-contador"
-                      ariaLabel="Filtrar asuntos sin contador"
-                      checked={sinContador}
-                      onChange={setSinContador}
-                    />
-                    <span className="text-sm font-medium text-neutral-900">Sin contador</span>
-                  </div>
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-tipo">Tipo</label>
+                  <select
+                    id="filtro-tipo"
+                    className={inputBase}
+                    value={tipo}
+                    onChange={(e) => setTipo(e.target.value)}
+                  >
+                    <option value="">Todos</option>
+                    <option value="TODOS">Todos (catálogo)</option>
+                    <option value="NOTARIAL">Notarial</option>
+                    <option value="LEGAL">Legal</option>
+                  </select>
                 </div>
-              </FiltroAccordion>
-
-              <FiltroAccordion
-                sectionId="filtro-fechas"
-                title="Fechas"
-                helpText="Filtrá por año de inicio o por rango de fechas de inicio y de finalización del expediente."
-                open={filtroAcc.fechas}
-                onToggle={() => toggleFiltroAcc("fechas")}
-              >
-                <div className="space-y-8">
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <label>
-                      <EtiquetaCampo>Año inicio</EtiquetaCampo>
-                      <input
-                        className={inputBase}
-                        value={anioInicio}
-                        onChange={(e) => setAnioInicio(e.target.value)}
-                        placeholder="Ej. 2026"
-                        inputMode="numeric"
-                      />
-                    </label>
-                    <label>
-                      <EtiquetaCampo>Inicio desde</EtiquetaCampo>
-                      <input
-                        className={inputBase}
-                        type="date"
-                        value={fechaInicioDesde}
-                        onChange={(e) => setFechaInicioDesde(e.target.value)}
-                      />
-                    </label>
-                    <label>
-                      <EtiquetaCampo>Inicio hasta</EtiquetaCampo>
-                      <input
-                        className={inputBase}
-                        type="date"
-                        value={fechaInicioHasta}
-                        onChange={(e) => setFechaInicioHasta(e.target.value)}
-                      />
-                    </label>
-                  </div>
-                  <div className="grid gap-4 border-t border-gray-200 pt-6 sm:grid-cols-2">
-                    <label>
-                      <EtiquetaCampo>Finalización desde</EtiquetaCampo>
-                      <input
-                        className={inputBase}
-                        type="date"
-                        value={fechaFinalizacionDesde}
-                        onChange={(e) => setFechaFinalizacionDesde(e.target.value)}
-                      />
-                    </label>
-                    <label>
-                      <EtiquetaCampo>Finalización hasta</EtiquetaCampo>
-                      <input
-                        className={inputBase}
-                        type="date"
-                        value={fechaFinalizacionHasta}
-                        onChange={(e) => setFechaFinalizacionHasta(e.target.value)}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </FiltroAccordion>
+              </div>
             </div>
 
-            <div
-              className={cn(
-                "flex flex-col gap-4 border-t border-neutral-200 bg-white/90 py-6 sm:flex-row sm:flex-wrap sm:justify-end sm:gap-4",
-                cardPadX,
-              )}
-            >
-              <button type="button" className={btnPrimary} onClick={() => void cargar()}>
-                Aplicar filtros
-              </button>
-              <button type="button" className={btnSecondary} onClick={limpiarFiltros}>
+            <div className="asuntos-filtro-bloque">
+              <h3>Equipo</h3>
+              <p>Legal a cargo y socio referente del expediente.</p>
+              <div className="asuntos-filtro-grid">
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-legal">Legal a cargo</label>
+                  <select
+                    id="filtro-legal"
+                    className={inputBase}
+                    value={profesionalACargoId}
+                    onChange={(e) => setProfesionalACargoId(e.target.value)}
+                  >
+                    <option value="">Todos</option>
+                    {profesionales.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-socio">Socio referente</label>
+                  <select
+                    id="filtro-socio"
+                    className={inputBase}
+                    value={socioReferenteId}
+                    onChange={(e) => setSocioReferenteId(e.target.value)}
+                  >
+                    <option value="">Todos</option>
+                    {socios.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="asuntos-filtro-bloque">
+              <h3>Pendientes</h3>
+              <p>Solo expedientes sin colaboradores o sin contador referente.</p>
+              <div className="asuntos-filtro-toggles">
+                <div className="asuntos-filtro-toggle">
+                  <ToggleSwitch
+                    id="filtro-sin-equipo"
+                    ariaLabel="Filtrar asuntos sin colaboradores"
+                    checked={sinEquipo}
+                    onChange={setSinEquipo}
+                  />
+                  <span>Sin colaboradores</span>
+                </div>
+                <div className="asuntos-filtro-toggle">
+                  <ToggleSwitch
+                    id="filtro-sin-contador"
+                    ariaLabel="Filtrar asuntos sin contador"
+                    checked={sinContador}
+                    onChange={setSinContador}
+                  />
+                  <span>Sin contador</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="asuntos-filtro-bloque">
+              <h3>Fechas</h3>
+              <p>Año o rango de inicio y finalización del expediente.</p>
+              <div className="asuntos-filtro-grid asuntos-filtro-grid--3">
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-anio">Año inicio</label>
+                  <input
+                    id="filtro-anio"
+                    className={inputBase}
+                    value={anioInicio}
+                    onChange={(e) => setAnioInicio(e.target.value)}
+                    placeholder="Ej. 2026"
+                    inputMode="numeric"
+                  />
+                </div>
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-inicio-desde">Inicio desde</label>
+                  <input
+                    id="filtro-inicio-desde"
+                    className={inputBase}
+                    type="date"
+                    value={fechaInicioDesde}
+                    onChange={(e) => setFechaInicioDesde(e.target.value)}
+                  />
+                </div>
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-inicio-hasta">Inicio hasta</label>
+                  <input
+                    id="filtro-inicio-hasta"
+                    className={inputBase}
+                    type="date"
+                    value={fechaInicioHasta}
+                    onChange={(e) => setFechaInicioHasta(e.target.value)}
+                  />
+                </div>
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-fin-desde">Finalización desde</label>
+                  <input
+                    id="filtro-fin-desde"
+                    className={inputBase}
+                    type="date"
+                    value={fechaFinalizacionDesde}
+                    onChange={(e) => setFechaFinalizacionDesde(e.target.value)}
+                  />
+                </div>
+                <div className="asuntos-filtro-campo">
+                  <label htmlFor="filtro-fin-hasta">Finalización hasta</label>
+                  <input
+                    id="filtro-fin-hasta"
+                    className={inputBase}
+                    type="date"
+                    value={fechaFinalizacionHasta}
+                    onChange={(e) => setFechaFinalizacionHasta(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="asuntos-filtros-acciones">
+              <button type="button" className="btn btn-secondary" onClick={limpiarFiltros}>
                 Limpiar
+              </button>
+              <button type="button" className="btn btn-primary" onClick={() => void cargar()}>
+                Aplicar filtros
               </button>
             </div>
           </div>
         ) : null}
 
-        <div className={cn("border-t border-neutral-100", cardPadX, "pb-6 pt-4")}>
+        <div className="border-t border-neutral-100 pb-2 pt-6">
           {lista.length > 0 ? (
             <>
           <div className="hidden overflow-x-auto pb-2 pt-2 [-webkit-overflow-scrolling:touch] md:block">
@@ -776,10 +679,10 @@ export function ListaAsuntos() {
           </ul>
             </>
           ) : !cargando ? (
-            <div className="bg-white py-16 text-center sm:py-20">
+            <div className="bg-white py-12 text-center sm:py-16">
               <p className={estudioTw.typeListTitle}>Sin resultados</p>
-              <p className={cn(estudioTw.typeListBody, "muted")}>
-                {hayFiltrosActivos ? "Probá otros filtros o limpiá la búsqueda." : "Creá un asunto con el botón Nuevo asunto."}
+              <p className={cn(estudioTw.typeListBody, "muted mx-auto max-w-md")}>
+                {hayFiltrosActivos ? "Probá otros filtros o limpiá la búsqueda." : "Todavía no hay asuntos, o usá Nuevo Asunto desde el menú de Asuntos."}
               </p>
               {hayFiltrosActivos ? (
                 <button

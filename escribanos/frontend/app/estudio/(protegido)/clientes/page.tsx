@@ -1,13 +1,22 @@
-import { Suspense } from "react";
-import { PanelBusquedaClientes } from "@/components/panel-busqueda-clientes";
-import { estudioTw } from "@/lib/estudio-tw";
+import ModuloHub from "@/app/components/ModuloHub";
 
 export default function ClientesPage() {
   return (
-    <div className="estudio-ac-legacy flex w-full min-w-0 flex-col gap-4 text-left sm:gap-5">
-      <Suspense fallback={<p className={estudioTw.bodySm}>Cargando…</p>}>
-        <PanelBusquedaClientes />
-      </Suspense>
-    </div>
+    <ModuloHub
+      titulo="Clientes"
+      subtitulo="Directorio y altas del estudio"
+      acciones={[
+        {
+          href: "/estudio/clientes/directorio",
+          titulo: "Directorio de Clientes",
+          descripcion: "Buscá un cliente en particular o mirá el listado general.",
+        },
+        {
+          href: "/estudio/clientes/nuevo",
+          titulo: "Nuevo Cliente",
+          descripcion: "Alta de persona física o jurídica con sus datos de identificación.",
+        },
+      ]}
+    />
   );
 }

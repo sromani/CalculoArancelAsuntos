@@ -5,11 +5,22 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from '@/app/context/AuthContext'
 import { CentroNotificaciones } from '@/components/notificaciones/centro-notificaciones'
 
+/** Estilo “módulo” solo en la ruta actual; si no, mismo aspecto que el resto del menú. */
+function navPrimaryClass(active: boolean) {
+  return active ? 'active navbar-link-primary' : ''
+}
+
 export default function Navbar() {
   const pathname = usePathname()
   const { user, logout, isAuthenticated, loading } = useAuth()
 
   const enEstudio = Boolean(pathname?.startsWith('/estudio'))
+  const enClientes = Boolean(pathname?.startsWith('/estudio/clientes'))
+  const enAsuntos = Boolean(pathname?.startsWith('/estudio/asuntos'))
+  const enGastos = pathname === '/gastos' || Boolean(pathname?.startsWith('/estudio/gastos'))
+  const enPresupuesto =
+    pathname === '/presupuesto-cliente' || Boolean(pathname?.startsWith('/estudio/presupuestos'))
+  const enPagos = pathname === '/pagos'
   const enSimulador = pathname === '/simulador'
   const enInicio = pathname === '/'
 
@@ -26,15 +37,12 @@ export default function Navbar() {
           <Link href="/" className={enInicio ? 'active' : ''}>
             Inicio
           </Link>
-          {isAuthenticated && !loading && !enEstudio ? (
-            <Link
-              href="/estudio/clientes"
-              className="navbar-link-primary"
-              title="Gestión del estudio"
-            >
-              Gestión
-            </Link>
-          ) : null}
+          <Link href="/estudio/clientes" className={navPrimaryClass(enClientes)}>
+            Clientes
+          </Link>
+          <Link href="/estudio/asuntos" className={navPrimaryClass(enAsuntos)}>
+            Asuntos
+          </Link>
           <Link
             href="/simulador"
             className={enSimulador ? 'active' : ''}
@@ -43,9 +51,19 @@ export default function Navbar() {
             <span className="navbar-link-short">Simulador</span>
             <span className="navbar-link-full">Simulador de Arancel</span>
           </Link>
-          <Link href="/sobre-nosotros" className={pathname === '/sobre-nosotros' ? 'active' : ''}>
-            <span className="navbar-link-short">Nosotros</span>
-            <span className="navbar-link-full">Sobre Nosotros</span>
+          <Link href="/gastos" className={navPrimaryClass(enGastos)} title="Gastos">
+            Gastos
+          </Link>
+          <Link
+            href="/presupuesto-cliente"
+            className={navPrimaryClass(enPresupuesto)}
+            title="Presupuesto al Cliente"
+          >
+            <span className="navbar-link-short">Presupuesto</span>
+            <span className="navbar-link-full">Presupuesto al Cliente</span>
+          </Link>
+          <Link href="/pagos" className={navPrimaryClass(enPagos)} title="Pagos">
+            Pagos
           </Link>
           <Link href="/planes" className={pathname === '/planes' ? 'active' : ''}>
             Planes
@@ -53,7 +71,7 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-auth">
-          {isAuthenticated ? (
+          {isAuthenticated && !loading ? (
             <>
               {enEstudio ? <CentroNotificaciones /> : null}
               <Link href="/perfil" className="navbar-perfil" title={user?.nombre}>

@@ -516,7 +516,7 @@ export function FormularioCliente({
         setMensaje(data?.error ?? "No se pudo eliminar.");
         return;
       }
-      router.push("/estudio/clientes");
+      router.push("/estudio/clientes/directorio");
       router.refresh();
     } catch {
       setMensaje("Error de conexión al eliminar.");
@@ -556,7 +556,7 @@ export function FormularioCliente({
       <div className={useLegacyLayout ? "space-y-4 text-left" : `${estudioFormShell} space-y-4 text-left`}>
         <p className={useLegacyLayout ? "error" : "text-sm font-medium text-red-800"}>{errorCarga}</p>
         <Link
-          href="/estudio/clientes"
+          href="/estudio/clientes/directorio"
           className={estudioLinkBack}
         >
           <span aria-hidden>←</span>
@@ -573,7 +573,7 @@ export function FormularioCliente({
     >
       {esEdicion && !useLegacyLayout ? (
         <div className="mb-8 space-y-3">
-          <Link href="/estudio/clientes" className={estudioLinkBack}>
+          <Link href="/estudio/clientes/directorio" className={estudioLinkBack}>
             <span aria-hidden>←</span>
             Clientes
           </Link>
@@ -684,7 +684,7 @@ export function FormularioCliente({
             ). No se puede repetir el alta con el mismo numero.
           </p>
           <p className="mt-2">
-            <Link href="/estudio/clientes" className="font-medium text-amber-900 underline">
+            <Link href="/estudio/clientes/directorio" className="font-medium text-amber-900 underline">
               Ir a clientes
             </Link>
           </p>
@@ -929,7 +929,7 @@ export function FormularioCliente({
           {guardando ? "Guardando…" : esEdicion ? "Guardar cambios" : "Guardar cliente"}
         </button>
         {esEdicion || useLegacyLayout ? (
-          <Link href="/estudio/clientes" className={estudioBtnSecundario}>
+          <Link href="/estudio/clientes/directorio" className={estudioBtnSecundario}>
             Cancelar
           </Link>
         ) : null}

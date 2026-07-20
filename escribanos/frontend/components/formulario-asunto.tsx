@@ -245,12 +245,18 @@ export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) 
       }
       onSubmit={onSubmit}
     >
-      <div>
-        <h2 className={estudioSectionTitle}>Cliente y tipo</h2>
-        <p className="mt-2 text-xs text-neutral-600">Buscá al cliente y definí si el expediente es notarial o legal.</p>
+      <div className={legacyAlta ? "form-section-alta" : undefined}>
+        {legacyAlta ? (
+          <h2>Cliente y tipo</h2>
+        ) : (
+          <h2 className={estudioSectionTitle}>Cliente y tipo</h2>
+        )}
+        <p className={legacyAlta ? undefined : "mt-2 text-xs text-neutral-600"}>
+          Buscá al cliente y definí si el expediente es notarial o legal.
+        </p>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-1.5">
+      <div className={legacyAlta ? "grid gap-8 md:grid-cols-2" : "grid gap-6 md:grid-cols-2"}>
+        <div className="space-y-2">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Cliente</span>
           {clienteElegido ? (
             <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[rgba(0,166,81,0.2)] bg-[rgba(0,166,81,0.06)] px-3 py-2 text-xs text-neutral-800">
@@ -326,7 +332,7 @@ export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) 
           </p>
         </div>
 
-        <label className="space-y-1.5">
+        <label className="space-y-2">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Tipo de asunto</span>
           <select
             className="input-app"
@@ -342,11 +348,11 @@ export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) 
 
       <div
         className={
-          legacyAlta ? "form-stack-section space-y-4" : `${estudioSectionRule} space-y-4`
+          legacyAlta ? "form-stack-section form-section-alta space-y-5" : `${estudioSectionRule} space-y-4`
         }
       >
-        <h2 className={estudioSectionTitle}>Asunto del catálogo</h2>
-        <label className="block space-y-1.5">
+        {legacyAlta ? <h2>Asunto del catálogo</h2> : <h2 className={estudioSectionTitle}>Asunto del catálogo</h2>}
+        <label className="block space-y-2">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Selección</span>
           <select
             className="input-app"
@@ -403,10 +409,10 @@ export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) 
         />
       </label>
 
-      <div className={legacyAlta ? "form-stack-section space-y-3" : "space-y-3"}>
-        <h2 className={estudioSectionTitle}>Fechas</h2>
-        <div className="grid gap-6 md:grid-cols-2">
-        <label className="space-y-1.5">
+      <div className={legacyAlta ? "form-stack-section form-section-alta space-y-5" : "space-y-3"}>
+        {legacyAlta ? <h2>Fechas</h2> : <h2 className={estudioSectionTitle}>Fechas</h2>}
+        <div className={legacyAlta ? "grid gap-8 md:grid-cols-2" : "grid gap-6 md:grid-cols-2"}>
+        <label className="space-y-2">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Fecha de inicio</span>
           <input
             className="input-app"
@@ -415,7 +421,7 @@ export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) 
             onChange={(e) => setFechaInicio(e.target.value)}
           />
         </label>
-        <label className="space-y-1.5">
+        <label className="space-y-2">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-500">Alerta vencimiento (opcional)</span>
           <input
             className="input-app"
@@ -435,7 +441,7 @@ export function FormularioAsunto({ legacyAlta = false }: FormularioAsuntoProps) 
         <button className={estudioBtnPrimario} disabled={guardando} type="submit">
           {guardando ? "Guardando…" : "Guardar asunto"}
         </button>
-        <Link href="/estudio/asuntos" className={estudioBtnSecundario}>
+        <Link href="/estudio/asuntos/listado" className={estudioBtnSecundario}>
           Cancelar
         </Link>
       </div>
